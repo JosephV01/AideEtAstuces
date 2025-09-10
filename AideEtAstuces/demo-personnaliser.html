@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Personnaliser - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .demo-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-description {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Canvas adapté pour la fenêtre de personnalisation */
+        .demo-canvas {
+            position: relative;
+            background: #2D2D2D;
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: visible;
+        }
+
+        /* Menu contextuel adaptatif (override de demo-elements.css) */
+        .context-menu {
+            width: auto;
+            min-width: 120px;
+            height: auto;
+        }
+
+        .menu-item {
+            padding: 3px 8px;
+            margin: 1px 0;
+            font-size: 8px;
+            height: 16px;
+            white-space: nowrap;
+            min-width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .menu-icon {
+            flex-shrink: 0;
+            color: #F0F0F0;
+        }
+
+        .menu-separator {
+            margin: 1px 4px;
+        }
+
+        /* Poignée de redimensionnement (ajustement pour cette démo) */
+        .resize-handle {
+            width: 12px;
+            height: 12px;
+            left: 243px;
+            top: 133px;
+            z-index: 5;
+        }
+
+        /* Fenêtre de personnalisation centrée et fixe */
+        .customization-window {
+            position: absolute;
+            background: #ffffff;
+            border: 2px solid #0078d4;
+            border-radius: 12px;
+            width: 420px;
+            height: 380px;
+            left: 90px;
+            top: 10px;
+            z-index: 2000;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            padding: 0;
+            box-sizing: border-box;
+            visibility: hidden;
+            overflow: hidden;
+        }
+
+        /* Curseur de souris avec z-index élevé */
+        .mouse-cursor {
+            z-index: 1500 !important;
+        }
+
+        /* Position de la souris ajustée pour le canvas agrandi */
+        .mouse-zero-click {
+            left: 555px !important;
+            top: 25px !important;
+        }
+
+        .mouse-left-click {
+            left: 555px !important;
+            top: 25px !important;
+        }
+
+        .mouse-right-click {
+            left: 555px !important;
+            top: 25px !important;
+        }
+
+        .customization-header {
+            background: linear-gradient(135deg, #0078d4, #106ebe);
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            margin: 0;
+            border-radius: 10px 10px 0 0;
+            font-family: 'Segoe UI Variable', sans-serif;
+        }
+
+        .customization-content {
+            padding: 8px;
+            height: 280px;
+            overflow: hidden;
+            background: #fafafa;
+            box-sizing: border-box;
+        }
+
+        .customization-section {
+            margin-bottom: 6px;
+            background: white;
+            border: 1px solid #e1e1e1;
+            border-radius: 4px;
+            padding: 4px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .section-title {
+            font-weight: 600;
+            font-size: 9px;
+            margin: 0 0 4px 0;
+            color: #323130;
+            border-bottom: 1px solid #e1e1e1;
+            padding-bottom: 2px;
+        }
+
+        .option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 2px 0;
+            padding: 0;
+        }
+
+        .option-label {
+            color: #323130;
+            font-size: 8px;
+            font-weight: 500;
+            flex: 1;
+            margin-right: 6px;
+        }
+
+        .option-control {
+            width: 50px;
+            height: 16px;
+            background: #f3f2f1;
+            border: 1px solid #d2d0ce;
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            color: #323130;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-control:hover {
+            background: #e1dfdd;
+            border-color: #0078d4;
+        }
+
+        .color-preview {
+            width: 12px;
+            height: 10px;
+            border-radius: 2px;
+            border: 1px solid #d2d0ce;
+            margin-right: 3px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            width: 50px;
+        }
+
+        .slider {
+            width: 30px;
+            height: 2px;
+            background: #d2d0ce;
+            border-radius: 1px;
+            position: relative;
+            margin-right: 3px;
+        }
+
+        .slider-thumb {
+            width: 6px;
+            height: 6px;
+            background: #0078d4;
+            border-radius: 50%;
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            cursor: pointer;
+        }
+
+        .slider-value {
+            font-size: 7px;
+            color: #605e5c;
+            min-width: 12px;
+        }
+
+        .customization-footer {
+            background: #f8f8f8;
+            border-top: 1px solid #e1e1e1;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 6px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .action-button {
+            padding: 4px 12px;
+            border: 1px solid #d2d0ce;
+            border-radius: 3px;
+            font-size: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .btn-cancel {
+            background: #f3f2f1;
+            color: #323130;
+        }
+
+        .btn-cancel:hover {
+            background: #e1dfdd;
+        }
+
+        .btn-apply {
+            background: #0078d4;
+            color: white;
+            border-color: #0078d4;
+        }
+
+        .btn-apply:hover {
+            background: #106ebe;
+        }
+
+        .btn-close {
+            background: #d13438;
+            color: white;
+            border-color: #d13438;
+        }
+
+        .btn-close:hover {
+            background: #a52a2e;
+        }
+
+        .back-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Démonstration - Personnaliser</h1>
+        <p class="demo-description">
+            Cette démonstration montre comment accéder aux options de personnalisation d'une bulle via le menu contextuel.
+        </p>
+        
+        <div class="demo-canvas-container">
+            <div class="demo-canvas">
+                <!-- Bordure dynamique -->
+                <div class="dynamic-border"></div>
+
+                <!-- Étiquette centrée automatiquement -->
+                <div class="label-border">
+                    <div class="label-text">Personnaliser la Bulle</div>
+                </div>
+
+                <!-- Curseur de souris -->
+                <div class="mouse-cursor"></div>
+
+                <!-- Poignée de redimensionnement -->
+                <div class="resize-handle"></div>
+
+                <!-- Cercle d'animation de clic -->
+                <div class="click-animation"></div>
+
+                <!-- Souris avec boutons (état normal) -->
+                <div class="mouse-zero-click"></div>
+
+                <!-- Souris avec bouton droit coloré (pour les clics) -->
+                <div class="mouse-right-click"></div>
+
+                <!-- Souris avec bouton gauche coloré (pour les clics) -->
+                <div class="mouse-left-click"></div>
+
+                <!-- Menu contextuel simulé -->
+                <div class="context-menu">
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 0 24 24" width="12" height="12">
+                            <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z" fill="currentColor"/>
+                        </svg>
+                        Personnaliser
+                    </div>
+                    <div class="menu-separator"></div>
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 0 24 24" width="12" height="12">
+                            <path d="M312-320h64l32-92h146l32 92h62L512-680h-64L312-320Zm114-144 52-150h4l52 150H426Zm54 384q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480h80q0 66 25 124.5t68.5 102q43.5 43.5 102 69T480-159q134 0 227-93t93-227q0-134-93-227t-227-93q-89 0-161.5 43.5T204-640h116v80H80v-240h80v80q55-73 138-116.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z" fill="currentColor"/>
+                        </svg>
+                        Renommer Étiquette
+                    </div>
+                    <div class="menu-separator"></div>
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 0 24 24" width="12" height="12">
+                            <path d="M520,-400h80v-120h120v-80H600v-120h-80v120H400v80h120v120ZM320,-240q-33,0-56.5,-23.5T240,-320v-480q0-33,23.5,-56.5T320,-880h480q33,0,56.5,23.5T880,-800v480q0,33-23.5,56.5T800,-240H320Zm0,-80h480v-480H320v480ZM160,-80q-33,0-56.5,-23.5T80,-160v-560h80v560h560v80H160Zm160,-720v480-480Z" fill="currentColor"/>
+                        </svg>
+                        Dupliquer
+                    </div>
+                    <div class="menu-separator"></div>
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 0 24 24" width="12" height="12">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" fill="currentColor"/>
+                        </svg>
+                        Supprimer
+                    </div>
+                </div>
+
+                <!-- Fenêtre de personnalisation -->
+                <div class="customization-window">
+                    <div class="customization-header">
+                        Personnalisation de la Bulle
+                    </div>
+                    <div class="customization-content">
+                        <div class="customization-section">
+                            <div class="section-title">Apparence</div>
+                            <div class="option-row">
+                                <span class="option-label">Couleur de fond</span>
+                                <div class="option-control">
+                                    <div class="color-preview" style="background: #2D2D30;"></div>
+                                    Modifier
+                                </div>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Couleur de bordure</span>
+                                <div class="option-control">
+                                    <div class="color-preview" style="background: #ffffff; border: 1px solid #000;"></div>
+                                    Modifier
+                                </div>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Opacité</span>
+                                <div class="slider-container">
+                                    <div class="slider">
+                                        <div class="slider-thumb"></div>
+                                    </div>
+                                    <span class="slider-value">85%</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="customization-section">
+                            <div class="section-title">Texte</div>
+                            <div class="option-row">
+                                <span class="option-label">Couleur du texte</span>
+                                <div class="option-control">
+                                    <div class="color-preview" style="background: #ffffff;"></div>
+                                    Modifier
+                                </div>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Taille de police</span>
+                                <div class="slider-container">
+                                    <div class="slider">
+                                        <div class="slider-thumb"></div>
+                                    </div>
+                                    <span class="slider-value">12px</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="customization-section">
+                            <div class="section-title">Effets</div>
+                            <div class="option-row">
+                                <span class="option-label">Ombre portée</span>
+                                <div class="option-control">Activée</div>
+                            </div>
+                            <div class="option-row">
+                                <span class="option-label">Animation</span>
+                                <div class="option-control">Désactivée</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="customization-footer">
+                        <button class="action-button btn-cancel">Annuler</button>
+                        <button class="action-button btn-apply">Appliquer</button>
+                        <button class="action-button btn-close">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="back-button" onclick="window.close()">Fermer</button>
+    </div>
+
+    <script>
+        // Variables pour l'animation
+        let animationPhase = 0;
+        let animationTimer;
+
+        // Éléments DOM
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseRightClick = document.querySelector('.mouse-right-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const clickAnimation = document.querySelector('.click-animation');
+        const contextMenu = document.querySelector('.context-menu');
+        const resizeHandle = document.querySelector('.resize-handle');
+        const customizationWindow = document.querySelector('.customization-window');
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        function startAnimation() {
+            animationTimer = setInterval(() => {
+                animationPhase++;
+
+                // Phase 1: Curseur se déplace vers la poignée
+                if (animationPhase <= 35) {
+                    const progress = animationPhase / 35;
+                    const startX = 143, startY = 92;
+                    const endX = 243, endY = 133;
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                }
+                // Phase 2: Animation de clic droit et expansion de la poignée
+                else if (animationPhase <= 58) {
+                    const clickPhase = animationPhase - 35;
+                    
+                    // Animation de clic très rapide
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (239 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (129 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (236 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (126 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+
+                    // Changement de souris pour le clic gauche (synchronisé)
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    
+                    // Retour immédiat à la souris normale après le clic
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+
+                    // Animation d'expansion et rétraction de la poignée
+                    if (clickPhase >= 3) {
+                        const expandPhase = clickPhase - 3;
+                        if (expandPhase <= 3) {
+                            const scale = 1 + (expandPhase * 0.3);
+                            resizeHandle.style.transform = `scale(${scale})`;
+                            resizeHandle.style.background = '#ffffff';
+                            resizeHandle.style.border = '2px solid #ffffff';
+                        } else if (expandPhase <= 6) {
+                            const shrinkPhase = expandPhase - 3;
+                            const scale = 1.9 - (shrinkPhase * 0.3);
+                            resizeHandle.style.transform = `scale(${scale})`;
+                            resizeHandle.style.background = '#00ffff';
+                            resizeHandle.style.border = '1px solid #000';
+                        } else {
+                            resizeHandle.style.transform = 'scale(1)';
+                            resizeHandle.style.background = '#ffffff';
+                            resizeHandle.style.border = '1px solid #000';
+                        }
+                    }
+                }
+                // Phase 3: Menu apparaît
+                else if (animationPhase <= 62) {
+                    const menuProgress = (animationPhase - 58) / 4;
+                    contextMenu.style.visibility = 'visible';
+                    contextMenu.style.opacity = menuProgress;
+                    contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
+                }
+                // Phase 4: Menu visible
+                else if (animationPhase <= 68) {
+                    contextMenu.style.opacity = '1';
+                    contextMenu.style.transform = 'scale(1)';
+                }
+                // Phase 5: Curseur se déplace vers "Personnaliser"
+                else if (animationPhase <= 85) {
+                    const progress = (animationPhase - 68) / 17;
+                    const startX = 243, startY = 133;
+                    const endX = 240, endY = 50; // Position de l'option Personnaliser
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                }
+                // Phase 6: Clic sur "Personnaliser"
+                else if (animationPhase <= 93) {
+                    const clickPhase = animationPhase - 85;
+                    
+                    // Animation de clic
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (236 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (46 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (233 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (43 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+
+                    // Changement de souris au clic gauche (synchronisé)
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    
+                    // Retour immédiat à la souris normale après le clic
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+
+                    // Effet hover sur l'option Personnaliser
+                    if (clickPhase >= 1) {
+                        menuItems[0].style.background = '#404040';
+                    }
+                }
+                // Phase 7: Menu disparaît et fenêtre de personnalisation apparaît
+                else if (animationPhase <= 100) {
+                    const progress = (animationPhase - 93) / 7;
+                    contextMenu.style.opacity = 1 - progress;
+                    contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
+                    
+                    // La souris est déjà revenue à la normale après le clic
+                    
+                    if (progress >= 0.5) {
+                        customizationWindow.style.visibility = 'visible';
+                        customizationWindow.style.opacity = (progress - 0.5) * 2;
+                        customizationWindow.style.transform = `scale(${0.8 + (progress - 0.5) * 0.4})`;
+                    }
+                }
+                // Phase 8: Fenêtre de personnalisation visible
+                else if (animationPhase <= 130) {
+                    customizationWindow.style.visibility = 'visible';
+                    customizationWindow.style.opacity = '1';
+                    customizationWindow.style.transform = 'scale(1)';
+                }
+                // Phase 9: Fenêtre de personnalisation se ferme
+                else if (animationPhase <= 140) {
+                    const progress = (animationPhase - 130) / 10;
+                    customizationWindow.style.opacity = 1 - progress;
+                    customizationWindow.style.transform = `scale(${1 - progress * 0.2})`;
+                    if (progress >= 0.8) {
+                        customizationWindow.style.visibility = 'hidden';
+                    }
+                }
+                // Reset immédiat après fermeture de la fenêtre
+                else {
+                    animationPhase = 0;
+                    mouseCursor.style.left = '143px';
+                    mouseCursor.style.top = '92px';
+                    contextMenu.style.visibility = 'hidden';
+                    contextMenu.style.opacity = '0';
+                    contextMenu.style.transform = 'scale(0.8)';
+                    customizationWindow.style.opacity = '0';
+                    customizationWindow.style.transform = 'scale(0.8)';
+                    clickAnimation.style.visibility = 'hidden';
+                    clickAnimation.style.opacity = '0';
+                    resizeHandle.style.transform = 'scale(1)';
+                    resizeHandle.style.background = '#ffffff';
+                    resizeHandle.style.border = '1px solid #000';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                    menuItems[0].style.background = 'transparent';
+                    customizationWindow.style.visibility = 'hidden';
+                    customizationWindow.style.opacity = '0';
+                    customizationWindow.style.transform = 'scale(0.8)';
+                }
+            }, 50);
+        }
+
+        // Fonction pour centrer la fenêtre dans le canvas
+        function centerWindow() {
+            const window = customizationWindow;
+            const canvas = document.querySelector('.demo-canvas');
+            
+            // Centrer la fenêtre dans le canvas avec la nouvelle taille
+            const canvasWidth = canvas.offsetWidth;
+            const canvasHeight = canvas.offsetHeight;
+            const windowWidth = 420;
+            const windowHeight = 380;
+            
+            const centerX = (canvasWidth - windowWidth) / 2;
+            const centerY = (canvasHeight - windowHeight) / 2;
+            
+            window.style.left = centerX + 'px';
+            window.style.top = centerY + 'px';
+        }
+
+        // Démarrer l'animation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Centrer la fenêtre avant de démarrer l'animation
+            setTimeout(() => {
+                centerWindow();
+                setTimeout(startAnimation, 500);
+            }, 100);
+        });
+    </script>
+</body>
+</html>

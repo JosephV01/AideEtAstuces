@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bibliothèque d'Images - Démonstration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            width: 650px;
+            height: 450px;
+            min-width: 600px;
+            min-height: 400px;
+            margin: 20px auto;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-border {
+            border: 2px solid #d1d1d1;
+            border-radius: 15px;
+            padding: 6px;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-grid {
+            flex: 1;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 8px;
+            margin: 6px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* En-tête */
+        .header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            margin-bottom: 6px;
+            min-height: 0;
+        }
+
+        .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .close-button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            background: #e5e5e5;
+        }
+
+        /* Contenu principal */
+        .main-content {
+            display: grid;
+            grid-template-columns: 100px 3px 1fr;
+            gap: 0;
+            margin-bottom: 6px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Volet des catégories */
+        .categories-panel {
+            width: 100px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            padding: 6px 3px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .categories-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 4px;
+            flex-shrink: 0;
+            text-align: center;
+        }
+
+        .categories-list {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .category-button {
+            width: 100%;
+            padding: 4px 2px;
+            margin: 1px 0;
+            border: none;
+            background: transparent;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 10px;
+            color: #000000;
+            transition: all 0.2s;
+            line-height: 1.2;
+        }
+
+        .category-button:hover {
+            background: #e0e0e0;
+        }
+
+        .category-button.selected {
+            background: #005ea2;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Séparateur */
+        .splitter {
+            background: #d1d1d1;
+            width: 1px;
+            cursor: col-resize;
+        }
+
+        /* Zone des images */
+        .images-panel {
+            background: #f0f0f0;
+            border-radius: 6px;
+            padding: 4px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .current-category-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 3px;
+            flex-shrink: 0;
+        }
+
+        .images-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0;
+            min-height: 0;
+        }
+
+        .images-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            padding: 0;
+        }
+
+        .image-button {
+            width: 80px;
+            height: 60px;
+            border: 2px solid transparent;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 3px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .image-button:hover {
+            border-color: #cccccc;
+        }
+
+        .image-button.selected {
+            border: 3px solid #005ea2;
+        }
+
+        .image-button img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Barre d'état */
+        .status-bar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            min-height: 0;
+            flex-shrink: 0;
+        }
+
+        .status-text {
+            color: #666666;
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .action-button {
+            height: 26px;
+            min-width: 120px;
+            border: 1px solid #cccccc;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 11px;
+            padding: 0 12px;
+            white-space: nowrap;
+        }
+
+        .action-button:hover {
+            background: #f0f0f0;
+        }
+
+        .action-button:disabled {
+            background: #f5f5f5;
+            color: #999999;
+            cursor: not-allowed;
+        }
+
+        .action-button.primary {
+            background: #005ea2;
+            color: white;
+            border-color: #005ea2;
+            min-width: 100px;
+        }
+
+        .action-button.primary:hover:not(:disabled) {
+            background: #004080;
+        }
+
+        /* Scrollbar personnalisée */
+        .categories-list::-webkit-scrollbar,
+        .images-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .categories-list::-webkit-scrollbar-track,
+        .images-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .categories-list::-webkit-scrollbar-thumb,
+        .images-container::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 4px;
+        }
+
+        .categories-list::-webkit-scrollbar-thumb:hover,
+        .images-container::-webkit-scrollbar-thumb:hover {
+            background: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="main-border">
+            <div class="content-grid">
+                <!-- En-tête -->
+                <div class="header">
+                    <div class="title">Bibliothèque d'Images</div>
+                    <button class="close-button" onclick="closeWindow()">✕</button>
+                </div>
+
+                <!-- Contenu principal -->
+                <div class="main-content">
+                    <!-- Volet des catégories -->
+                    <div class="categories-panel">
+                        <div class="categories-title">Catégories</div>
+                        <div class="categories-list" id="categoriesList">
+                            <button class="category-button selected" data-category="3d">3D</button>
+                            <button class="category-button" data-category="abstract">Abstract</button>
+                            <button class="category-button" data-category="animals">Animals</button>
+                            <button class="category-button" data-category="nature">Nature</button>
+                            <button class="category-button" data-category="sci-fi">Science-Fiction</button>
+                            <button class="category-button" data-category="space">Space</button>
+                            <button class="category-button" data-category="technology">Technology</button>
+                            <button class="category-button" data-category="urban">Urban</button>
+                        </div>
+                    </div>
+
+                    <!-- Séparateur -->
+                    <div class="splitter"></div>
+
+                    <!-- Zone des images -->
+                    <div class="images-panel">
+                        <div class="current-category-title" id="currentCategoryTitle">3D</div>
+                        <div class="images-container">
+                            <div class="images-grid" id="imagesGrid">
+                                <!-- Les images seront générées par JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barre d'état -->
+                <div class="status-bar">
+                    <div class="status-text" id="statusText">3D - 12 image(s)</div>
+                    <div class="action-buttons">
+                        <button class="action-button" id="applyWallpaperBtn" disabled>Appliquer comme fond</button>
+                        <button class="action-button primary" id="selectBtn" disabled>Sélectionner</button>
+                        <button class="action-button" id="cancelBtn">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Données de démonstration
+        const categories = {
+            '3d': { name: '3D', count: 24 },
+            'abstract': { name: 'Abstract', count: 24 },
+            'animals': { name: 'Animals', count: 24 },
+            'nature': { name: 'Nature', count: 24 },
+            'sci-fi': { name: 'Science-Fiction', count: 24 },
+            'space': { name: 'Space', count: 24 },
+            'technology': { name: 'Technology', count: 24 },
+            'urban': { name: 'Urban', count: 24 }
+        };
+
+        let currentCategory = '3d';
+        let selectedImageIndex = -1;
+
+        // Image de démonstration (SVG simple)
+        const demoImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA4MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjBGMEYwIiBzdHJva2U9IiNDQ0NDQ0MiLz4KPHN2ZyB4PSIzIiB5PSIzIiB3aWR0aD0iNzQiIGhlaWdodD0iNTQiIHZpZXdCb3g9IjAgMCA3NCA1NCI+CjxyZWN0IHdpZHRoPSI3NCIgaGVpZ2h0PSI1NCIgZmlsbD0iIzAwNUU5MiIvPgo8dGV4dCB4PSIzNyIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2U8L3RleHQ+Cjwvc3ZnPgo8L3N2Zz4=';
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCategories();
+            loadImagesForCategory(currentCategory);
+        });
+
+        function initializeCategories() {
+            const categoryButtons = document.querySelectorAll('.category-button');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+                    selectCategory(category);
+                });
+            });
+        }
+
+        function selectCategory(category) {
+            // Mettre à jour la sélection visuelle
+            document.querySelectorAll('.category-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            document.querySelector(`[data-category="${category}"]`).classList.add('selected');
+
+            // Charger les images pour cette catégorie
+            currentCategory = category;
+            loadImagesForCategory(category);
+        }
+
+        function loadImagesForCategory(category) {
+            const categoryData = categories[category];
+            const imagesGrid = document.getElementById('imagesGrid');
+            const categoryTitle = document.getElementById('currentCategoryTitle');
+            const statusText = document.getElementById('statusText');
+
+            // Mettre à jour le titre
+            categoryTitle.textContent = categoryData.name;
+
+            // Générer les images
+            imagesGrid.innerHTML = '';
+            for (let i = 0; i < categoryData.count; i++) {
+                const imageButton = document.createElement('button');
+                imageButton.className = 'image-button';
+                imageButton.innerHTML = `<img src="${demoImage}" alt="Image ${i + 1}">`;
+                imageButton.addEventListener('click', function() {
+                    selectImage(i, this);
+                });
+                imagesGrid.appendChild(imageButton);
+            }
+
+            // Mettre à jour le statut
+            statusText.textContent = `${categoryData.name} - ${categoryData.count} image(s)`;
+
+            // Réinitialiser la sélection
+            selectedImageIndex = -1;
+            document.getElementById('selectBtn').disabled = true;
+            document.getElementById('applyWallpaperBtn').disabled = true;
+        }
+
+        function selectImage(index, buttonElement) {
+            // Retirer la sélection précédente
+            document.querySelectorAll('.image-button').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            // Sélectionner la nouvelle image
+            buttonElement.classList.add('selected');
+            selectedImageIndex = index;
+
+            // Activer les boutons
+            document.getElementById('selectBtn').disabled = false;
+            document.getElementById('applyWallpaperBtn').disabled = false;
+
+            // Mettre à jour le statut
+            const statusText = document.getElementById('statusText');
+            statusText.textContent = `Image sélectionnée: Image ${index + 1}.jpg`;
+        }
+
+        // Gestionnaires d'événements pour les boutons
+        document.getElementById('selectBtn').addEventListener('click', function() {
+            if (selectedImageIndex >= 0) {
+                alert(`Image sélectionnée: ${categories[currentCategory].name} - Image ${selectedImageIndex + 1}.jpg`);
+            }
+        });
+
+        document.getElementById('applyWallpaperBtn').addEventListener('click', function() {
+            if (selectedImageIndex >= 0) {
+                alert(`Fond d'écran appliqué: ${categories[currentCategory].name} - Image ${selectedImageIndex + 1}.jpg`);
+            }
+        });
+
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            closeWindow();
+        });
+
+        function closeWindow() {
+            alert('Fenêtre fermée');
+        }
+    </script>
+</body>
+</html>

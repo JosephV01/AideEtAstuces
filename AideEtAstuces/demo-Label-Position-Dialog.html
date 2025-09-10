@@ -1,0 +1,1827 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Ajuster Position Étiquette - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+            position: relative;
+        }
+
+        .demo-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-description {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .demo-canvas {
+            position: relative;
+            background: #2D2D2D;
+            width: 600px;
+            height: 400px;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: visible;
+        }
+
+        .demo-canvas .dynamic-border {
+            position: absolute;
+            border: 3px solid white;
+            background: #2D2D30;
+            border-radius: 8px;
+            width: 280px;
+            height: 120px;
+            left: 160px;
+            top: 140px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-canvas .label-border {
+            position: absolute;
+            background: #2D2D30;
+            border: 2px solid white;
+            border-radius: 5px;
+            padding: 5px 10px;
+            height: 24px;
+            left: 300px;
+            top: 115px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: auto;
+            min-width: fit-content;
+            transform: translateX(-50%);
+        }
+
+        .demo-canvas .label-text {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .demo-canvas .mouse-cursor {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 300px;
+            top: 200px;
+            z-index: 1000;
+            background: url('../Files/Cursor.png') no-repeat center;
+            background-size: contain;
+            visibility: hidden;
+        }
+
+        .demo-canvas .resize-handle {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border: 2px solid black;
+            border-radius: 50%;
+            left: 431px;
+            top: 251px;
+            z-index: 999;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .demo-canvas .click-animation {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: cyan;
+            border-radius: 50%;
+            opacity: 0.7;
+            z-index: 1002;
+            visibility: hidden;
+        }
+
+        .demo-canvas .context-menu {
+            position: absolute;
+            background: #2F2F2F;
+            border: 2px solid #555555;
+            border-radius: 6px;
+            left: 340px;
+            top: 80px;
+            z-index: 999;
+            visibility: hidden;
+            padding: 8px 4px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            min-width: 140px;
+        }
+
+        .context-menu {
+            width: auto;
+            min-width: 120px;
+            height: auto;
+        }
+
+        .menu-item {
+            padding: 5px 10px;
+            margin: 2px 0;
+            font-size: 10px;
+            height: 20px;
+            white-space: nowrap;
+            min-width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+        }
+
+        .menu-icon {
+            flex-shrink: 0;
+            color: #F0F0F0;
+            width: 14px;
+            height: 14px;
+        }
+
+        .menu-separator {
+            margin: 1px 4px;
+        }
+
+        .menu-with-submenu {
+            position: relative;
+        }
+
+        .submenu {
+            position: absolute;
+            left: 100%;
+            top: -2px;
+            background: #2a2a2a;
+            border: 2px solid #555;
+            border-radius: 6px;
+            min-width: 140px;
+            visibility: hidden;
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.2s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+            padding: 4px 2px;
+        }
+
+        .submenu-item {
+            padding: 5px 10px;
+            margin: 2px 0;
+            font-size: 10px;
+            height: 20px;
+            white-space: nowrap;
+            min-width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #F0F0F0;
+            background: transparent;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 3px;
+        }
+
+        .submenu-item:hover {
+            background: #404040;
+        }
+
+        .mouse-cursor {
+            z-index: 1500 !important;
+        }
+
+        .position-dialog {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            z-index: 1001;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .dialog-border {
+            background: #ffffff;
+            border: 2px solid #c0c0c0;
+            border-radius: 25px;
+            padding: 8px;
+            width: 400px;
+            min-width: 400px;
+            max-width: 600px;
+            min-height: 275px;
+            max-height: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .dialog-content {
+            margin: 12px;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            min-height: 235px;
+        }
+
+        .dialog-title {
+            text-align: center;
+            font-weight: bold;
+            color: #000000;
+            font-size: 24px;
+            margin: 20px 0;
+            font-family: 'Segoe UI Variable';
+        }
+
+        .dialog-inputs {
+            margin: 0 0 10px 0;
+        }
+
+        .dialog-inputs .input-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dialog-inputs .input-label {
+            color: #000000;
+            font-size: 16px;
+            font-family: 'Segoe UI Variable';
+            margin: 10px 10px 10px 10px;
+            text-align: left;
+        }
+
+        .dialog-inputs .input-textbox {
+            height: 30px;
+            background: #f0f0f0;
+            border: 1px solid #c0c0c0;
+            color: #000000;
+            font-size: 16px;
+            font-family: 'Segoe UI Variable';
+            padding: 5px;
+            margin: 5px 10px;
+            border-radius: 0;
+            outline: none;
+        }
+
+        .dialog-inputs .input-textbox:focus {
+            border-color: #0078d4;
+            background: #ffffff;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .dialog-button {
+            width: 100px;
+            height: 30px;
+            background: #f0f0f0;
+            border: 1px solid #c0c0c0;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #000000;
+            cursor: pointer;
+            font-family: 'Segoe UI Variable';
+        }
+
+        .dialog-button:hover {
+            background: #e0e0e0;
+        }
+
+        .dialog-button:active {
+            background: #d0d0d0;
+        }
+
+        .dialog-button.ok-button {
+            font-weight: bold;
+        }
+
+        .demo-canvas .mouse-zero-click {
+            position: absolute;
+            width: 25px;
+            height: 38px;
+            left: 555px;
+            top: 25px;
+            z-index: 1003;
+            background: url('../Files/MouseZeroClick.png') no-repeat center;
+            background-size: contain;
+        }
+
+        .demo-canvas .mouse-left-click {
+            position: absolute;
+            width: 25px;
+            height: 38px;
+            left: 555px;
+            top: 25px;
+            z-index: 1004;
+            background: url('../Files/MouseLeftClick.png') no-repeat center;
+            background-size: contain;
+            visibility: hidden;
+        }
+
+        .demo-canvas .mouse-right-click {
+            position: absolute;
+            width: 25px;
+            height: 38px;
+            left: 555px;
+            top: 25px;
+            z-index: 1004;
+            background: url('../Files/MouseRightClick.png') no-repeat center;
+            background-size: contain;
+            visibility: hidden;
+        }
+
+        .back-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .demo-progress-window {
+            width: 100%;
+            background: #ffffff;
+            border: 2px solid #c0c0c0;
+            border-radius: 20px;
+            padding: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .demo-progress-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .demo-progress-header {
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+
+        .demo-progress-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2d2d30;
+            margin-bottom: 4px;
+        }
+
+        .demo-progress-subtitle {
+            font-size: 12px;
+            color: #666666;
+        }
+
+        .demo-progress-body {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .demo-progress-instruction {
+            font-size: 13px;
+            color: #2d2d30;
+            line-height: 1.4;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #0078d4;
+        }
+
+        .demo-progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 8px;
+            height: 16px;
+            overflow: hidden;
+        }
+
+        .demo-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0078d4, #106ebe);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .demo-progress-controls {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .demo-button {
+            padding: 6px 12px;
+            border: 2px solid #0078d4;
+            background: #0078d4;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            background: #106ebe;
+            border-color: #106ebe;
+        }
+
+        .demo-button.secondary {
+            background: white;
+            color: #0078d4;
+        }
+
+        .demo-button.secondary:hover {
+            background: #f0f8ff;
+        }
+
+        .demo-button:disabled {
+            background: #cccccc;
+            border-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .demo-layout {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .demo-main-panel {
+            flex: 1;
+            min-width: 680px;            
+            max-width: 100%;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .demo-main-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .demo-main-messages {
+            flex: 1;
+            min-width: 300px;
+            padding-left: 0;
+        }
+
+        .demo-messages-panel {
+            display: none;
+        }
+
+        #messagesContainer {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .demo-main-messages #messagesContainer {
+            height: auto;
+            overflow-y: visible;
+        }
+
+        .demo-message {
+            position: relative;
+            background: #ffffff;
+            color: #000000;
+            padding: 14px 16px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            margin: 10px 0;
+            max-width: 100%;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            border: 1px solid #e5e5e5;
+        }
+
+        .demo-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .demo-message .message-title {
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #000000;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .demo-message .message-section {
+            margin: 8px 0;
+            padding: 10px 12px;
+            background: #f8f9fb;
+            border-radius: 8px;
+            border-left: 4px solid #cfd8dc;
+        }
+
+        .demo-message .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 0 6px 0;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .demo-message .section-content {
+            font-size: 15px;
+            line-height: 1.45;
+            color: #000000;
+            margin: 0;
+        }
+
+        .demo-message .action-required {
+            background: #ffffff;
+            border-left-color: #000000;
+            position: relative;
+        }
+
+        .demo-message .action-required::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid #dc3545;
+            border-radius: 10px;
+            animation: actionRequiredPulse 2.5s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes actionPulse {
+            0% { 
+                opacity: 0.3; 
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+            }
+            50% { 
+                opacity: 1; 
+                box-shadow: 0 0 0 8px rgba(255, 107, 53, 0);
+            }
+            100% { 
+                opacity: 0.3; 
+                box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.7);
+            }
+        }
+
+        @keyframes buttonPulse {
+            0%, 100% { 
+                transform: scale(1.05); 
+                box-shadow: 0 0 15px rgba(255, 107, 53, 0.8);
+            }
+            50% { 
+                transform: scale(1.08); 
+                box-shadow: 0 0 20px rgba(255, 107, 53, 1);
+            }
+        }
+
+
+        @keyframes actionRequiredPulse {
+            0% { 
+                opacity: 0.3; 
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+            50% { 
+                opacity: 1; 
+                box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+            }
+            100% { 
+                opacity: 0.3; 
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+        }
+
+        .demo-message .tip-section {
+            background: #fff8e1;
+            border-left-color: #ffcc80;
+        }
+
+        .demo-message .validation-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 12px rgba(40, 167, 69, 0.28);
+        }
+
+        .demo-message .validation-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .demo-message .validation-button:active {
+            transform: translateY(0);
+        }
+
+        .demo-message .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #000000;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-message .close-btn:hover {
+            background: rgba(0,0,0,0.06);
+            border-radius: 50%;
+        }
+
+        .demo-container .demo-message,
+        .demo-container .demo-message *,
+        .demo-message,
+        .demo-message * {
+            color: #000000 !important;
+        }
+
+        .demo-container .demo-message .message-title,
+        .demo-message .message-title {
+            color: #000000 !important;
+        }
+
+        .demo-container .demo-message .section-title,
+        .demo-message .section-title {
+            color: #000000 !important;
+        }
+
+        .demo-container .demo-message .section-content,
+        .demo-message .section-content {
+            color: #000000 !important;
+        }
+
+        .demo-container .demo-message .close-btn,
+        .demo-message .close-btn {
+            color: #000000 !important;
+        }
+
+        .demo-message .validation-button.disabled,
+        .demo-message .validation-button:disabled {
+            background: linear-gradient(135deg, #cccccc 0%, #999999 100%) !important;
+            color: #666666 !important;
+            cursor: not-allowed !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+            transform: none !important;
+        }
+
+        .demo-message .validation-button.disabled:hover,
+        .demo-message .validation-button:disabled:hover {
+            background: linear-gradient(135deg, #cccccc 0%, #999999 100%) !important;
+            transform: none !important;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-progress-window" id="demoProgressWindow">
+            <div class="demo-progress-content">
+                <div class="demo-progress-header">
+                    <div class="demo-progress-title">🎯 Démonstration : Ajuster Position Étiquette</div>
+                    <div class="demo-progress-subtitle">Guide interactif pour accéder aux options de l'étiquette et ajuster sa position</div>
+                </div>
+                
+                <div class="demo-progress-body">
+                    <div class="demo-progress-instruction" id="demoInstruction">
+                        Cette démonstration vous apprend à accéder aux options de l'étiquette et à utiliser la fonction d'ajustement de position pour modifier précisément l'emplacement de l'étiquette.
+                    </div>
+                    
+                    <div class="demo-progress-bar-container">
+                        <div class="demo-progress-bar" id="progressBar"></div>
+                    </div>
+                    
+                    <div class="demo-progress-controls">
+                        <button class="demo-button secondary" id="prevStepBtn" disabled>Étape précédente</button>
+                        <button class="demo-button" id="startDemo">Démarrer</button>
+                        <button class="demo-button secondary" id="stopDemo" disabled>Arrêter</button>
+                        <button class="demo-button secondary" id="closeDemo">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-layout">
+            <div class="demo-main-panel">
+                <div class="demo-main-container">
+                    <h1 class="demo-title">Démonstration - Ajuster Position Étiquette</h1>
+        <p class="demo-description">
+                        Cette démonstration montre comment accéder aux options de l'étiquette et ajuster précisément sa position via la fenêtre de dialogue.
+        </p>
+        
+        <div class="demo-canvas-container">
+            <div class="demo-canvas">
+                <div class="dynamic-border"></div>
+                <div class="label-border">
+                                    <div class="label-text">Ajuster la position de l'étiquette</div>
+                </div>
+                <div class="mouse-cursor"></div>
+                <div class="resize-handle"></div>
+                <div class="click-animation"></div>
+                <div class="mouse-zero-click"></div>
+                <div class="mouse-right-click"></div>
+                <div class="mouse-left-click"></div>
+                <div class="context-menu">
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                            <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 32.5-156t88-127Q256-817 330-848.5T488-880q80 0 151 27.5t124.5 76q53.5 48.5 85 115T880-518q0 115-70 176.5T640-280h-74q-9 0-12.5 5t-3.5 11q0 12 15 34.5t15 51.5q0 50-27.5 74T480-80Zm0-400Zm-220 40q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120-160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm200 0q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120 160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17ZM480-160q9 0 14.5-5t5.5-13q0-14-15-33t-15-57q0-42 29-67t71-25h70q66 0 113-38.5T800-518q0-121-92.5-201.5T488-800q-136 0-232 93t-96 227q0 133 93.5 226.5T480-160Z" fill="currentColor"/>
+                        </svg>
+                        Personnaliser la bulle
+                    </div>
+                    <div class="menu-separator"></div>
+                                <div class="menu-item menu-with-submenu" id="label-options-menu">
+                        <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                                        <path d="M570-82q-19 5-34.5-6.5T520-120v-200q0-20 15.5-31.5T571-358q37 10 74 14t75 4q38 0 75.5-4t74.5-14q19-5 34.5 6.5T920-320v200q0 20-15.5 31.5T870-82q-37-10-74.5-14t-75.5-4q-38 0-75.5 4T570-82Zm-90-398ZM370-80l-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v33.5q0 10-2 20h-82q2-10 3-20t1-20q-1-19-3-33.5t-6-27.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q24 25 54 42t65 22v184h-70Zm70-266v-91q-8-8-13-19t-5-24q0-25 17.5-42.5T482-540q25 0 42.5 17.5T542-480q0 11-3.5 21.5T527-440h89q3-10 4.5-19.5T622-480q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 48 27.5 84t70.5 50Z" fill="currentColor"/>
+                        </svg>
+                                    Options de l'étiquette
+                                    <div class="submenu" id="label-submenu">
+                                        <div class="menu-item submenu-item" id="adjust-position-item">
+                                            <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                                                <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm640-560H160v480h640v-480Zm-640 0v480-480Zm200 360v-240L240-480l120 120Zm360-120L600-600v240l120-120Z" fill="currentColor"/>
+                                            </svg>
+                                            Ajuster position
+                                        </div>
+                            <div class="menu-item submenu-item">
+                                <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                                                <path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z" fill="currentColor"/>
+                        </svg>
+                                            Masquer l'étiquette
+                            </div>
+                        </div>
+                    </div>
+                    <div class="menu-separator"></div>
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                            <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h357l-80 80H200v560h560v-278l80-80v358q0 33-23.5 56.5T760-120H200Zm280-360ZM360-360v-170l367-367q12-12 27-18t30-6q16 0 30.5 6t26.5 18l56 57q11 12 17 26.5t6 29.5q0 15-5.5 29.5T897-728L530-360H360Zm481-424-56-56 56 56ZM440-440h56l232-232-28-28-29-28-231 231v57Zm260-260-29-28 29 28 28 28-28-28Z" fill="currentColor"/>
+                        </svg>
+                        Éditer
+                    </div>
+                    <div class="menu-separator"></div>
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                            <path d="M520-400h80v-120h120v-80H600v-120h-80v120H400v80h120v120ZM320-240q-33 0-56.5-23.5T240-320v-480q0-33 23.5-56.5T320-880h480q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H320Zm0-80h480v-480H320v480ZM160-80q-33 0-56.5-23.5T80-160v-560h80v560h560v80H160Zm160-720v480-480Z" fill="currentColor"/>
+                        </svg>
+                        Dupliquer
+                    </div>
+                    <div class="menu-separator"></div>
+                    <div class="menu-item">
+                        <svg class="menu-icon" viewBox="0 -960 960 960" width="12" height="12">
+                            <path d="m376-300 104-104 104 104 56-56-104-104 104-104-56-56-104 104-104-104-56 56 104 104-104 104 56 56Zm-96 180q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520Zm-400 0v520-520Z" fill="currentColor"/>
+                        </svg>
+                        Supprimer
+                    </div>
+                </div>
+                            <div class="position-dialog" id="positionDialog">
+                                <div class="dialog-border">
+                                    <div class="dialog-content">
+                                        <div class="dialog-title">Position de l'étiquette</div>
+                                        <div class="dialog-inputs">
+                        <div class="input-row">
+                                                <div class="input-label">Décalage horizontal :</div>
+                                                <div class="input-container">
+                                                    <input id="dialogXInput" class="input-textbox" type="text" value="0" />
+                    </div>
+                                            </div>
+                        <div class="input-row">
+                                                <div class="input-label">Décalage vertical :</div>
+                                                <div class="input-container">
+                                                    <input id="dialogYInput" class="input-textbox" type="text" value="0" />
+                                </div>
+                            </div>
+                        </div>
+                                        <div class="dialog-actions">
+                                            <button class="dialog-button">Annuler</button>
+                                            <button id="dialogOkButton" class="dialog-button ok-button">OK</button>
+                                </div>
+                            </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="demo-main-messages">
+                    <div id="messagesContainer"></div>
+                </div>
+            </div>
+            <div class="demo-messages-panel"></div>
+                        </div>
+    </div>
+
+    <script>
+        let demoRunning = false;
+        let currentStep = 0;
+        let demoSteps = [
+            "Animation complète jusqu'à l'ouverture de la fenêtre de dialogue",
+            "Interaction utilisateur : saisie des valeurs X et Y",
+            "Finalisation : fermeture de la fenêtre et mise à jour de la position"
+        ];
+
+        let animationPhase = 0;
+        let animationTimer;
+        let animationCompletedOnce = false;
+        
+        // Variables pour les étapes interactives
+        let userXValue = null;
+        let userYValue = null;
+        let currentInputField = 'x'; // 'x' ou 'y'
+        let okButtonClicked = false;
+
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseRightClick = document.querySelector('.mouse-right-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const clickAnimation = document.querySelector('.click-animation');
+        const contextMenu = document.querySelector('.context-menu');
+        const labelBorder = document.querySelector('.label-border');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const submenuItems = document.querySelectorAll('.menu-with-submenu');
+        const submenu = document.querySelector('.submenu');
+        const labelOptionsMenu = document.querySelector('#label-options-menu');
+        const positionDialog = document.querySelector('#positionDialog');
+
+        function startAnimation() {
+            mouseCursor.style.visibility = 'visible';
+            
+            animationTimer = setInterval(() => {
+                animationPhase++;
+                if (animationPhase <= 35) {
+                    const progress = animationPhase / 35;
+                    const startX = 300, startY = 200;
+                    const endX = 300, endY = 115;
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                } else if (animationPhase <= 58) {
+                    const clickPhase = animationPhase - 35;
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (296 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (111 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (293 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (108 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseRightClick.style.visibility = 'visible';
+                    }
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseRightClick.style.visibility = 'hidden';
+                    }
+                } else if (animationPhase <= 62) {
+                    const menuProgress = (animationPhase - 58) / 4;
+                    contextMenu.style.visibility = 'visible';
+                    contextMenu.style.opacity = menuProgress;
+                    contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
+                } else if (animationPhase <= 68) {
+                    contextMenu.style.opacity = '1';
+                    contextMenu.style.transform = 'scale(1)';
+                } else if (animationPhase <= 85) {
+                    const progress = (animationPhase - 68) / 17;
+                    const startX = 300, startY = 115;
+                    const endX = 380, endY = 120;
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                } else if (animationPhase <= 93) {
+                    const clickPhase = animationPhase - 85;
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (376 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (116 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (373 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (113 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+                    if (clickPhase >= 1) {
+                        if (labelOptionsMenu) {
+                            if (clickPhase >= 1 && clickPhase <= 2.5) {
+                                const activateProgress = (clickPhase - 1) / 1.5;
+                                const scale = 1 - (activateProgress * 0.05);
+                                labelOptionsMenu.style.background = 'linear-gradient(135deg, #0078d4, #106ebe)';
+                                labelOptionsMenu.style.color = '#ffffff';
+                                labelOptionsMenu.style.transform = `scale(${scale})`;
+                                labelOptionsMenu.style.boxShadow = `0 0 ${4 + activateProgress * 4}px rgba(0, 120, 212, ${0.3 + activateProgress * 0.3})`;
+                                const icon = labelOptionsMenu.querySelector('.menu-icon');
+                                if (icon) icon.style.color = '#ffffff';
+                            } else if (clickPhase <= 4) {
+                                const releaseProgress = (clickPhase - 2.5) / 1.5;
+                                const scale = 0.95 + (releaseProgress * 0.05);
+                                labelOptionsMenu.style.transform = `scale(${scale})`;
+                                if (releaseProgress > 0.8) {
+                                    labelOptionsMenu.style.background = '#404040';
+                                    labelOptionsMenu.style.color = '#F0F0F0';
+                                    labelOptionsMenu.style.boxShadow = 'none';
+                                    const icon = labelOptionsMenu.querySelector('.menu-icon');
+                                    if (icon) icon.style.color = '#F0F0F0';
+                                }
+                            } else {
+                                labelOptionsMenu.style.background = '#404040';
+                                labelOptionsMenu.style.color = '#F0F0F0';
+                                labelOptionsMenu.style.transform = 'scale(1)';
+                                labelOptionsMenu.style.boxShadow = 'none';
+                                const icon = labelOptionsMenu.querySelector('.menu-icon');
+                                if (icon) icon.style.color = '#F0F0F0';
+                            }
+                        }
+                    }
+                } else if (animationPhase <= 100) {
+                    const progress = (animationPhase - 93) / 7;
+                    if (submenu) {
+                        submenu.style.visibility = 'visible';
+                        submenu.style.opacity = progress;
+                        submenu.style.transform = `translateX(${-5 + progress * 5}px)`;
+                    }
+                } else if (animationPhase <= 110) {
+                    if (submenu) {
+                        submenu.style.visibility = 'visible';
+                        submenu.style.opacity = '1';
+                        submenu.style.transform = 'translateX(0)';
+                    }
+                } else if (animationPhase <= 125) {
+                    const progress = (animationPhase - 110) / 15;
+                    const startX = 380, startY = 120;
+                    const endX = 550, endY = 128;
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                } else if (animationPhase <= 135) {
+                    const clickPhase = animationPhase - 125;
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (546 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (124 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (543 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (121 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+                    if (clickPhase >= 1) {
+                        const adjustPositionItem = document.querySelector('#adjust-position-item');
+                        if (adjustPositionItem) {
+                            if (clickPhase >= 1 && clickPhase <= 2.5) {
+                                const activateProgress = (clickPhase - 1) / 1.5;
+                                const scale = 1 - (activateProgress * 0.05);
+                                adjustPositionItem.style.background = 'linear-gradient(135deg, #0078d4, #106ebe)';
+                                adjustPositionItem.style.color = '#ffffff';
+                                adjustPositionItem.style.transform = `scale(${scale})`;
+                                adjustPositionItem.style.boxShadow = `0 0 ${4 + activateProgress * 4}px rgba(0, 120, 212, ${0.3 + activateProgress * 0.3})`;
+                                const icon = adjustPositionItem.querySelector('.menu-icon');
+                                if (icon) icon.style.color = '#ffffff';
+                            } else if (clickPhase <= 4) {
+                                const releaseProgress = (clickPhase - 2.5) / 1.5;
+                                const scale = 0.95 + (releaseProgress * 0.05);
+                                adjustPositionItem.style.transform = `scale(${scale})`;
+                                if (releaseProgress > 0.8) {
+                                    adjustPositionItem.style.background = '#404040';
+                                    adjustPositionItem.style.color = '#F0F0F0';
+                                    adjustPositionItem.style.boxShadow = 'none';
+                                    const icon = adjustPositionItem.querySelector('.menu-icon');
+                                    if (icon) icon.style.color = '#F0F0F0';
+                                }
+                            } else {
+                                adjustPositionItem.style.background = '#404040';
+                                adjustPositionItem.style.color = '#F0F0F0';
+                                adjustPositionItem.style.transform = 'scale(1)';
+                                adjustPositionItem.style.boxShadow = 'none';
+                                const icon = adjustPositionItem.querySelector('.menu-icon');
+                                if (icon) icon.style.color = '#F0F0F0';
+                            }
+                        }
+                    }
+                } else if (animationPhase <= 145) {
+                    const progress = (animationPhase - 135) / 10;
+                    contextMenu.style.opacity = 1 - progress;
+                    contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
+                    if (submenu) {
+                        submenu.style.opacity = 1 - progress;
+                        submenu.style.transform = `translateX(${-progress * 5}px)`;
+                    }
+                } else if (animationPhase <= 160) {
+                    const progress = (animationPhase - 145) / 15;
+                    contextMenu.style.visibility = 'hidden';
+                    if (submenu) {
+                        submenu.style.visibility = 'hidden';
+                    }
+                    if (positionDialog) {
+                        positionDialog.style.visibility = 'visible';
+                        positionDialog.style.opacity = progress;
+                        positionDialog.style.transform = `translate(-50%, -50%) scale(${0.8 + progress * 0.2})`;
+                    }
+                } else if (animationPhase <= 180) {
+                    if (positionDialog) {
+                        positionDialog.style.visibility = 'visible';
+                        positionDialog.style.opacity = '1';
+                        positionDialog.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
+                } else if (animationPhase <= 195) {
+                    // Phase de fermeture de la fenêtre de dialogue pour compléter le cycle
+                    const closeProgress = (animationPhase - 180) / 15;
+                    if (positionDialog) {
+                        positionDialog.style.opacity = 1 - closeProgress;
+                        positionDialog.style.transform = `translate(-50%, -50%) scale(${1 - closeProgress * 0.2})`;
+                    }
+                } else if (animationPhase <= 210) {
+                    // Pause avant de redémarrer le cycle
+                    if (positionDialog) {
+                        positionDialog.style.visibility = 'hidden';
+                        positionDialog.style.opacity = '0';
+                        positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    }
+                } else {
+                    if (demoRunning && currentStep === 0) {
+                        if (!animationCompletedOnce) {
+                            animationCompletedOnce = true;
+                            enableValidationButton();
+                        }
+                        animationPhase = 0;
+                        resetAnimationElements(true);
+                    } else {
+                        clearInterval(animationTimer);
+                        resetAnimationElements();
+                        mouseCursor.style.visibility = 'hidden';
+                    }
+                }
+            }, 50);
+        }
+
+        function setupSubmenuEvents() {
+            submenuItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    const submenu = this.querySelector('.submenu');
+                    if (submenu) {
+                        submenu.style.visibility = 'visible';
+                        submenu.style.opacity = '1';
+                        submenu.style.transform = 'translateX(0)';
+                    }
+                });
+                item.addEventListener('mouseleave', function() {
+                    const submenu = this.querySelector('.submenu');
+                    if (submenu) {
+                        submenu.style.visibility = 'hidden';
+                        submenu.style.opacity = '0';
+                        submenu.style.transform = 'translateX(-5px)';
+                    }
+                });
+            });
+        }
+
+        function setupEventListeners() {
+            document.getElementById('startDemo').addEventListener('click', startDemo);
+            document.getElementById('stopDemo').addEventListener('click', stopDemo);
+            document.getElementById('closeDemo').addEventListener('click', closeDemo);
+            const prevBtn = document.getElementById('prevStepBtn');
+            if (prevBtn) prevBtn.addEventListener('click', goToPreviousStep);
+        }
+
+        function startDemo() {
+            if (demoRunning) return;
+            demoRunning = true;
+            currentStep = 0;
+            document.getElementById('startDemo').disabled = true;
+            document.getElementById('stopDemo').disabled = false;
+            document.getElementById('prevStepBtn').disabled = true;
+            setTimeout(() => {
+                showStructuredMessage("🎯 Démonstration démarrée", [
+                    {
+                        type: 'info',
+                        icon: '📖',
+                        title: 'Bienvenue',
+                        content: "Cette démonstration vous montre comment accéder aux options de l'étiquette et ajuster sa position."
+                    },
+                    {
+                        type: 'action',
+                        icon: '🎯',
+                        title: 'Prêt à commencer',
+                        content: 'Cliquez sur "Valider" pour démarrer l\'animation et voir le processus complet.'
+                    }
+                ], 'continueFromStartMessage()');
+            }, 300);
+        }
+
+        function stopDemo() {
+            demoRunning = false;
+            completeDemo();
+        }
+
+        function resetDemo() {
+            demoRunning = false;
+            currentStep = 0;
+            animationCompletedOnce = false;
+            document.getElementById('startDemo').disabled = false;
+            document.getElementById('stopDemo').disabled = true;
+            document.getElementById('prevStepBtn').disabled = true;
+            updateProgress(0);
+            updateInstruction("Cette démonstration vous apprend à accéder aux options de l'étiquette et à utiliser la fonction d'ajustement de position pour modifier précisément l'emplacement de l'étiquette.");
+            closeAllMessages();
+        }
+
+        function closeDemo() {
+            window.close();
+        }
+
+        function continueFromStartMessage() {
+            closeAllMessages();
+            updateProgress(25);
+            updateInstruction("Étape 1 : Observez l'animation complète qui montre le processus d'accès aux options de personnalisation.");
+            animationCompletedOnce = false;
+            showStructuredMessage("🖱️ Étape 1 : Animation du processus complet", [
+                {
+                    type: 'info',
+                    icon: '📖',
+                    title: 'Observation',
+                    content: 'Cette animation montre le processus complet : clic droit sur l\'étiquette → menu contextuel → "Options de l\'étiquette" → "Ajuster position" → fenêtre de dialogue.'
+                },
+                {
+                    type: 'tip',
+                    icon: '💡',
+                    title: 'Animation en boucle',
+                    content: 'L\'animation se répète en boucle pour que vous puissiez bien observer chaque étape. Le bouton de validation s\'activera automatiquement après un cycle complet.'
+                }
+            ], 'validateStep1()', true);
+            setTimeout(startAnimation, 1000);
+        }
+
+        function validateStep1() {
+            // Arrêter l'animation en boucle
+            clearInterval(animationTimer);
+            
+            // Réinitialiser les éléments SAUF la fenêtre de dialogue
+            mouseCursor.style.left = '300px';
+            mouseCursor.style.top = '200px';
+            mouseCursor.style.visibility = 'hidden';
+            contextMenu.style.visibility = 'hidden';
+            contextMenu.style.opacity = '0';
+            contextMenu.style.transform = 'scale(0.8)';
+            clickAnimation.style.visibility = 'hidden';
+            clickAnimation.style.opacity = '0';
+            mouseZeroClick.style.visibility = 'visible';
+            mouseLeftClick.style.visibility = 'hidden';
+            mouseRightClick.style.visibility = 'hidden';
+            if (labelBorder) {
+                labelBorder.style.transform = 'translateX(-50%)';
+                labelBorder.style.background = '#2D2D30';
+                labelBorder.style.border = '2px solid white';
+            }
+            if (submenu) {
+                submenu.style.visibility = 'hidden';
+                submenu.style.opacity = '0';
+                submenu.style.transform = 'translateX(-5px)';
+            }
+
+            updateProgress(33);
+            currentStep = 1;
+            document.getElementById('prevStepBtn').disabled = false;
+            closeAllMessages();
+            
+            // S'assurer que la fenêtre de dialogue est visible et centrée pour l'étape 2
+            if (positionDialog) {
+                positionDialog.style.visibility = 'visible';
+                positionDialog.style.opacity = '1';
+                positionDialog.style.transform = 'translate(-50%, -50%) scale(1)';
+                positionDialog.style.zIndex = '1001';
+            }
+
+            updateInstruction("Étape 2 : Entrez les valeurs dans les champs Décalage horizontal et Décalage vertical puis cliquez sur OK.");
+
+            startStep2();
+        }
+
+        function startStep2() {
+            // Réinitialiser les variables d'interaction
+            userXValue = null;
+            userYValue = null;
+            currentInputField = 'x';
+            okButtonClicked = false;
+
+            showStructuredMessage("✏️ Étape 2 : Saisie des valeurs", [
+                {
+                    type: 'action',
+                    icon: '🎯',
+                    title: 'Action requise',
+                    content: 'Entrez une valeur dans le champ "Décalage horizontal" en surbrillance.'
+                },
+                {
+                    type: 'tip',
+                    icon: '💡',
+                    title: 'Instructions',
+                    content: 'Après avoir saisi la décalage horizontal, le champ "Décalage vertical" clignotera pour indiquer qu\'il est prêt. Cliquez sur ce champ pour y saisir une valeur, puis cliquez sur "OK".'
+                },
+                {
+                    type: 'info',
+                    icon: 'ℹ️',
+                    title: 'Informations importantes',
+                    content: 'Les valeurs sont en pixels. Exemples : Décalage horizontal -50 = déplace 50px vers la gauche, +50 = vers la droite. Décalage vertical -30 = déplace 30px vers le haut, +30 = vers le bas.'
+                }
+            ], null, false);
+
+            // Mettre en surbrillance le premier champ et configurer les événements
+            setupInputInteraction();
+        }
+
+        function setupInputInteraction() {
+            const xInput = document.getElementById('dialogXInput');
+            const yInput = document.getElementById('dialogYInput');
+            const okButton = document.getElementById('dialogOkButton');
+
+            if (xInput && yInput && okButton) {
+                // Supprimer les anciens événements s'ils existent
+                const newXInput = xInput.cloneNode(true);
+                const newYInput = yInput.cloneNode(true);
+                const newOkButton = okButton.cloneNode(true);
+                
+                xInput.parentNode.replaceChild(newXInput, xInput);
+                yInput.parentNode.replaceChild(newYInput, yInput);
+                okButton.parentNode.replaceChild(newOkButton, okButton);
+                
+                // Réinitialiser les champs
+                newXInput.value = '0';
+                newYInput.value = '0';
+                
+                // Mettre en surbrillance le champ Décalage horizontal
+                highlightInputField(newXInput);
+
+                // Événements pour les champs
+                newXInput.addEventListener('input', function() {
+                    if (this.value && !isNaN(parseFloat(this.value))) {
+                        userXValue = parseFloat(this.value);
+                        
+                        // Faire clignoter le champ Décalage vertical pour indiquer qu'il est le suivant
+                        // SANS changer le focus automatiquement
+                        if (currentInputField === 'x') {
+                            // Enlever la surbrillance du champ Décalage horizontal
+                            unhighlightInputField(this);
+                            currentInputField = 'y';
+                            blinkInputField(newYInput);
+                            updateInputMessage();
+                        }
+                    }
+                });
+
+                // Focus manuel sur le champ Y
+                newYInput.addEventListener('focus', function() {
+                    if (userXValue !== null && currentInputField === 'y') {
+                        // Arrêter le clignotement et mettre en surbrillance normale
+                        stopBlinkInputField(this);
+                        highlightInputField(this);
+                    }
+                });
+
+                newYInput.addEventListener('input', function() {
+                    if (this.value && !isNaN(parseFloat(this.value))) {
+                        userYValue = parseFloat(this.value);
+                        unhighlightInputField(this);
+                        currentInputField = 'ok';
+                        
+                        // Mettre en surbrillance le bouton OK
+                        highlightButton(newOkButton);
+                        
+                        updateInputMessage();
+                    }
+                });
+
+                // Événement pour le bouton OK
+                newOkButton.addEventListener('click', function() {
+                    if (userXValue !== null && userYValue !== null) {
+                        // Enlever la surbrillance du bouton
+                        unhighlightButton(this);
+                        okButtonClicked = true;
+                        validateStep2();
+                    }
+                });
+            }
+        }
+
+        function highlightInputField(field) {
+            field.style.border = '3px solid #ff6b35';
+            field.style.boxShadow = '0 0 10px rgba(255, 107, 53, 0.5)';
+            field.focus();
+        }
+
+        function unhighlightInputField(field) {
+            field.style.border = '1px solid #c0c0c0';
+            field.style.boxShadow = 'none';
+        }
+
+        function blinkInputField(field) {
+            // Arrêter toute animation précédente
+            stopBlinkInputField(field);
+            
+            // Ajouter la classe de clignotement
+            field.style.animation = 'fieldBlink 1s ease-in-out infinite';
+            field.style.border = '3px solid #28a745';
+            field.blinkInterval = setInterval(() => {
+                if (field.style.borderColor === 'rgb(40, 167, 69)') {
+                    field.style.borderColor = '#ffc107';
+                    field.style.boxShadow = '0 0 10px rgba(255, 193, 7, 0.7)';
+                } else {
+                    field.style.borderColor = '#28a745';
+                    field.style.boxShadow = '0 0 10px rgba(40, 167, 69, 0.7)';
+                }
+            }, 500);
+        }
+
+        function stopBlinkInputField(field) {
+            if (field.blinkInterval) {
+                clearInterval(field.blinkInterval);
+                field.blinkInterval = null;
+            }
+            field.style.animation = '';
+            field.style.borderColor = '';
+            field.style.boxShadow = '';
+        }
+
+        function highlightButton(button) {
+            button.style.border = '3px solid #ff6b35';
+            button.style.boxShadow = '0 0 15px rgba(255, 107, 53, 0.8)';
+            button.style.background = 'linear-gradient(135deg, #ff6b35, #f7931e)';
+            button.style.color = '#ffffff';
+            button.style.transform = 'scale(1.05)';
+            
+            // Animation de pulsation avec clignotement
+            button.style.animation = 'buttonPulse 2s ease-in-out infinite';
+            
+            // Effet de clignotement supplémentaire
+            let blinkCount = 0;
+            button.blinkInterval = setInterval(() => {
+                if (blinkCount % 2 === 0) {
+                    button.style.background = 'linear-gradient(135deg, #ffc107, #ffca2c)';
+                    button.style.borderColor = '#ffc107';
+                    button.style.boxShadow = '0 0 20px rgba(255, 193, 7, 0.9)';
+                } else {
+                    button.style.background = 'linear-gradient(135deg, #ff6b35, #f7931e)';
+                    button.style.borderColor = '#ff6b35';
+                    button.style.boxShadow = '0 0 15px rgba(255, 107, 53, 0.8)';
+                }
+                blinkCount++;
+            }, 600); // Clignotement toutes les 600ms
+        }
+
+        function unhighlightButton(button) {
+            // Arrêter le clignotement s'il existe
+            if (button.blinkInterval) {
+                clearInterval(button.blinkInterval);
+                button.blinkInterval = null;
+            }
+            
+            button.style.border = '1px solid #c0c0c0';
+            button.style.boxShadow = 'none';
+            button.style.background = '#f0f0f0';
+            button.style.color = '#000000';
+            button.style.transform = 'scale(1)';
+            button.style.animation = '';
+            button.style.borderColor = '';
+        }
+
+        function updateInputMessage() {
+            closeAllMessages();
+            
+            if (currentInputField === 'y') {
+                showStructuredMessage("✏️ Étape 2 : Saisie des valeurs", [
+                {
+                    type: 'action',
+                    icon: '🎯',
+                        title: 'Action requise',
+                        content: 'Le champ "Décalage vertical" clignote pour indiquer qu\'il est prêt. Cliquez dessus pour y saisir une valeur.'
+                    },
+                    {
+                        type: 'info',
+                        icon: 'ℹ️',
+                        title: 'Rappel',
+                        content: 'Valeurs en pixels. Négatif : vers la gauche (décalage horizontal) ou vers le haut (décalage vertical). Positif : vers la droite (décalage horizontal) ou vers le bas (décalage vertical).'
+                    }
+                ], null, false);
+            } else if (currentInputField === 'ok') {
+                showStructuredMessage("✏️ Étape 2 : Saisie des valeurs", [
+                    {
+                        type: 'action',
+                        icon: '🎯',
+                        title: 'Dernière action',
+                        content: 'Parfait ! Cliquez maintenant sur le bouton "OK" pour valider les valeurs.'
+                    }
+                ], null, false);
+            }
+        }
+
+        function validateStep2() {
+            updateProgress(66);
+            currentStep = 2;
+            closeAllMessages();
+
+            // Fermer la fenêtre de dialogue
+            if (positionDialog) {
+                positionDialog.style.opacity = '0';
+                positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                setTimeout(() => {
+                    positionDialog.style.visibility = 'hidden';
+                }, 300);
+            }
+
+            updateInstruction("Étape 3 : Cliquez sur 'Valider cette étape' pour appliquer les changements et voir le résultat.");
+
+            // Afficher le message de validation avec bouton
+            showStructuredMessage("✅ Étape 3 : Validation finale", [
+                {
+                    type: 'info',
+                    icon: '📝',
+                    title: 'Valeurs enregistrées',
+                    content: `Les valeurs ont été saisies : Décalage horizontal ${userXValue}px, Décalage vertical ${userYValue}px.`
+                },
+                {
+                    type: 'action',
+                    icon: '🎯',
+                    title: 'Action requise',
+                    content: 'Cliquez sur "Valider cette étape" pour appliquer les changements et voir la position de l\'étiquette mise à jour.'
+                }
+            ], 'validateStep3()', false);
+        }
+
+        function validateStep3() {
+            updateProgress(100);
+            currentStep = 3;
+            closeAllMessages();
+            
+            updateInstruction("Démonstration terminée ! La position de l'étiquette a été mise à jour.");
+            
+            // Mettre à jour la position de l'étiquette selon les valeurs saisies
+            updateLabelPosition();
+
+            // Message final
+            setTimeout(() => {
+            showStructuredMessage("🎉 Démonstration terminée !", [
+                {
+                    type: 'info',
+                    icon: '✅',
+                    title: 'Félicitations !',
+                        content: 'Vous avez appris à ajuster la position d\'une étiquette de bulle.'
+                },
+                {
+                    type: 'tip',
+                    icon: '💡',
+                        title: 'Résultat',
+                        content: `L'étiquette a été déplacée avec un décalage horizontal de ${userXValue}px et un décalage vertical de ${userYValue}px.`
+                    }
+                ], 'completeDemo()', false);
+            }, 1000);
+        }
+
+        function updateLabelPosition() {
+            const labelBorder = document.querySelector('.label-border');
+            if (labelBorder && userXValue !== null && userYValue !== null) {
+                // Position de base de l'étiquette
+                const baseLeft = 300;
+                const baseTop = 115;
+                
+                // Appliquer les décalages
+                const newLeft = baseLeft + userXValue;
+                const newTop = baseTop + userYValue;
+                
+                labelBorder.style.left = newLeft + 'px';
+                labelBorder.style.top = newTop + 'px';
+                labelBorder.style.transform = 'translateX(-50%)'; // Garder le centrage horizontal
+                
+                // Animation de déplacement d'abord
+                labelBorder.style.transition = 'all 0.8s ease-in-out';
+                
+                // Attendre que le déplacement soit terminé avant d'appliquer la surbrillance
+                setTimeout(() => {
+                    // Supprimer la transition pour éviter les conflits
+                    labelBorder.style.transition = 'none';
+                    
+                    // Surbrillance simple et visible
+                    labelBorder.style.border = '4px solid #ff6b35';
+                    labelBorder.style.boxShadow = '0 0 25px rgba(255, 107, 53, 0.9)';
+                    labelBorder.style.background = 'rgba(255, 107, 53, 0.2)';
+                    
+                    // Effet de clignotement simple
+                    let blinkCount = 0;
+                    const blinkInterval = setInterval(() => {
+                        if (blinkCount % 2 === 0) {
+                            labelBorder.style.border = '4px solid #ffc107';
+                            labelBorder.style.boxShadow = '0 0 25px rgba(255, 193, 7, 0.9)';
+                        } else {
+                            labelBorder.style.border = '4px solid #ff6b35';
+                            labelBorder.style.boxShadow = '0 0 25px rgba(255, 107, 53, 0.9)';
+                        }
+                        blinkCount++;
+                        
+                        if (blinkCount >= 8) { // 4 clignotements complets
+                            clearInterval(blinkInterval);
+                            // Retour à l'état normal
+                            setTimeout(() => {
+                                labelBorder.style.border = '2px solid white';
+                                labelBorder.style.boxShadow = 'none';
+                                labelBorder.style.background = '#2D2D30';
+                                labelBorder.style.transition = '';
+                            }, 500);
+                        }
+                    }, 400);
+                }, 1000); // Attendre 1 seconde après le déplacement
+            }
+        }
+
+        function goToPreviousStep() {
+            if (!demoRunning || currentStep <= 0) return;
+            closeAllMessages();
+            currentStep--;
+            if (currentStep === 0) {
+                    updateProgress(25);
+                    document.getElementById('prevStepBtn').disabled = true;
+                    continueFromStartMessage();
+            }
+        }
+
+        function completeDemo() {
+            demoRunning = false;
+            
+            // Réinitialiser le titre de la bulle
+            const bubbleTitle = document.querySelector('.label-text');
+            if (bubbleTitle) {
+                bubbleTitle.textContent = 'Ajuster la position de l\'étiquette';
+            }
+            
+            // Réinitialiser la position de l'étiquette
+            const labelBorder = document.querySelector('.label-border');
+            if (labelBorder) {
+                labelBorder.style.left = '300px';
+                labelBorder.style.top = '115px';
+                labelBorder.style.transform = 'translateX(-50%)';
+                labelBorder.style.transition = '';
+                labelBorder.style.border = '2px solid white';
+            }
+            
+            // Réinitialiser les variables interactives
+            userXValue = null;
+            userYValue = null;
+            currentInputField = 'x';
+            okButtonClicked = false;
+            
+            // Fermer tous les messages et réinitialiser
+            closeAllMessages();
+            resetDemo();
+        }
+
+        function updateInstruction(text) {
+            document.getElementById('demoInstruction').textContent = text;
+        }
+
+        function updateProgress(percentage) {
+            const bar = document.getElementById('progressBar');
+            bar.style.width = percentage + '%';
+            if (percentage >= 100) {
+                bar.style.background = 'linear-gradient(90deg, #28a745, #20c997)';
+            } else {
+                bar.style.background = 'linear-gradient(90deg, #0078d4, #106ebe)';
+            }
+        }
+
+        function showStructuredMessage(title, sections, validationCallback = null, disableButton = false) {
+            closeAllMessages();
+            const message = document.createElement('div');
+            message.className = 'demo-message';
+            let sectionsHTML = '';
+            sections.forEach(section => {
+                const sectionClass = section.type === 'action' ? 'action-required' : 
+                                   section.type === 'tip' ? 'tip-section' : '';
+                sectionsHTML += `
+                    <div class="message-section ${sectionClass}">
+                        <div class="section-title">${section.icon} ${section.title}</div>
+                        <div class="section-content">${section.content}</div>
+                    </div>
+                `;
+            });
+            let validationButtonHTML = '';
+            if (validationCallback) {
+                const disabledAttr = disableButton ? 'disabled' : '';
+                const disabledClass = disableButton ? 'disabled' : '';
+                validationButtonHTML = `
+                    <button class="validation-button ${disabledClass}" onclick="${validationCallback}" ${disabledAttr} id="validationButton">
+                        ✓ Valider cette étape
+                    </button>
+                `;
+            }
+            message.innerHTML = `
+                <button class="close-btn" onclick="closeMessage(this)">×</button>
+                <div class="message-title">${title}</div>
+                ${sectionsHTML}
+                ${validationButtonHTML}
+            `;
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.appendChild(message);
+            setTimeout(() => {
+                message.classList.add('show');
+            }, 100);
+        }
+
+        function enableValidationButton() {
+            const validationButton = document.getElementById('validationButton');
+            if (validationButton) {
+                validationButton.disabled = false;
+                validationButton.classList.remove('disabled');
+                validationButton.style.animation = 'actionPulse 3s ease-in-out 3';
+                setTimeout(() => {
+                    validationButton.style.animation = '';
+                }, 9000);
+            }
+        }
+
+        function closeMessage(closeBtn) {
+            const message = closeBtn.closest('.demo-message');
+            if (message) {
+                message.classList.remove('show');
+                setTimeout(() => {
+                    if (message.parentNode) {
+                        message.parentNode.removeChild(message);
+                    }
+                }, 500);
+            }
+        }
+
+        function closeAllMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML = '';
+        }
+
+        function resetAnimationElements(keepCursorVisible = false) {
+            mouseCursor.style.left = '300px';
+            mouseCursor.style.top = '200px';
+                    if (!keepCursorVisible) {
+                mouseCursor.style.visibility = 'hidden';
+                    }
+                    contextMenu.style.visibility = 'hidden';
+                    contextMenu.style.opacity = '0';
+                    contextMenu.style.transform = 'scale(0.8)';
+                    clickAnimation.style.visibility = 'hidden';
+                    clickAnimation.style.opacity = '0';
+                    resizeHandle.style.transform = 'scale(1)';
+                    resizeHandle.style.background = '#ffffff';
+                    resizeHandle.style.border = '1px solid #000';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+            if (labelBorder) {
+                labelBorder.style.transform = 'translateX(-50%)';
+                labelBorder.style.background = '#2D2D30';
+                labelBorder.style.border = '2px solid white';
+            }
+            mouseRightClick.style.visibility = 'hidden';
+            if (labelOptionsMenu) {
+                labelOptionsMenu.style.background = 'transparent';
+                labelOptionsMenu.style.color = '#F0F0F0';
+                labelOptionsMenu.style.transform = 'scale(1)';
+                labelOptionsMenu.style.boxShadow = 'none';
+                const menuIcon2 = labelOptionsMenu.querySelector('.menu-icon');
+                if (menuIcon2) menuIcon2.style.color = '#F0F0F0';
+            }
+            const adjustPositionItem = document.querySelector('#adjust-position-item');
+            if (adjustPositionItem) {
+                adjustPositionItem.style.background = 'transparent';
+                adjustPositionItem.style.color = '#F0F0F0';
+                adjustPositionItem.style.transform = 'scale(1)';
+                adjustPositionItem.style.boxShadow = 'none';
+                const submenuIcon = adjustPositionItem.querySelector('.menu-icon');
+                if (submenuIcon) submenuIcon.style.color = '#F0F0F0';
+            }
+            if (submenu) {
+                submenu.style.visibility = 'hidden';
+                submenu.style.opacity = '0';
+                submenu.style.transform = 'translateX(-5px)';
+            }
+            if (positionDialog) {
+                positionDialog.style.visibility = 'hidden';
+                positionDialog.style.opacity = '0';
+                positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
+            }
+        }
+
+
+        // Exposer les fonctions dans le scope global pour les boutons onclick
+        window.validateStep1 = validateStep1;
+        window.validateStep2 = validateStep2;
+        window.validateStep3 = validateStep3;
+        window.completeDemo = completeDemo;
+        window.continueFromStartMessage = continueFromStartMessage;
+        window.closeMessage = closeMessage;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            setupSubmenuEvents();
+        });
+    </script>
+</body>
+</html>

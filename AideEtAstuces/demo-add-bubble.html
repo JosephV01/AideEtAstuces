@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Ajouter une Bulle - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .demo-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-description {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Styles spécifiques à cette démonstration */
+
+        .back-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Démonstration - Ajouter une Bulle</h1>
+        <p class="demo-description">
+            Cette démonstration montre comment créer une nouvelle bulle en cliquant sur le bouton + du widget de bureau.
+        </p>
+        
+        <div class="demo-canvas-container">
+            <div class="demo-canvas large">
+                <!-- Widget de bureau -->
+                <div class="desktop-widget bottom">
+                    <button class="widget-button add-button">+</button>
+                    <button class="widget-button">P</button>
+                </div>
+
+                <!-- Nouvelle bulle complète (apparaît après le clic) -->
+                <div class="new-bubble-container">
+                    <div class="new-bubble">
+                        <div class="new-bubble-resize-handle"></div>
+                    </div>
+                </div>
+
+                <!-- Étiquette de la nouvelle bulle -->
+                <div class="new-bubble-label">
+                    <div class="new-bubble-label-text">Nouvelle Bulle</div>
+                </div>
+                
+                <!-- Curseur de souris -->
+                <div class="mouse-cursor bottom"></div>
+
+                <!-- Souris avec boutons (état normal) -->
+                <div class="mouse-zero-click large"></div>
+
+                <!-- Souris avec bouton gauche coloré (pour les clics) -->
+                <div class="mouse-left-click large"></div>
+
+                <!-- Cercle d'animation de clic -->
+                <div class="click-animation"></div>
+            </div>
+        </div>
+
+        <button class="back-button" onclick="window.close()">Fermer</button>
+    </div>
+
+    <script>
+        // Variables pour l'animation
+        let animationPhase = 0;
+        let animationTimer;
+
+        // Éléments DOM
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const clickAnimation = document.querySelector('.click-animation');
+        const desktopWidget = document.querySelector('.desktop-widget');
+        const addButton = document.querySelector('.add-button');
+        const newBubbleContainer = document.querySelector('.new-bubble-container');
+        const newBubbleLabel = document.querySelector('.new-bubble-label');
+
+        function startAnimation() {
+            animationTimer = setInterval(() => {
+                animationPhase++;
+
+                // Phase 1: Curseur se déplace vers le bouton +
+                if (animationPhase <= 50) {
+                    const progress = animationPhase / 50;
+                    const startX = 143, startY = 112;
+                    const endX = 75, endY = 105; // Position du bouton +
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                }
+                // Phase 2: Animation de clic sur le bouton +
+                else if (animationPhase <= 58) {
+                    const clickPhase = animationPhase - 50;
+                    
+                    // Animation de clic très rapide
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (67 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (97 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (64 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (94 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+
+                    // Changement de souris pour le clic gauche (logique standardisée)
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    
+                    // Retour immédiat à la souris normale après le clic
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+
+                    // Bouton + devient hover
+                    if (clickPhase >= 3) {
+                        addButton.style.background = 'rgba(0,255,255,0.2)';
+                        addButton.style.color = 'cyan';
+                    }
+                }
+                // Phase 3: Création de la nouvelle bulle
+                else if (animationPhase <= 62) {
+                    const createPhase = animationPhase - 58;
+                    
+                    // La nouvelle bulle et son étiquette apparaissent immédiatement
+                    if (createPhase >= 2) {
+                        newBubbleContainer.style.opacity = '1';
+                        newBubbleLabel.style.opacity = '1';
+                    }
+                }
+                // Phase 4: Retour de la souris normale
+                else if (animationPhase <= 68) {
+                    const returnPhase = animationPhase - 62;
+                    
+                    // Retour de la souris normale
+                    if (returnPhase >= 1) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+                    
+                    // Bouton + redevient normal
+                    if (returnPhase >= 2) {
+                        addButton.style.background = 'transparent';
+                        addButton.style.color = 'white';
+                    }
+                }
+                // Phase 5: Attente 2 secondes (40 frames) puis disparition immédiate
+                else if (animationPhase <= 108) {
+                    // La bulle reste visible pendant 2 secondes (40 frames)
+                    newBubbleContainer.style.opacity = '1';
+                    newBubbleLabel.style.opacity = '1';
+                }
+                // Phase 6: Disparition immédiate (sans fondu)
+                else if (animationPhase <= 110) {
+                    // Disparition immédiate pour commencer une nouvelle boucle
+                    newBubbleContainer.style.opacity = '0';
+                    newBubbleLabel.style.opacity = '0';
+                }
+                // Reset
+                else {
+                    animationPhase = 0;
+                    mouseCursor.style.left = '143px';
+                    mouseCursor.style.top = '112px';
+                    clickAnimation.style.visibility = 'hidden';
+                    clickAnimation.style.opacity = '0';
+                    newBubbleContainer.style.opacity = '0';
+                    newBubbleLabel.style.opacity = '0';
+                    addButton.style.background = 'transparent';
+                    addButton.style.color = 'white';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                }
+            }, 50);
+        }
+
+        // Démarrer l'animation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(startAnimation, 1000);
+        });
+    </script>
+</body>
+</html>

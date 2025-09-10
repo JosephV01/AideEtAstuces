@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration Accès Bibliothèque - MyCustomDesk</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Styles pour la démonstration */
+        .demo-progress-window {
+            width: 800px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 2px solid #c0c0c0;
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: block;
+        }
+
+        .demo-progress-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .demo-progress-header {
+            text-align: center;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+
+        .demo-progress-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0078d4;
+            margin-bottom: 5px;
+        }
+
+        .demo-progress-subtitle {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .demo-progress-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .demo-progress-instruction {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #0078d4;
+        }
+
+        .demo-progress-bar-container {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .demo-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #0078d4, #106ebe);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .demo-progress-step {
+            font-size: 12px;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .demo-progress-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .demo-progress-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .demo-progress-button {
+            padding: 8px 16px;
+            border: 1px solid #0078d4;
+            border-radius: 4px;
+            background: #0078d4;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-progress-button:hover {
+            background: #106ebe;
+        }
+
+        .demo-progress-button.secondary {
+            background: white;
+            color: #0078d4;
+        }
+
+        .demo-progress-button.secondary:hover {
+            background: #f0f0f0;
+        }
+
+        .demo-progress-button:disabled {
+            background: #ccc;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .demo-close-button {
+            padding: 6px 12px;
+            border: 1px solid #dc3545;
+            border-radius: 4px;
+            background: #dc3545;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-close-button:hover {
+            background: #c82333;
+        }
+
+        .demo-highlight {
+            position: absolute;
+            border: 3px solid #ff6b35;
+            border-radius: 4px;
+            background: rgba(255, 107, 53, 0.1);
+            pointer-events: none;
+            z-index: 999;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+        .main-container {
+            width: 700px;
+            height: 680px;
+            min-width: 600px;
+            min-height: 500px;
+            margin: 20px auto;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-border {
+            border: 2px solid #808080;
+            border-radius: 25px;
+            padding: 8px;
+            background: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-grid {
+            flex: 1;
+            display: grid;
+            grid-template-rows: 140px 1fr auto;
+            gap: 0;
+            margin: 8px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Zone d'aperçu */
+        .preview-section {
+            background: #2D2D2D;
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #808080;
+            margin: 5px 20px 10px 20px;
+            width: 300px;
+            justify-self: center;
+        }
+
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            margin: 0;
+        }
+
+        .preview-area {
+            width: 200px;
+            height: 100px;
+            background: transparent;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 15px;
+        }
+
+        .preview-bubble {
+            width: 180px;
+            height: 70px;
+            border: 2px solid white;
+            border-radius: 6px;
+            background: #2D2D30;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 18px;
+            width: auto;
+            min-width: fit-content;
+            background: #2D2D30;
+            border: 1px solid white;
+            border-radius: 3px;
+            padding: 2px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-label-text {
+            font-size: 9px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+
+        /* Contenu principal */
+        .main-content {
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .customization-title {
+            font-weight: bold;
+            font-size: 16px;
+            color: #000000;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        /* GroupBox styles */
+        .groupbox {
+            border: 1px solid #000000;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .groupbox-header {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .groupbox-content {
+            padding: 3px;
+        }
+
+        /* Section Styles */
+        .styles-section {
+            margin-bottom: 8px;
+        }
+
+        .style-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .style-selector label {
+            width: 150px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .style-combobox {
+            width: 160px;
+            height: 22px;
+            padding: 0 6px;
+            border: 1px solid #000000;
+            background: #ffffff;
+            font-size: 12px;
+        }
+
+        .style-buttons {
+            display: flex;
+            gap: 5px;
+            margin-left: 5px;
+        }
+
+        .style-button {
+            height: 22px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 0 6px;
+            border-radius: 3px;
+        }
+
+        .style-button:hover {
+            background: #e0e0e0;
+        }
+
+        .apply-button {
+            width: 80px;
+        }
+
+        .delete-button {
+            width: 70px;
+        }
+
+        /* Section Styles par défaut */
+        .default-styles-section {
+            margin-bottom: 8px;
+        }
+
+        .apply-to-all-button {
+            min-width: 140px;
+            height: 20px;
+            margin-bottom: 5px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .apply-to-all-button:hover {
+            background: #e0e0e0;
+        }
+
+        .default-styles-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 1px;
+            margin-bottom: 3px;
+        }
+
+        .default-style-button {
+            width: 30px;
+            height: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .default-style-button:hover {
+            opacity: 0.8;
+        }
+
+        /* Panneaux de personnalisation */
+        .customization-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .bubble-panel, .label-panel {
+            border: 1px solid #000000;
+            border-radius: 4px;
+        }
+
+        .panel-header {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .panel-content {
+            padding: 5px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .control-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #333;
+        }
+
+        .control-label {
+            width: 110px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .control-button {
+            width: 25px;
+            height: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .control-slider {
+            width: 60px;
+            margin-left: 3px;
+        }
+
+        .image-buttons {
+            display: flex;
+            gap: 3px;
+            margin-top: 3px;
+        }
+
+        .image-button {
+            min-width: 60px;
+            height: 18px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .image-button:hover {
+            background: #e0e0e0;
+        }
+
+        .clear-button {
+            min-width: 50px;
+        }
+
+        .edit-title-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .edit-title-label {
+            width: 60px;
+            font-size: 12px;
+            margin-right: 8px;
+        }
+
+        .edit-title-button {
+            min-width: 50px;
+            height: 20px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .edit-title-button:hover {
+            background: #e0e0e0;
+        }
+
+        /* Barre d'action */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .action-button {
+            min-width: 120px;
+            height: 26px;
+            border: 1px solid #cccccc;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .action-button:hover {
+            background: #f0f0f0;
+        }
+
+        .create-style-button {
+            min-width: 140px;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Fenêtre de progression de démonstration -->
+    <div class="demo-progress-window" id="demoProgressWindow">
+        <div class="demo-progress-content">
+            <div class="demo-progress-header">
+                <div class="demo-progress-title">📚 Démonstration : Accès à la Bibliothèque d'images</div>
+                <div class="demo-progress-subtitle">Guide interactif pour accéder à la bibliothèque d'images depuis la personnalisation</div>
+            </div>
+            
+            <div class="demo-progress-body">
+                <div class="demo-progress-instruction" id="demoInstruction">
+                    Cette démonstration va vous montrer comment accéder à la bibliothèque d'images depuis la fenêtre de personnalisation.
+                </div>
+                
+                <div class="demo-progress-bar-container">
+                    <div class="demo-progress-bar" id="progressBar"></div>
+                </div>
+                
+                <div class="demo-progress-step" id="demoStep"></div>
+            </div>
+            
+            <div class="demo-progress-controls">
+                <div class="demo-progress-buttons">
+                    <button class="demo-progress-button" id="startDemo">Démarrer la démonstration</button>
+                    <button class="demo-progress-button secondary" id="stopDemo" disabled>Arrêter</button>
+                    <button class="demo-progress-button secondary" id="resetDemo">Recommencer</button>
+                </div>
+                <button class="demo-close-button" id="closeDemo">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="main-border">
+            <div class="content-grid">
+                <!-- Zone d'aperçu -->
+                <div class="preview-section">
+                    <div class="preview-container">
+                        <div class="preview-area">
+                            <div class="preview-bubble" id="previewBubble">
+                                <div class="preview-label" id="previewLabel">
+                                    <div class="preview-label-text" id="previewLabelText">Aperçu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+
+                <!-- Contenu principal -->
+                <div class="main-content">
+                    <div class="customization-title">Personnalisation</div>
+
+                    <!-- Section Styles -->
+                    <div class="groupbox styles-section">
+                        <div class="groupbox-header">Gérer les styles</div>
+                        <div class="groupbox-content">
+                            <div class="style-selector">
+                                <label>Sélectionner un style:</label>
+                                <select class="style-combobox" id="stylesComboBox">
+                                    <option>Sélectionner un style</option>
+                                    <option>Style Rouge</option>
+                                    <option>Style Bleu</option>
+                                    <option>Style Vert</option>
+                                </select>
+                            </div>
+                            <div class="style-buttons">
+                                <button class="style-button apply-button" onclick="loadStyle()">Appliquer</button>
+                                <button class="style-button delete-button" onclick="deleteStyle()">Supprimer</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section Styles par défaut -->
+                    <div class="groupbox default-styles-section">
+                        <div class="groupbox-header">Styles par défaut</div>
+                        <div class="groupbox-content">
+                            <button class="apply-to-all-button" onclick="applyToAllBorders()">Appliquer à toutes les bulles</button>
+                            <div class="default-styles-grid">
+                                <button class="default-style-button" style="background: #E74C3C;" onclick="selectDefaultStyle(1)" data-style="1"></button>
+                                <button class="default-style-button" style="background: #3498DB;" onclick="selectDefaultStyle(2)" data-style="2"></button>
+                                <button class="default-style-button" style="background: #2ECC71;" onclick="selectDefaultStyle(3)" data-style="3"></button>
+                                <button class="default-style-button" style="background: #F39C12;" onclick="selectDefaultStyle(4)" data-style="4"></button>
+                                <button class="default-style-button" style="background: #9B59B6;" onclick="selectDefaultStyle(5)" data-style="5"></button>
+                                <button class="default-style-button" style="background: #1ABC9C;" onclick="selectDefaultStyle(6)" data-style="6"></button>
+                                <button class="default-style-button" style="background: #E67E22;" onclick="selectDefaultStyle(7)" data-style="7"></button>
+                                <button class="default-style-button" style="background: #34495E;" onclick="selectDefaultStyle(8)" data-style="8"></button>
+                                <button class="default-style-button" style="background: #95A5A6;" onclick="selectDefaultStyle(9)" data-style="9"></button>
+                                <button class="default-style-button" style="background: #16A085;" onclick="selectDefaultStyle(10)" data-style="10"></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Panneaux de personnalisation -->
+                    <div class="customization-panels">
+                        <!-- Panneau Bulle -->
+                        <div class="groupbox bubble-panel">
+                            <div class="panel-header">Bulle</div>
+                            <div class="panel-content">
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="80 -800 800 640">
+                                            <path d="M160,-160q-33,0-56.5,-23.5T80,-240v-480q0-33,23.5,-56.5T160,-800h640q33,0,56.5,23.5T880,-720v480q0,33-23.5,56.5T800,-160H160Zm0,-80h640v-480H160v480Zm160,-120h320v-240H320v240ZM160,-240v-480 480Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Couleur de fond:</div>
+                                    <button class="control-button" id="rectBgColorButton" onclick="pickColor('rectBg')" style="background: #2D2D30;"></button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Couleur de bordure:</div>
+                                    <button class="control-button" id="borderColorButton" onclick="pickColor('border')" style="background: white;"></button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Épaisseur de bordure:</div>
+                                    <input type="range" class="control-slider" id="borderThicknessSlider" min="1" max="10" value="2" oninput="updatePreview()">
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="200 -760 560 640">
+                                            <path d="M200-120v-440h80v360h360v80H200Zm200-200v-440h80v360h360v80H400Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Rayon des coins:</div>
+                                    <input type="range" class="control-slider" id="borderCornerRadiusSlider" min="0" max="50" value="6" oninput="updatePreview()">
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="40 -920 880 800">
+                                            <path d="M440,-440 ZM120,-120 Q87,-120 63.5,-143.5 T40,-200 V-680 Q40,-713 63.5,-736.5 T120,-760 H246 L320,-840 H560 V-760 H355 L282,-680 H120 V-200 H760 V-560 H840 V-200 Q840,-167 816.5,-143.5 T760,-120 H120 ZM760,-680 V-760 H680 V-840 H760 V-920 H840 V-840 H920 V-760 H840 V-680 H760 ZM440,-260 Q515,-260 567.5,-312.5 T620,-440 Q620,-515 567.5,-567.5 T440,-620 Q365,-620 312.5,-567.5 T260,-440 Q260,-365 312.5,-312.5 T440,-260 ZM440,-340 Q398,-340 369,-369 T340,-441 Q441,-482 369,-511 T440,-540 Q482,-540 511,-511 T540,-440 Q540,-398 511,-369 T440,-340 Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Image de fond:</div>
+                                </div>
+                                <div class="image-buttons">
+                                    <button class="image-button" onclick="importImage()">Importer</button>
+                                    <button class="image-button" onclick="openImageLibrary()">Bibliothèque</button>
+                                    <button class="image-button clear-button" onclick="clearImage()">Effacer</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panneau Label -->
+                        <div class="groupbox label-panel">
+                            <div class="panel-header">Label</div>
+                            <div class="panel-content">
+                                <div class="edit-title-section">
+                                    <div class="edit-title-label">Titre:</div>
+                                    <button class="edit-title-button" onclick="editTitle()">Modifier</button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="80 -800 800 640">
+                                            <path d="M160,-160q-33,0-56.5,-23.5T80,-240v-480q0-33,23.5,-56.5T160,-800h640q33,0,56.5,23.5T880,-720v480q0,33-23.5,56.5T800,-160H160Zm0,-80h640v-480H160v480Zm160,-120h320v-240H320v240ZM160,-240v-480 480Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Couleur de fond:</div>
+                                    <button class="control-button" id="labelBgColorButton" onclick="pickColor('labelBg')" style="background: #2D2D30;"></button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Couleur de bordure:</div>
+                                    <button class="control-button" id="labelBorderColorButton" onclick="pickColor('labelBorder')" style="background: white;"></button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="80 -880 800 800">
+                                            <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Couleur du texte:</div>
+                                    <button class="control-button" id="titleColorButton" onclick="pickColor('title')" style="background: white;"></button>
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="0 0 24 24">
+                                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Épaisseur de bordure:</div>
+                                    <input type="range" class="control-slider" id="labelBorderThicknessSlider" min="1" max="10" value="1" oninput="updatePreview()">
+                                </div>
+                                <div class="control-row">
+                                    <div class="control-icon">
+                                        <svg viewBox="200 -760 560 640">
+                                            <path d="M200-120v-440h80v360h360v80H200Zm200-200v-440h80v360h360v80H400Z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="control-label">Rayon des coins:</div>
+                                    <input type="range" class="control-slider" id="labelCornerRadiusSlider" min="0" max="30" value="3" oninput="updatePreview()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Barre d'action -->
+                <div class="action-bar">
+                    <button class="action-button create-style-button" onclick="createStyle()">Créer un style</button>
+                    <button class="action-button" onclick="cancel()">Annuler</button>
+                    <button class="action-button" onclick="apply()">Appliquer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales pour la démonstration
+        let demoRunning = false;
+        let currentStep = 0;
+        let demoSteps = [
+            "Cliquez sur le bouton 'Bibliothèque'",
+            "Bravo ! Vous avez accédé à la bibliothèque d'images"
+        ];
+
+        // Configuration de démonstration
+        let config = {
+            borderColor: 'white',
+            rectBgColor: '#2D2D30',
+            labelBgColor: '#2D2D30',
+            titleColor: 'white',
+            labelBorderColor: 'white',
+            borderThickness: 2,
+            labelBorderThickness: 1,
+            borderCornerRadius: 6,
+            labelCornerRadius: 3,
+            text: 'Aperçu',
+            rectangleImagePath: null
+        };
+
+        let selectedDefaultStyle = 0;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDemo();
+            updatePreview();
+            setupEventListeners();
+        });
+
+        function initializeDemo() {
+            // Afficher la fenêtre de progression
+            document.getElementById('demoProgressWindow').style.display = 'block';
+            
+            // Mettre à jour l'instruction
+            document.getElementById('demoInstruction').textContent = 
+                "Cette démonstration va vous montrer comment accéder à la bibliothèque d'images depuis la fenêtre de personnalisation.";
+        }
+
+        function setupEventListeners() {
+            document.getElementById('startDemo').addEventListener('click', startDemo);
+            document.getElementById('stopDemo').addEventListener('click', stopDemo);
+            document.getElementById('resetDemo').addEventListener('click', resetDemo);
+            document.getElementById('closeDemo').addEventListener('click', closeDemo);
+        }
+
+        function startDemo() {
+            if (demoRunning) return;
+            
+            demoRunning = true;
+            currentStep = 0;
+            
+            // Réinitialiser la barre de progression à 0%
+            updateProgress(0);
+            
+            // Désactiver le bouton démarrer
+            document.getElementById('startDemo').disabled = true;
+            document.getElementById('stopDemo').disabled = false;
+            
+            // Commencer la démonstration interactive
+            startInteractiveDemo();
+        }
+
+        function stopDemo() {
+            demoRunning = false;
+            
+            // Réactiver le bouton démarrer
+            document.getElementById('startDemo').disabled = false;
+            document.getElementById('stopDemo').disabled = true;
+            
+            // Supprimer les écouteurs d'événements
+            removeInteractiveListeners();
+            
+            // Masquer les éléments de démonstration
+            hideHighlight();
+            
+            // Réinitialiser l'instruction
+            document.getElementById('demoInstruction').textContent = 
+                "Démonstration arrêtée. Cliquez sur 'Démarrer la démonstration' pour recommencer.";
+            document.getElementById('demoStep').textContent = '';
+            updateProgress(0);
+        }
+
+        function resetDemo() {
+            stopDemo();
+            
+            // Réinitialiser l'instruction
+            document.getElementById('demoInstruction').textContent = 
+                "Cette démonstration va vous montrer comment accéder à la bibliothèque d'images depuis la fenêtre de personnalisation.";
+        }
+
+        function closeDemo() {
+            // Fermer l'onglet
+            window.close();
+        }
+
+        function startInteractiveDemo() {
+            if (!demoRunning) return;
+            
+            currentStep = 0;
+            // S'assurer que la barre est à 0% au début
+            updateProgress(0);
+            showCurrentStep();
+            setupInteractiveListeners();
+        }
+
+        function showCurrentStep() {
+            const step = demoSteps[currentStep];
+            document.getElementById('demoStep').textContent = `Étape ${currentStep + 1}: ${step}`;
+            // Calculer le pourcentage basé sur l'étape actuelle
+            // Étape 0 = 0%, Étape 1 = 100%
+            let percentage = 0;
+            if (currentStep === 0) percentage = 0;
+            else if (currentStep >= 1) percentage = 100;
+            updateProgress(percentage);
+            
+            switch(currentStep) {
+                case 0:
+                    highlightLibraryButton();
+                    document.getElementById('demoInstruction').textContent = 
+                        "Cliquez sur le bouton 'Bibliothèque' dans la section 'Image de fond' du panneau Bulle.";
+                    break;
+                case 1:
+                    showLibraryAccessDialog();
+                    document.getElementById('demoInstruction').textContent = 
+                        "Bravo ! Vous savez maintenant comment accéder à la bibliothèque d'images.";
+                    break;
+            }
+        }
+
+        function setupInteractiveListeners() {
+            // Supprimer les anciens écouteurs
+            removeInteractiveListeners();
+            
+            if (currentStep === 0) {
+                // Écouter le clic sur le bouton Bibliothèque
+                const libraryButton = document.querySelector('button[onclick="openImageLibrary()"]');
+                if (libraryButton) {
+                    libraryButton.addEventListener('click', onLibraryButtonClick);
+                    libraryButton.style.cursor = 'pointer';
+                }
+            }
+        }
+
+        function removeInteractiveListeners() {
+            // Supprimer les écouteurs du bouton Bibliothèque
+            const libraryButton = document.querySelector('button[onclick="openImageLibrary()"]');
+            if (libraryButton) {
+                libraryButton.removeEventListener('click', onLibraryButtonClick);
+                libraryButton.style.cursor = 'default';
+            }
+        }
+
+        function onLibraryButtonClick() {
+            if (currentStep === 0 && demoRunning) {
+                hideHighlight();
+                currentStep = 1;
+                showCurrentStep();
+            }
+        }
+
+        function highlightLibraryButton() {
+            // Attendre que le texte des instructions soit mis à jour
+            setTimeout(() => {
+                const libraryButton = document.querySelector('button[onclick="openImageLibrary()"]');
+                if (libraryButton) {
+                    const rect = libraryButton.getBoundingClientRect();
+                    
+                    const highlight = document.createElement('div');
+                    highlight.className = 'demo-highlight';
+                    highlight.id = 'libraryButtonHighlight';
+                    highlight.style.position = 'fixed';
+                    highlight.style.left = (rect.left - 3) + 'px';
+                    highlight.style.top = (rect.top - 3) + 'px';
+                    highlight.style.width = (rect.width + 6) + 'px';
+                    highlight.style.height = (rect.height + 6) + 'px';
+                    highlight.style.zIndex = '999';
+                    highlight.style.pointerEvents = 'none';
+                    
+                    document.body.appendChild(highlight);
+                    
+                    // Simuler un clic visuel
+                    libraryButton.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        libraryButton.style.transform = 'scale(1)';
+                    }, 150);
+                }
+            }, 100); // Délai pour permettre la mise à jour du texte
+        }
+
+        function hideHighlight() {
+            const libraryButtonHighlight = document.getElementById('libraryButtonHighlight');
+            if (libraryButtonHighlight) {
+                libraryButtonHighlight.remove();
+            }
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressBar').style.width = percentage + '%';
+        }
+
+        function showLibraryAccessDialog() {
+            // Afficher une explication claire de l'accès à la bibliothèque
+            const dialog = document.createElement('div');
+            dialog.id = 'libraryAccessDialog';
+            dialog.style.position = 'fixed';
+            dialog.style.top = '50%';
+            dialog.style.left = '50%';
+            dialog.style.transform = 'translate(-50%, -50%)';
+            dialog.style.background = 'white';
+            dialog.style.border = '2px solid #0078d4';
+            dialog.style.borderRadius = '10px';
+            dialog.style.padding = '20px';
+            dialog.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            dialog.style.zIndex = '1001';
+            dialog.style.minWidth = '400px';
+            dialog.style.textAlign = 'left';
+            
+            dialog.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 15px; color: #0078d4; text-align: center;">📚 Accès à la Bibliothèque d'images</div>
+                <div style="margin-bottom: 15px; line-height: 1.5;">
+                    <strong>Ce qui se passe :</strong><br>
+                    • La bibliothèque d'images s'ouvre dans une nouvelle fenêtre<br>
+                    • Vous pouvez parcourir toutes les images disponibles dans la bibliothèque<br>
+                    • Vous pouvez sélectionner une image pour l'appliquer comme fond de bulle<br>
+                    • La bibliothèque contient des images organisées par catégories
+                </div>
+                <div style="background: #f8f9fa; padding: 12px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #0078d4;">
+                    <strong>💡 Conseil :</strong> La bibliothèque d'images vous permet d'accéder rapidement à une collection d'images prêtes à utiliser pour personnaliser vos bulles.
+                </div>
+                <div style="background: #d1ecf1; padding: 12px; border-radius: 5px; margin-bottom: 15px; border-left: 4px solid #17a2b8;">
+                    <strong>ℹ️ Information :</strong> Vous pouvez également importer vos propres images en utilisant le bouton "Importer" à côté du bouton "Bibliothèque".
+                </div>
+                <div style="text-align: center;">
+                    <button id="libraryOkButton" style="background: #0078d4; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px; margin-right: 10px;">Compris</button>
+                    <button id="nextStepButton" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 12px;">Étape suivante</button>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+            
+            // Ajouter l'écouteur pour le bouton OK
+            document.getElementById('libraryOkButton').addEventListener('click', () => {
+                dialog.style.opacity = '0';
+                setTimeout(() => {
+                    dialog.remove();
+                    // Terminer la démonstration
+                    if (demoRunning) {
+                        activateLibraryDemo();
+                        
+                        // Terminer la démonstration après 3 secondes
+                        setTimeout(() => {
+                            if (demoRunning) {
+                                document.getElementById('demoInstruction').textContent = 
+                                    "Démonstration terminée ! Vous avez appris à accéder à la bibliothèque d'images.";
+                                
+                                demoRunning = false;
+                                document.getElementById('startDemo').disabled = false;
+                                document.getElementById('stopDemo').disabled = true;
+                            }
+                        }, 3000);
+                    }
+                }, 300);
+            });
+
+            // Ajouter l'écouteur pour le bouton Étape suivante
+            document.getElementById('nextStepButton').addEventListener('click', () => {
+                dialog.style.opacity = '0';
+                setTimeout(() => {
+                    dialog.remove();
+                    window.open('demo-AvailableCategories.html', '_blank');
+                }, 300);
+            });
+        }
+
+        function activateLibraryDemo() {
+            // Créer un effet visuel pour montrer que la bibliothèque est accessible
+            const demoIndicator = document.createElement('div');
+            demoIndicator.style.position = 'fixed';
+            demoIndicator.style.top = '50%';
+            demoIndicator.style.left = '50%';
+            demoIndicator.style.transform = 'translate(-50%, -50%)';
+            demoIndicator.style.background = 'rgba(0, 120, 212, 0.9)';
+            demoIndicator.style.color = 'white';
+            demoIndicator.style.padding = '20px 30px';
+            demoIndicator.style.borderRadius = '10px';
+            demoIndicator.style.fontSize = '16px';
+            demoIndicator.style.fontWeight = 'bold';
+            demoIndicator.style.zIndex = '1000';
+            demoIndicator.textContent = 'Bibliothèque d\'images accessible ! Vous pouvez maintenant sélectionner une image.';
+            demoIndicator.style.transition = 'all 0.3s ease';
+            
+            document.body.appendChild(demoIndicator);
+            
+            // Désactiver après 2 secondes
+            setTimeout(() => {
+                demoIndicator.style.opacity = '0';
+                setTimeout(() => {
+                    demoIndicator.remove();
+                }, 300);
+            }, 2000);
+        }
+
+        function updatePreview() {
+            const previewBubble = document.getElementById('previewBubble');
+            const previewLabel = document.getElementById('previewLabel');
+            const previewLabelText = document.getElementById('previewLabelText');
+
+            // Mettre à jour la bulle
+            previewBubble.style.borderColor = config.borderColor;
+            previewBubble.style.borderWidth = config.borderThickness + 'px';
+            previewBubble.style.borderRadius = config.borderCornerRadius + 'px';
+            previewBubble.style.backgroundColor = config.rectBgColor;
+
+            // Mettre à jour le label
+            previewLabel.style.backgroundColor = config.labelBgColor;
+            previewLabel.style.borderColor = config.labelBorderColor;
+            previewLabel.style.borderWidth = config.labelBorderThickness + 'px';
+            previewLabel.style.borderRadius = config.labelCornerRadius + 'px';
+            previewLabelText.style.color = config.titleColor;
+            previewLabelText.textContent = config.text;
+
+            // Ajuster la largeur du label selon le texte
+            adjustLabelWidth();
+        }
+
+        function adjustLabelWidth() {
+            const previewLabel = document.getElementById('previewLabel');
+            const previewLabelText = document.getElementById('previewLabelText');
+            
+            const text = config.text || '';
+            // L'étiquette s'adapte automatiquement à la largeur du texte
+            previewLabel.style.width = 'auto';
+            previewLabel.style.minWidth = 'fit-content';
+        }
+
+        function pickColor(type) {
+            // Simulation d'un sélecteur de couleur
+            const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF', '#808080', '#2D2D30'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            switch(type) {
+                case 'rectBg':
+                    config.rectBgColor = randomColor;
+                    document.getElementById('rectBgColorButton').style.backgroundColor = randomColor;
+                    break;
+                case 'border':
+                    config.borderColor = randomColor;
+                    document.getElementById('borderColorButton').style.backgroundColor = randomColor;
+                    break;
+                case 'labelBg':
+                    config.labelBgColor = randomColor;
+                    document.getElementById('labelBgColorButton').style.backgroundColor = randomColor;
+                    break;
+                case 'title':
+                    config.titleColor = randomColor;
+                    document.getElementById('titleColorButton').style.backgroundColor = randomColor;
+                    break;
+                case 'labelBorder':
+                    config.labelBorderColor = randomColor;
+                    document.getElementById('labelBorderColorButton').style.backgroundColor = randomColor;
+                    break;
+            }
+            
+            updatePreview();
+        }
+
+        function selectDefaultStyle(styleIndex) {
+            selectedDefaultStyle = styleIndex;
+            
+            // Appliquer le style par défaut
+            const styleColors = {
+                1: '#E74C3C', 2: '#3498DB', 3: '#2ECC71', 4: '#F39C12', 5: '#9B59B6',
+                6: '#1ABC9C', 7: '#E67E22', 8: '#34495E', 9: '#95A5A6', 10: '#16A085'
+            };
+            
+            const styleColor = styleColors[styleIndex];
+            const darkBackground = '#2D2D30';
+            
+            config.borderColor = styleColor;
+            config.labelBorderColor = styleColor;
+            config.titleColor = styleColor;
+            config.labelBgColor = darkBackground;
+            config.rectBgColor = darkBackground;
+            config.borderThickness = 2;
+            config.labelBorderThickness = 1;
+            config.borderCornerRadius = 6;
+            config.labelCornerRadius = 3;
+            config.rectangleImagePath = null;
+            
+            // Mettre à jour les contrôles
+            document.getElementById('borderColorButton').style.backgroundColor = styleColor;
+            document.getElementById('labelBorderColorButton').style.backgroundColor = styleColor;
+            document.getElementById('titleColorButton').style.backgroundColor = styleColor;
+            document.getElementById('labelBgColorButton').style.backgroundColor = darkBackground;
+            document.getElementById('rectBgColorButton').style.backgroundColor = darkBackground;
+            document.getElementById('borderThicknessSlider').value = 2;
+            document.getElementById('labelBorderThicknessSlider').value = 1;
+            document.getElementById('borderCornerRadiusSlider').value = 6;
+            document.getElementById('labelCornerRadiusSlider').value = 3;
+            
+            updatePreview();
+        }
+
+        function applyToAllBorders() {
+            if (selectedDefaultStyle > 0) {
+                alert(`Style par défaut ${selectedDefaultStyle} appliqué à toutes les bulles`);
+            } else {
+                alert('Veuillez sélectionner un style par défaut');
+            }
+        }
+
+        function loadStyle() {
+            const selectedStyle = document.getElementById('stylesComboBox').value;
+            if (selectedStyle && selectedStyle !== 'Sélectionner un style') {
+                alert(`Style "${selectedStyle}" chargé`);
+            } else {
+                alert('Veuillez sélectionner un style');
+            }
+        }
+
+        function deleteStyle() {
+            const selectedStyle = document.getElementById('stylesComboBox').value;
+            if (selectedStyle && selectedStyle !== 'Sélectionner un style') {
+                if (confirm(`Supprimer le style "${selectedStyle}" ?`)) {
+                    alert(`Style "${selectedStyle}" supprimé`);
+                }
+            } else {
+                alert('Veuillez sélectionner un style à supprimer');
+            }
+        }
+
+        function createStyle() {
+            const styleName = prompt('Nom du nouveau style:');
+            if (styleName) {
+                alert(`Style "${styleName}" créé`);
+            }
+        }
+
+        function editTitle() {
+            const newTitle = prompt('Nouveau titre:', config.text);
+            if (newTitle !== null) {
+                config.text = newTitle;
+                updatePreview();
+            }
+        }
+
+        function importImage() {
+            alert('Fonction d\'importation d\'image');
+        }
+
+        function openImageLibrary() {
+            // Cette fonction est maintenant gérée par la démonstration
+            if (!demoRunning) {
+            alert('Ouverture de la bibliothèque d\'images');
+            }
+        }
+
+        function clearImage() {
+            config.rectangleImagePath = null;
+            alert('Image de fond effacée');
+        }
+
+        function apply() {
+            alert('Personnalisation appliquée');
+        }
+
+        function cancel() {
+            alert('Personnalisation annulée');
+        }
+    </script>
+</body>
+</html>
