@@ -30,15 +30,18 @@
 
         <!-- Barre de recherche globale -->
         <div class="global-search-section">
-            <div class="search-container">
-                <div class="search-input-wrapper">
-                    <input type="text" id="global-search" class="search-input" placeholder="Rechercher dans toutes les sections..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();performGlobalSearch();}">
-                    <button class="search-button" onclick="performGlobalSearch()">
-                        <svg class="search-icon" viewBox="0 0 24 24">
-                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                        </svg>
-                    </button>
-                </div>
+            <div class="search-input-wrapper">
+                <input type="text" id="global-search" class="search-input" placeholder="Rechercher dans toutes les sections..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();performGlobalSearch();}">
+                <button class="search-button" onclick="performGlobalSearch()" title="Rechercher">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                </button>
+                <button class="clear-button" onclick="clearSearch()" title="Effacer la recherche">
+                    <svg class="clear-icon" viewBox="0 0 24 24">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
             </div>
         </div>
 
@@ -1295,10 +1298,14 @@
 
         // Fonction pour afficher un onglet
         function showTab(tabName) {
+            // Fermer les résultats de recherche s'ils sont ouverts
+            closeSearchResults();
+            
             // Masquer tous les onglets
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(content => {
                 content.classList.remove('active');
+                content.style.display = 'none';
             });
 
             // Désactiver tous les boutons de navigation
@@ -1308,7 +1315,11 @@
             });
 
             // Afficher l'onglet sélectionné
-            document.getElementById(tabName).classList.add('active');
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                selectedTab.style.display = 'block';
+            }
 
             // Activer le bouton correspondant
             const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
@@ -1698,28 +1709,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Forcer la visibilité immédiatement
             forceTextVisibility();
-            // Ajouter une barre de recherche
-            const searchContainer = document.createElement('div');
-            searchContainer.className = 'search-container';
-            searchContainer.innerHTML = `
-                    <input type="text" id="search-input" placeholder="Rechercher dans l'aide..." />
-                    <button id="search-clear" onclick="clearSearch()">✕</button>
-                `;
-
-            document.querySelector('.tabs').parentNode.insertBefore(searchContainer, document.querySelector('.tabs'));
-
-            // Gestionnaire d'événements pour la recherche
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', function () {
-                searchContent(this.value);
-            });
-
-            // Gestionnaire pour le bouton de suppression
-            document.getElementById('search-clear').addEventListener('click', function () {
-                searchInput.value = '';
-                clearSearch();
-            });
-
+            
             // Initialiser les animations
             resetAnimations();
 
@@ -1782,17 +1772,7 @@
         function initializeGlobalSearch() {
             const searchInput = document.getElementById('global-search');
             if (searchInput) {
-                // Recherche en temps réel
-                searchInput.addEventListener('input', function() {
-                    const query = this.value.trim();
-                    if (query.length >= 2) {
-                        performGlobalSearch();
-                    } else if (query.length === 0) {
-                        closeSearchResults();
-                    }
-                });
-
-                // Recherche avec Entrée (backup)
+                // Recherche avec Entrée uniquement
                 searchInput.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
@@ -1886,12 +1866,12 @@
         function displaySearchResults(results, query) {
             const resultsSection = document.getElementById('search-results-section');
             const resultsContent = document.getElementById('search-results-content');
-            const searchInput = document.getElementById('global-search');
             
-            // Vider le champ de recherche quand les résultats s'affichent
-            if (searchInput) {
-                searchInput.value = '';
-            }
+            // Masquer toutes les sections de contenu des onglets
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(tab => {
+                tab.style.display = 'none';
+            });
 
             if (Object.keys(results).length === 0) {
                 // Aucun résultat
@@ -1982,11 +1962,26 @@
         // Fermer les résultats de recherche
         function closeSearchResults() {
             const resultsSection = document.getElementById('search-results-section');
-            const searchInput = document.getElementById('global-search');
             
             resultsSection.style.display = 'none';
+            
+            // Restaurer l'affichage de l'onglet actif
+            const activeTab = document.querySelector('.nav-tab.active');
+            if (activeTab) {
+                const tabId = activeTab.getAttribute('data-tab');
+                const activeTabContent = document.getElementById(tabId);
+                if (activeTabContent) {
+                    activeTabContent.style.display = 'block';
+                }
+            }
+        }
+
+        // Vider le champ de recherche
+        function clearSearch() {
+            const searchInput = document.getElementById('global-search');
             if (searchInput) {
                 searchInput.value = '';
+                closeSearchResults();
             }
         }
     </script>

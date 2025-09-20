@@ -349,6 +349,7 @@
             <label for="speedSlider">Vitesse de l'animation :</label>
             <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
             <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
         </div>
         
         <button class="back-button" onclick="window.close()">Fermer</button>
@@ -359,6 +360,7 @@
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
+        let isPaused = false;
         let baseInterval = 50; // Intervalle de base pour cette démo
         const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
 
@@ -412,6 +414,12 @@
 
         function startAnimation() {
             function runAnimationFrame() {
+                // Vérifier si l'animation est en pause
+                if (isPaused) {
+                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    return;
+                }
+                
                 animationPhase++;
 
                 // Calculer les frames de mouvement avec vitesse standardisée
@@ -581,10 +589,24 @@
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
         }
 
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseButton = document.getElementById('pauseButton');
+            
+            if (isPaused) {
+                pauseButton.textContent = 'Reprendre';
+                pauseButton.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause';
+                pauseButton.classList.remove('paused');
+            }
+        }
+
         // Gestion du slider de vitesse
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
+            const pauseButton = document.getElementById('pauseButton');
 
             if (speedSlider && speedValue) {
                 // Écouteur d'événement pour le slider
@@ -602,6 +624,12 @@
                 speedValue.textContent = animationSpeed + 'x';
             } else {
                 console.warn('Éléments du slider non trouvés dans demo-customize-clock');
+            }
+
+            if (pauseButton) {
+                pauseButton.addEventListener('click', togglePause);
+            } else {
+                console.warn('Bouton pause non trouvé dans demo-customize-clock');
             }
         });
     </script>
