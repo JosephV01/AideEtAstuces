@@ -292,7 +292,6 @@
             top: 25px !important;
         }
 
-
         .back-button {
             background: var(--primary-color);
             color: white;
@@ -342,7 +341,6 @@
                 </div>
 
                 <!-- Cercle d'animation de clic -->
-                <div class="click-animation"></div>
 
                 <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
@@ -562,7 +560,6 @@
                         </div>
                     </div>
 
-
                     <div class="menu-separator"></div>
 
                     <div class="menu-item disabled">
@@ -621,7 +618,6 @@
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
         const mouseLeftClick = document.querySelector('.mouse-left-click');
-        const clickAnimation = document.querySelector('.click-animation');
         const contextMenu = document.querySelector('.context-menu');
         const resizeHandle = document.querySelector('.resize-handle');
         const floatingClock = document.querySelector('#floating-clock');
@@ -673,20 +669,9 @@
                     
                     // Animation de clic très rapide
                     if (clickPhase <= 2) {
-                        clickAnimation.style.visibility = 'visible';
-                        clickAnimation.style.opacity = '0.5';
-                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.left = (239 - clickPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (129 - clickPhase * 1.5) + 'px';
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
-                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.left = (236 + shrinkPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (126 + shrinkPhase * 1.5) + 'px';
                     } else {
-                        clickAnimation.style.opacity = '0';
                     }
 
                     // Changement de souris pour le clic droit (synchronisé)
@@ -750,20 +735,9 @@
                     
                     // Animation de clic
                     if (clickPhase <= 2) {
-                        clickAnimation.style.visibility = 'visible';
-                        clickAnimation.style.opacity = '0.5';
-                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.left = (425 - clickPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (446 - clickPhase * 1.5) + 'px';
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
-                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.left = (422 + shrinkPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (443 + shrinkPhase * 1.5) + 'px';
                             } else {
-                        clickAnimation.style.opacity = '0';
                             }
                             
                     // Changement de souris au clic gauche (synchronisé)
@@ -814,20 +788,9 @@
                     
                     // Animation de clic
                     if (clickPhase <= 2) {
-                        clickAnimation.style.visibility = 'visible';
-                        clickAnimation.style.opacity = '0.5';
-                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.left = (746 - clickPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (446 - clickPhase * 1.5) + 'px';
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
-                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.left = (743 + shrinkPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (443 + shrinkPhase * 1.5) + 'px';
                     } else {
-                        clickAnimation.style.opacity = '0';
                     }
                     
                     // Changement de souris au clic gauche (synchronisé)
@@ -903,20 +866,9 @@
                         
                         // Animation de clic sur la poignée
                     if (clickPhase <= 2) {
-                        clickAnimation.style.visibility = 'visible';
-                            clickAnimation.style.opacity = '0.5';
-                            clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                            clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                            clickAnimation.style.left = (239 - clickPhase * 1.5) + 'px';
-                            clickAnimation.style.top = (129 - clickPhase * 1.5) + 'px';
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
-                            clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                            clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                            clickAnimation.style.left = (236 + shrinkPhase * 1.5) + 'px';
-                            clickAnimation.style.top = (126 + shrinkPhase * 1.5) + 'px';
                     } else {
-                        clickAnimation.style.opacity = '0';
                     }
 
                         // Changement de souris pour le clic droit
@@ -976,20 +928,9 @@
                         
                         // Animation de clic
                         if (clickPhase <= 2) {
-                            clickAnimation.style.visibility = 'visible';
-                            clickAnimation.style.opacity = '0.5';
-                            clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                            clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                            clickAnimation.style.left = (425 - clickPhase * 1.5) + 'px';
-                            clickAnimation.style.top = (446 - clickPhase * 1.5) + 'px';
                         } else if (clickPhase <= 4) {
                             const shrinkPhase = clickPhase - 2;
-                            clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                            clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                            clickAnimation.style.left = (422 + shrinkPhase * 1.5) + 'px';
-                            clickAnimation.style.top = (443 + shrinkPhase * 1.5) + 'px';
                             } else {
-                            clickAnimation.style.opacity = '0';
                             }
                             
                         // Changement de souris au clic gauche
@@ -1043,20 +984,9 @@
                         
                         // Animation de clic
                         if (clickPhase <= 2) {
-                            clickAnimation.style.visibility = 'visible';
-                            clickAnimation.style.opacity = '0.5';
-                            clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                            clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                            clickAnimation.style.left = (746 - clickPhase * 1.5) + 'px';
-                            clickAnimation.style.top = (446 - clickPhase * 1.5) + 'px';
                         } else if (clickPhase <= 4) {
                             const shrinkPhase = clickPhase - 2;
-                            clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                            clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                            clickAnimation.style.left = (743 + shrinkPhase * 1.5) + 'px';
-                            clickAnimation.style.top = (443 + shrinkPhase * 1.5) + 'px';
                             } else {
-                            clickAnimation.style.opacity = '0';
                         }
 
                         // Changement de souris au clic gauche
@@ -1105,8 +1035,6 @@
                     contextMenu.style.visibility = 'hidden';
                     contextMenu.style.opacity = '0';
                     contextMenu.style.transform = 'scale(0.8)';
-                    clickAnimation.style.visibility = 'hidden';
-                                clickAnimation.style.opacity = '0';
                     resizeHandle.style.transform = 'scale(1)';
                     resizeHandle.style.background = '#ffffff';
                     resizeHandle.style.border = '1px solid #000';
@@ -1185,8 +1113,6 @@
                     });
                     
                     // Reset de l'animation de clic
-                    clickAnimation.style.visibility = 'hidden';
-                    clickAnimation.style.opacity = '0';
                     
                     // Reset de la souris selon demo-elements.css
                     mouseZeroClick.style.visibility = 'visible';
@@ -1204,7 +1130,6 @@
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
         }
-
 
         // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
         document.querySelectorAll('.help-button').forEach(button => {

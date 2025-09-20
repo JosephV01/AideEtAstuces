@@ -50,7 +50,6 @@
             line-height: 1.6;
         }
 
-
         /* Widget à déplacer */
         .movable-widget {
             position: absolute;
@@ -138,7 +137,6 @@
                 <div class="mouse-right-click"></div>
 
                 <!-- Cercle d'animation de clic -->
-                <div class="click-animation"></div>
 
                 <!-- Position de destination (marqueur visuel) -->
                 <div class="destination-marker"></div>
@@ -173,7 +171,6 @@
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
-        const clickAnimation = document.querySelector('.click-animation');
         const movableWidget = document.querySelector('.movable-widget');
         const widgetButtons = document.querySelectorAll('.widget-button');
         
@@ -203,12 +200,6 @@
                     const clickPhase = animationPhase - movementFrames;
                     
                     // L'effet de clic apparaît directement
-                    clickAnimation.style.visibility = 'visible';
-                    clickAnimation.style.opacity = '0.3';
-                    clickAnimation.style.width = '16px';
-                    clickAnimation.style.height = '16px';
-                    clickAnimation.style.left = '67px';
-                    clickAnimation.style.top = '102px';
                     
                     // Changement de souris pour indiquer le clic
                     if (clickPhase >= 5) {
@@ -235,11 +226,6 @@
                     mouseCursor.style.top = '110px';
                     
                     // Effet de clic persiste pendant le hover
-                    clickAnimation.style.opacity = '0.3';
-                    clickAnimation.style.width = '16px';
-                    clickAnimation.style.height = '16px';
-                    clickAnimation.style.left = '67px';
-                    clickAnimation.style.top = '102px';
                 }
                 // 4 - Déplacement complet avec effets
                 else if (animationPhase <= movementFrames + 80) {
@@ -262,11 +248,6 @@
                     });
                     
                     // Effet de clic persiste pendant le déplacement
-                    clickAnimation.style.opacity = '0.3';
-                    clickAnimation.style.width = '16px';
-                    clickAnimation.style.height = '16px';
-                    clickAnimation.style.left = (widgetCenterX - 8) + 'px';
-                    clickAnimation.style.top = (widgetCenterY - 8) + 'px';
                 }
                 // 5 - Arrêt et disparition des effets
                 else if (animationPhase <= movementFrames + 90) {
@@ -277,16 +258,10 @@
                     });
                     
                     // Effet de clic disparaît aussi
-                    clickAnimation.style.opacity = '0';
                 }
                 // 6 - Delay avec effet de clic persistant
                 else if (animationPhase <= movementFrames + 100) {
                     // L'effet de clic reste visible pendant le délai
-                    clickAnimation.style.opacity = '0.3';
-                    clickAnimation.style.width = '16px';
-                    clickAnimation.style.height = '16px';
-                    clickAnimation.style.left = '217px';
-                    clickAnimation.style.top = '102px';
                 }
                 // 7 - Widget devient hover à destination
                 else if (animationPhase <= movementFrames + 120) {
@@ -307,11 +282,6 @@
                     mouseCursor.style.top = '110px';
                     
                     // Effet de clic persiste pendant le hover
-                    clickAnimation.style.opacity = '0.3';
-                    clickAnimation.style.width = '16px';
-                    clickAnimation.style.height = '16px';
-                    clickAnimation.style.left = '217px';
-                    clickAnimation.style.top = '102px';
                 }
                 // 8 - Déplacement retour complet avec effets
                 else if (animationPhase <= movementFrames + 140) {
@@ -334,11 +304,6 @@
                     });
                     
                     // Effet de clic persiste pendant le déplacement retour
-                    clickAnimation.style.opacity = '0.3';
-                    clickAnimation.style.width = '16px';
-                    clickAnimation.style.height = '16px';
-                    clickAnimation.style.left = (widgetCenterX - 8) + 'px';
-                    clickAnimation.style.top = (widgetCenterY - 8) + 'px';
                 }
                 // 9 - Arrêt et disparition des effets
                 else if (animationPhase <= movementFrames + 150) {
@@ -349,7 +314,6 @@
                     });
                     
                     // Effet de clic disparaît aussi
-                    clickAnimation.style.opacity = '0';
                 }
                 // 10 - Curseur disparaît
                 else if (animationPhase <= movementFrames + 160) {
@@ -369,8 +333,6 @@
                     mouseCursor.style.opacity = '1';
                     
                     // Reset de l'effet de clic
-                    clickAnimation.style.visibility = 'hidden';
-                    clickAnimation.style.opacity = '0';
                     
                     // Reset des effets
                     widgetButtons.forEach(button => {

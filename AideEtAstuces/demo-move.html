@@ -130,7 +130,6 @@
                 <div class="mouse-left-click large"></div>
 
                 <!-- Cercle d'animation de clic -->
-                <div class="click-animation"></div>
 
             </div>
         </div>
@@ -159,7 +158,6 @@
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseLeftClick = document.querySelector('.mouse-left-click');
-        const clickAnimation = document.querySelector('.click-animation');
         const movableBubble = document.querySelector('.dynamic-border');
         const movableLabel = document.querySelector('.label-border');
         const movableResizeHandle = document.querySelector('.resize-handle');
@@ -186,13 +184,6 @@
                 else if (animationPhase <= 38) {
                     const clickPhase = animationPhase - 30;
                     
-                    // L'effet de clic apparaît
-                    clickAnimation.style.visibility = 'visible';
-                    clickAnimation.style.opacity = '0.7';
-                    clickAnimation.style.width = '12px';
-                    clickAnimation.style.height = '12px';
-                    clickAnimation.style.left = '144px';
-                    clickAnimation.style.top = '69px';
                     
                     // Changement de souris pour indiquer le clic gauche
                     if (clickPhase >= 3) {
@@ -216,17 +207,9 @@
                     mouseCursor.style.left = cursorX + 'px';
                     mouseCursor.style.top = cursorY + 'px';
                     
-                    // Effet de clic suit le curseur
-                    clickAnimation.style.opacity = '0.7';
-                    clickAnimation.style.width = '12px';
-                    clickAnimation.style.height = '12px';
-                    clickAnimation.style.left = (cursorX - 6) + 'px';
-                    clickAnimation.style.top = (cursorY - 6) + 'px';
                 }
                 // 4 - Arrêt et disparition des effets
                 else if (animationPhase <= 88) {
-                    // Bulle à destination, effets disparaissent
-                    clickAnimation.style.opacity = '0';
                     
                     // Reset de la souris
                     mouseZeroClick.style.visibility = 'visible';
@@ -240,13 +223,6 @@
                 else if (animationPhase <= 116) {
                     const clickPhase = animationPhase - 108;
                     
-                    // L'effet de clic apparaît
-                    clickAnimation.style.visibility = 'visible';
-                    clickAnimation.style.opacity = '0.7';
-                    clickAnimation.style.width = '12px';
-                    clickAnimation.style.height = '12px';
-                    clickAnimation.style.left = '294px'; // Position sur l'étiquette à destination
-                    clickAnimation.style.top = '69px';
                     
                     // Changement de souris pour indiquer le clic gauche
                     if (clickPhase >= 3) {
@@ -270,17 +246,9 @@
                     mouseCursor.style.left = cursorX + 'px';
                     mouseCursor.style.top = cursorY + 'px';
                     
-                    // Effet de clic persiste pendant le déplacement retour
-                    clickAnimation.style.opacity = '0.7';
-                    clickAnimation.style.width = '12px';
-                    clickAnimation.style.height = '12px';
-                    clickAnimation.style.left = (cursorX - 6) + 'px';
-                    clickAnimation.style.top = (cursorY - 6) + 'px';
                 }
                 // 8 - Arrêt et disparition des effets au retour
                 else if (animationPhase <= 166) {
-                    // Bulle à destination, effets disparaissent
-                    clickAnimation.style.opacity = '0';
                     
                     // Reset de la souris
                     mouseZeroClick.style.visibility = 'visible';
@@ -303,9 +271,6 @@
                     mouseCursor.style.top = '92px';
                     mouseCursor.style.opacity = '1';
                     
-                    // Reset de l'effet de clic
-                    clickAnimation.style.visibility = 'hidden';
-                    clickAnimation.style.opacity = '0';
                     
                     // Reset de la souris
                     mouseZeroClick.style.visibility = 'visible';

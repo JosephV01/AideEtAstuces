@@ -108,7 +108,6 @@
                 <div class="mouse-left-click large"></div>
 
                 <!-- Cercle d'animation de clic -->
-                <div class="click-animation"></div>
             </div>
         </div>
 
@@ -140,7 +139,6 @@
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseLeftClick = document.querySelector('.mouse-left-click');
-        const clickAnimation = document.querySelector('.click-animation');
         const desktopWidget = document.querySelector('.desktop-widget');
         const addButton = document.querySelector('.add-button');
         const newBubbleContainer = document.querySelector('.new-bubble-container');
@@ -173,20 +171,9 @@
                     
                     // Animation de clic très rapide
                     if (clickPhase <= 2) {
-                        clickAnimation.style.visibility = 'visible';
-                        clickAnimation.style.opacity = '0.5';
-                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
-                        clickAnimation.style.left = (67 - clickPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (97 - clickPhase * 1.5) + 'px';
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
-                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
-                        clickAnimation.style.left = (64 + shrinkPhase * 1.5) + 'px';
-                        clickAnimation.style.top = (94 + shrinkPhase * 1.5) + 'px';
                     } else {
-                        clickAnimation.style.opacity = '0';
                     }
 
                     // Changement de souris pour le clic gauche (logique standardisée)
@@ -250,8 +237,6 @@
                     animationPhase = 0;
                     mouseCursor.style.left = '143px';
                     mouseCursor.style.top = '112px';
-                    clickAnimation.style.visibility = 'hidden';
-                    clickAnimation.style.opacity = '0';
                     newBubbleContainer.style.opacity = '0';
                     newBubbleLabel.style.opacity = '0';
                     addButton.style.background = 'transparent';

@@ -59,8 +59,6 @@
 
         /* Curseur toujours au-dessus */
         .mouse-cursor { z-index: 3000 !important; }
-        /* Onde de clic au-dessus de tout */
-        .click-animation { z-index: 3001 !important; }
 
         .back-button {
             background: var(--primary-color);
@@ -233,7 +231,6 @@
                 <div class="mouse-zero-click large"></div>
                 <div class="mouse-right-click large"></div>
                 <div class="mouse-left-click large"></div>
-                <div class="click-animation"></div>
 
                  <!-- Menu contextuel strictement copié de Reference-ClockContextMenu.html -->
                  <div class="context-menu" id="context-menu" style="left: 200px; top: 140px;">
@@ -368,7 +365,6 @@
          const mouseZeroClick = document.querySelector('.mouse-zero-click');
          const mouseRightClick = document.querySelector('.mouse-right-click');
          const mouseLeftClick = document.querySelector('.mouse-left-click');
-         const clickAnimation = document.querySelector('.click-animation');
          const contextMenu = document.getElementById('context-menu');
          const toggleClockItem = document.getElementById('toggleClockItem');
          const clockSizeItem = document.getElementById('clockSizeItem');
@@ -408,8 +404,6 @@
             mouseZeroClick.style.visibility = 'visible';
             mouseRightClick.style.visibility = 'hidden';
             mouseLeftClick.style.visibility = 'hidden';
-            clickAnimation.style.visibility = 'hidden';
-            clickAnimation.style.opacity = '0';
         }
 
         function startAnimation() {
@@ -444,20 +438,9 @@
                     if (clickPhase >= 4) { mouseZeroClick.style.visibility = 'visible'; mouseRightClick.style.visibility = 'hidden'; }
                     // onde de clic
                     if (clickPhase <= 3) {
-                        clickAnimation.style.visibility = 'visible';
-                        clickAnimation.style.opacity = '0.5';
-                        clickAnimation.style.width = (8 + clickPhase * 4) + 'px';
-                        clickAnimation.style.height = (8 + clickPhase * 4) + 'px';
-                        clickAnimation.style.left = (200 - 4 - clickPhase * 2) + 'px';
-                        clickAnimation.style.top = (140 - 4 - clickPhase * 2) + 'px';
                     } else if (clickPhase <= 6) {
                         const shrink = clickPhase - 3;
-                        clickAnimation.style.width = (20 - shrink * 3) + 'px';
-                        clickAnimation.style.height = (20 - shrink * 3) + 'px';
-                        clickAnimation.style.left = (200 - 10 + shrink * 2) + 'px';
-                        clickAnimation.style.top = (140 - 10 + shrink * 2) + 'px';
                     } else {
-                        clickAnimation.style.opacity = '0';
                     }
                  // ouverture menu
                  if (clickPhase >= 10) {
@@ -514,20 +497,9 @@
                  if (clickPhase >= 2) { mouseZeroClick.style.visibility = 'hidden'; mouseLeftClick.style.visibility = 'visible'; }
                  if (clickPhase >= 6) { mouseZeroClick.style.visibility = 'visible'; mouseLeftClick.style.visibility = 'hidden'; }
                  if (clickPhase <= 3) {
-                     clickAnimation.style.visibility = 'visible';
-                     clickAnimation.style.opacity = '0.6';
-                     clickAnimation.style.width = (8 + clickPhase * 4) + 'px';
-                     clickAnimation.style.height = (8 + clickPhase * 4) + 'px';
-                     clickAnimation.style.left = (285 - 4 - clickPhase * 2) + 'px';
-                     clickAnimation.style.top = (253 - 4 - clickPhase * 2) + 'px';
                  } else if (clickPhase <= 6) {
                      const shrinkPhase = clickPhase - 3;
-                     clickAnimation.style.width = (20 - shrinkPhase * 3) + 'px';
-                     clickAnimation.style.height = (20 - shrinkPhase * 3) + 'px';
-                     clickAnimation.style.left = (285 - 10 + shrinkPhase * 2) + 'px';
-                     clickAnimation.style.top = (253 - 10 + shrinkPhase * 2) + 'px';
                  } else {
-                     clickAnimation.style.opacity = '0';
                  }
 
                  if (clickPhase >= 6) {
