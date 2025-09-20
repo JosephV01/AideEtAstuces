@@ -36,20 +36,6 @@
             display: inline-block;
         }
 
-        .demo-title {
-            color: var(--text-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .demo-description {
-            color: var(--text-light);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
         /* Styles spécifiques à cette démonstration */
         .demo-canvas {
             width: 400px;
@@ -132,12 +118,14 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">Démonstration - Déplacer la Bulle Horloge</h1>
-        <p class="demo-description">
-            • Cette démonstration montre comment déplacer l'horloge.<br>
-            • Maintenez le clic gauche tout en déplaçant la souris sur votre écran.<br>
-            • Relâchez le clic une fois l'horloge correctement positionnée.
-        </p>
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Déplacer la Bulle Horloge</h1>
+            <p class="demo-description">
+                • Cette démonstration montre comment déplacer l'horloge.<br>
+                • Maintenez le clic gauche tout en déplaçant la souris sur votre écran.<br>
+                • Relâchez le clic une fois l'horloge correctement positionnée.
+            </p>
+        </div>
         <div class="demo-canvas-container">
             <div class="demo-canvas large">
                 <div class="floating-clock" id="floating-clock">

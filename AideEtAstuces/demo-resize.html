@@ -36,20 +36,6 @@
             display: inline-block;
         }
 
-        .demo-title {
-            color: var(--text-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .demo-description {
-            color: var(--text-light);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
         /* Adaptations spécifiques pour cette démo */
         .dynamic-border {
             transition: none; /* Pas de transition CSS pour un contrôle JavaScript précis */
@@ -93,10 +79,13 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">Démonstration - Redimensionner une Bulle</h1>
-        <p class="demo-description">
-            Cette démonstration montre comment redimensionner une Bulle à l'aide de sa poignée. Maintenez le clic gauche de votre souris sur la poignée en bas à droite. Relâchez le clic une fois la Bulle correctement dimensionnée.
-        </p>
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Redimensionner une Bulle</h1>
+            <p class="demo-description">
+                Cette démonstration montre comment redimensionner une Bulle à l'aide de sa poignée. Maintenez le clic gauche de votre souris sur la poignée en bas à droite. Relâchez le clic une fois la Bulle correctement dimensionnée.
+        
+            </p>
+        </div>
 
         <div class="demo-canvas-container">
             <div class="demo-canvas">

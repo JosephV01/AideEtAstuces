@@ -36,20 +36,6 @@
             display: inline-block;
         }
 
-        .demo-title {
-            color: var(--text-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .demo-description {
-            color: var(--text-light);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
         /* Widget à déplacer */
         .movable-widget {
             position: absolute;
@@ -114,10 +100,13 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">Démonstration - Déplacer le Widget sur le bureau</h1>
-        <p class="demo-description">
-            Cette démonstration montre comment déplacer le Widget sur votre bureau. Maintenez le clic gauche sur son étiquette tout en déplaçant la souris sur votre écran. Relâchez le clic une fois le widget correctement positionné.
-        </p>
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Déplacer le Widget sur le bureau</h1>
+            <p class="demo-description">
+                Cette démonstration montre comment déplacer le Widget sur votre bureau. Maintenez le clic gauche sur son étiquette tout en déplaçant la souris sur votre écran. Relâchez le clic une fois le widget correctement positionné.
+        
+            </p>
+        </div>
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">

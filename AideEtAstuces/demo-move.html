@@ -36,20 +36,6 @@
             display: inline-block;
         }
 
-        .demo-title {
-            color: var(--text-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .demo-description {
-            color: var(--text-light);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
         /* Utilisation de la classe dynamic-border pour la bulle à déplacer */
         .movable-bubble {
             /* Hérite de .dynamic-border, adaptations spécifiques */
@@ -77,7 +63,6 @@
             transition: all 0.3s ease;
         }
 
-
         .back-button {
             background: var(--primary-color);
             color: white;
@@ -104,10 +89,13 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">Démonstration - Déplacer une Bulle sur le bureau</h1>
-        <p class="demo-description">
-            Cette démonstration montre comment déplacer une Bulle sur votre bureau. Maintenez le clic gauche sur son étiquette tout en déplaçant la souris sur votre écran. Relâchez le clic une fois la Bulle correctement positionnée.
-        </p>
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Déplacer une Bulle sur le bureau</h1>
+            <p class="demo-description">
+                Cette démonstration montre comment déplacer une Bulle sur votre bureau. Maintenez le clic gauche sur son étiquette tout en déplaçant la souris sur votre écran. Relâchez le clic une fois la Bulle correctement positionnée.
+        
+            </p>
+        </div>
         
         <div class="demo-canvas-container">
             <div class="demo-canvas large">
@@ -183,8 +171,7 @@
                 // 2 - Apparition de l'effet de clic gauche
                 else if (animationPhase <= 38) {
                     const clickPhase = animationPhase - 30;
-                    
-                    
+
                     // Changement de souris pour indiquer le clic gauche
                     if (clickPhase >= 3) {
                         mouseZeroClick.style.visibility = 'hidden';
@@ -222,8 +209,7 @@
                 // 6 - Deuxième clic pour initier le retour
                 else if (animationPhase <= 116) {
                     const clickPhase = animationPhase - 108;
-                    
-                    
+
                     // Changement de souris pour indiquer le clic gauche
                     if (clickPhase >= 3) {
                         mouseZeroClick.style.visibility = 'hidden';
@@ -270,8 +256,7 @@
                     mouseCursor.style.left = '143px';
                     mouseCursor.style.top = '92px';
                     mouseCursor.style.opacity = '1';
-                    
-                    
+
                     // Reset de la souris
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';

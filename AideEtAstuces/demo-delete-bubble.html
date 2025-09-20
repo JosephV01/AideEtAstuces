@@ -36,20 +36,6 @@
             display: inline-block;
         }
 
-        .demo-title {
-            color: var(--text-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .demo-description {
-            color: var(--text-light);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
         /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
             /* Hérite de demo-elements.css, adaptations spécifiques */
@@ -310,10 +296,12 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">Démonstration - Supprimer une Bulle</h1>
-        <p class="demo-description">
-            Cette démonstration montre comment supprimer une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu et sélectionnez "Supprimer".
-        </p>
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Supprimer une Bulle</h1>
+            <p class="demo-description">
+                Cette démonstration montre comment supprimer une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu et sélectionnez "Supprimer".
+            </p>
+        </div>
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">

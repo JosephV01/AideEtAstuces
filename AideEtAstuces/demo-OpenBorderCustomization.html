@@ -36,20 +36,6 @@
             display: inline-block;
         }
 
-        .demo-title {
-            color: var(--text-color);
-            font-size: 1.5em;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
-        .demo-description {
-            color: var(--text-light);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-
         /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
             /* Hérite de demo-elements.css, adaptations spécifiques */
@@ -240,7 +226,6 @@
             z-index: 5;
         }
 
-
         /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
             z-index: 1500 !important;
@@ -253,7 +238,6 @@
             left: 555px !important;
             top: 25px !important;
         }
-
 
         .back-button {
             background: var(--primary-color);
@@ -666,10 +650,12 @@
 </head>
 <body>
     <div class="demo-container">
-        <h1 class="demo-title">Démonstration - Personnaliser une Bulle</h1>
-        <p class="demo-description">
-            Cette démonstration montre comment accéder aux options de personnalisation d'une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu et sélectionnez "Personnaliser la Bulle".
-        </p>
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Personnaliser une Bulle</h1>
+            <p class="demo-description">
+                Cette démonstration montre comment accéder aux options de personnalisation d'une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu et sélectionnez "Personnaliser la Bulle".
+            </p>
+        </div>
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
@@ -686,7 +672,6 @@
 
                 <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
-
 
                 <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
@@ -905,7 +890,6 @@
                             </button>
                         </div>
                     </div>
-
 
                     <div class="menu-separator"></div>
 
@@ -1179,7 +1163,6 @@
                 // Phase 2: Animation de clic droit et expansion de la poignée
                 else if (animationPhase <= moveToHandleFrames + 23) {
                     const clickPhase = animationPhase - moveToHandleFrames;
-                    
 
                     // Changement de souris pour le clic droit (synchronisé)
                     if (clickPhase >= 2) {
@@ -1239,7 +1222,6 @@
                     // Phase 6: Clic sur "Personnaliser"
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
-                    
 
                     // Changement de souris au clic gauche (synchronisé)
                     if (clickPhase >= 2) {
