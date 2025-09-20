@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Contextuel - MyCustomDesk (Référence)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #2D2D2D;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            background: transparent;
+            position: relative;
+        }
+
+        /* Menu contextuel: strictement celui du projet C# (MenuContextMenuStyles.xaml) */
+        .context-menu {
+            background: #26292C;
+            border: 2px solid #444;
+            border-radius: 14px;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
+            padding: 8px;
+            min-width: 280px;
+            max-width: 350px;
+            min-height: 180px;
+            font-size: 15px;
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+            z-index: 2005;
+            position: relative;
+            visibility: visible;
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: transparent;
+            width: calc(100% - 8px);
+            text-align: left;
+            font-size: 16px;
+            font-weight: bold;
+            color: #F0F0F0;
+            transition: all 0.2s;
+            gap: 8px;
+            border-radius: 6px;
+            margin: 2px 4px;
+            min-height: 30px;
+        }
+        .menu-item:hover:not(.disabled) {
+            background: #2A2D31;
+            color: cyan;
+        }
+        .menu-item.disabled {
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.6;
+            font-weight: normal;
+            font-size: 15px;
+            background: transparent;
+        }
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            fill: #F0F0F0;
+            margin: 0 5px 0 5px;
+            color: #F0F0F0;
+            opacity: 1;
+            z-index: 10;
+        }
+        .menu-text {
+            flex: 1;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 5px;
+        }
+
+        /* Section headers avec flèche - comportement submenu */
+        .menu-section {
+            position: relative;
+        }
+        .menu-section-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: transparent;
+            width: calc(100% - 8px);
+            text-align: left;
+            font-size: 17px;
+            font-weight: bold;
+            color: #F0F0F0;
+            transition: all 0.2s;
+            gap: 8px;
+            border-radius: 6px;
+            margin: 2px 4px;
+            min-height: 30px;
+        }
+        .menu-section-header:hover {
+            background: #2A2D31;
+            color: cyan;
+        }
+        .section-arrow {
+            width: 12px;
+            height: 12px;
+            fill: #F0F0F0;
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        
+        /* Sous-menu séparé */
+        .submenu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: #26292C;
+            border: 2px solid #444;
+            border-radius: 14px;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
+            padding: 8px;
+            min-width: 200px;
+            font-size: 15px;
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+            z-index: 2010;
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.2s ease;
+            margin-left: 5px;
+        }
+        .menu-section.open .submenu {
+            visibility: visible;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Séparateurs */
+        .menu-separator {
+            height: 1px;
+            background: #444;
+            margin: 4px 8px;
+        }
+
+        /* Boutons d'aide */
+        .help-button {
+            width: 28px;
+            height: 28px;
+            background: #505050;
+            border: 2px solid #FFFFFF;
+            border-radius: 14px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            transition: all 0.2s ease;
+        }
+        .help-button:hover {
+            background: #005EA2;
+        }
+        .help-button:active {
+            background: #003C74;
+        }
+
+        /* Styles pour les éléments avec aide */
+        .menu-item-with-help {
+            justify-content: space-between;
+        }
+        .menu-item-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="context-menu">
+            <button class="menu-item menu-item-with-help">
+                <div class="menu-item-content">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/>
+                    </svg>
+                    <span class="menu-text">Ouvrir dossier CustomDesk</span>
+                </div>
+                <div class="help-button">?</div>
+            </button>
+
+            <button class="menu-item menu-item-with-help">
+                <div class="menu-item-content">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M480-80Q398-80 325-111.5 252-143 197-197 143-251 111.5-324 80-397 80-480 80-563 112.5-636 145-709 200-763 256-817 330-848.5 404-880 488-880 568-880 639-852.5 710-825 763-776 816-727 847.5-660 879-593 880-518 880-403 810-341.5 740-280 640-280L566-280Q557-280 553.5-275 550-270 550-264 550-252 565-229.5 580-207 580-178 580-128 552.5-104 525-80 480-80z M260-440Q286-440 303-457 320-474 320-500 320-526 303-543 286-560 260-560 234-560 217-543 200-526 200-500 200-474 217-457 234-440 260-440z M380-600Q406-600 423-617 440-634 440-660 440-686 423-703 406-720 380-720 354-720 337-703 320-686 320-660 320-634 337-617 354-600 380-600z M580-600Q606-600 623-617 640-634 640-660 640-686 623-703 606-720 580-720 554-720 537-703 520-686 520-660 520-634 537-617 554-600 580-600z M700-440Q726-440 743-457 760-474 760-500 760-526 743-543 726-560 700-560 674-560 657-543 640-526 640-500 640-474 657-457 674-440 700-440z M480-160Q489-160 494.5-165 500-170 500-178 500-192 485-211 470-230 470-268 470-310 499-335 528-360 570-360L640-360Q706-360 753-398.5 800-437 800-518 800-639 707.5-719.5 615-800 488-800 352-800 256-707 160-614 160-480 160-347 253.5-253.5 347-160 480-160z"/>
+                    </svg>
+                    <span class="menu-text">Personnaliser la bulle</span>
+                </div>
+                <div class="help-button">?</div>
+            </button>
+
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M420-160L420-680 200-680 200-800 760-800 760-680 540-680 540-160 420-160z"/>
+                    </svg>
+                    <span class="menu-text">Personnaliser le titre</span>
+                    <svg class="section-arrow" viewBox="0 0 24 24">
+                        <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                    </svg>
+                </div>
+                <div class="submenu">
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                            </svg>
+                            <span class="menu-text">Renommer l'étiquette</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <svg class="menu-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1c0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/>
+                    </svg>
+                    <span class="menu-text">Options de l'étiquette</span>
+                    <svg class="section-arrow" viewBox="0 0 24 24">
+                        <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                    </svg>
+                </div>
+                <div class="submenu">
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/>
+                            </svg>
+                            <span class="menu-text">Ajuster la position de l'étiquette</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M240-400h120v-80H240v80Zm200 0h280v-80H440v80ZM240-240h120v-80H240v80Zm200 0h280v-80H440v80ZM240-560h120v-80H240v80Zm200 0h280v-80H440v80ZM160-80q-33 0-56.5-23.5T80-160v-640q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v640q0 33-23.5 56.5T800-80H160Zm0-80h640v-640H160v640Z"/>
+                            </svg>
+                            <span class="menu-text">Masquer l'étiquette</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M473-80Q449-80 427-89 405-98 388-115L184-320 214-351Q230-367 251.5-372.5 273-378 294-371.5L360-352 360-679Q360-696 371.5-707.5 383-719 400-719 417-719 428.5-707.5 440-696 440-680L440-247 343-274 445-172Q450-167 457.5-163.5 465-160 473-160L640-160Q673-160 696.5-183.5 720-207 720-240L720-400Q720-417 731.5-428.5 743-440 760-440 777-440 788.5-428.5 800-417 800-400L800-240Q800-174 753-127 706-80 640-80L473-80z M480-360L480-520Q480-537 491.5-548.5 503-560 520-560 537-560 548.5-548.5 560-537 560-520L560-360 480-360z M600-360L600-480Q600-497 611.5-508.5 623-520 640-520 657-520 668.5-508.5 680-497 680-480L680-360 600-360z M880-440L680-440 680-500 796-500Q730-558 649-589.5 568-621 480-621 392-621 311-589.5 230-558 164-500L280-500 280-440 80-440 80-640 140-640 140-559Q212-618 299-648.5 386-679 480-679 574-679 661-648.5 748-618 820-559L820-640 880-640 880-440z"/>
+                    </svg>
+                    <span class="menu-text">Activer Glisser/Déposer</span>
+                    <svg class="section-arrow" viewBox="0 0 24 24">
+                        <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                    </svg>
+                </div>
+                <div class="submenu">
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M473-80Q449-80 427-89 405-98 388-115L184-320 214-351Q230-367 251.5-372.5 273-378 294-371.5L360-352 360-679Q360-696 371.5-707.5 383-719 400-719 417-719 428.5-707.5 440-696 440-680L440-247 343-274 445-172Q450-167 457.5-163.5 465-160 473-160L640-160Q673-160 696.5-183.5 720-207 720-240L720-400Q720-417 731.5-428.5 743-440 760-440 777-440 788.5-428.5 800-417 800-400L800-240Q800-174 753-127 706-80 640-80L473-80z"/>
+                            </svg>
+                            <span class="menu-text">Activer le glisser-déposer</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M120-120 L120-360 L200-360 L200-256 L324-380 L380-324 L256-200 L360-200 L360-120 L120-120 Z M600-120 L600-200 L704-200 L580-324 L636-380 L760-256 L760-360 L840-360 L840-120 L600-120 Z M324-580 L200-704 L200-600 L120-600 L120-840 L360-840 L360-760 L256-760 L380-636 L324-580 Z M636-580 L580-636 L704-760 L600-760 L600-840 L840-840 L840-600 L760-600 L760-704 L636-580 Z"/>
+                            </svg>
+                            <span class="menu-text">Taille des icônes</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M480-80Q398-80 325-111.5 252-143 197-197 143-251 111.5-324 80-397 80-480 80-563 112.5-636 145-709 200-763 256-817 330-848.5 404-880 488-880 568-880 639-852.5 710-825 763-776 816-727 847.5-660 879-593 880-518 880-403 810-341.5 740-280 640-280L566-280Q557-280 553.5-275 550-270 550-264 550-252 565-229.5 580-207 580-178 580-128 552.5-104 525-80 480-80z M260-440Q286-440 303-457 320-474 320-500 320-526 303-543 286-560 260-560 234-560 217-543 200-526 200-500 200-474 217-457 234-440 260-440z M380-600Q406-600 423-617 440-634 440-660 440-686 423-703 406-720 380-720 354-720 337-703 320-686 320-660 320-634 337-617 354-600 380-600z M580-600Q606-600 623-617 640-634 640-660 640-686 623-703 606-720 580-720 554-720 537-703 520-686 520-660 520-634 537-617 554-600 580-600z M700-440Q726-440 743-457 760-474 760-500 760-526 743-543 726-560 700-560 674-560 657-543 640-526 640-500 640-474 657-457 674-440 700-440z M480-160Q489-160 494.5-165 500-170 500-178 500-192 485-211 470-230 470-268 470-310 499-335 528-360 570-360L640-360Q706-360 753-398.5 800-437 800-518 800-639 707.5-719.5 615-800 488-800 352-800 256-707 160-614 160-480 160-347 253.5-253.5 347-160 480-160z"/>
+                            </svg>
+                            <span class="menu-text">Couleur du texte des icônes</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M560-160L560-680 360-680 360-800 880-800 880-680 680-680 680-160 560-160z M200-160L200-480 80-480 80-600 440-600 440-480 320-480 320-160 200-160z"/>
+                            </svg>
+                            <span class="menu-text">Taille du texte des icônes</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M120-120L120-280 280-280 280-120 120-120z M120-320L120-480 280-480 280-320 120-320z M320-120L320-280 480-280 480-120 320-120z M320-320L320-480 480-480 480-320 320-320z M520-120L520-280 680-280 680-120 520-120z M520-320L520-480 680-480 680-320 520-320z M120-520L120-680 280-680 280-520 120-520z M320-520L320-680 480-680 480-520 320-520z M520-520L520-680 680-680 680-520 520-520z"/>
+                            </svg>
+                            <span class="menu-text">Activer le mode tuile</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M200-120Q167-120 143.5-143.5 120-167 120-200L120-760Q120-793 143.5-816.5 167-840 200-840L368-840Q381-876 411.5-898 442-920 480-920 518-920 548.5-898 579-876 592-840L760-840Q793-840 816.5-816.5 840-793 840-760L840-492Q821-501 801-507.5 781-514 760-517L760-760 200-760 200-200 442-200Q445-178 451.5-158 458-138 467-120L200-120z M280-280L443-280Q446-301 452.5-321 459-341 467-360L280-360 280-280z M280-440L524-440Q556-470 595.5-490 635-510 680-517L680-520 280-520 280-440z M280-600L680-600 680-680 280-680 280-600z M480-790Q493-790 501.5-798.5 510-807 510-820 510-833 501.5-841.5 493-850 480-850 467-850 458.5-841.5 450-833 450-820 450-807 458.5-798.5 467-790 480-790z M720-40Q637-40 578.5-98.5 520-157 520-240 520-323 578.5-381.5 637-440 720-440 803-440 861.5-381.5 920-323 920-240 920-157 861.5-98.5 803-40 720-40z M700-120L740-120 740-220 840-220 840-260 740-260 740-360 700-360 700-260 600-260 600-220 700-220 700-120z"/>
+                    </svg>
+                    <span class="menu-text">Notes</span>
+                    <svg class="section-arrow" viewBox="0 0 24 24">
+                        <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                    </svg>
+                </div>
+                <div class="submenu">
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M200-120Q167-120 143.5-143.5 120-167 120-200L120-760Q120-793 143.5-816.5 167-840 200-840L368-840Q381-876 411.5-898 442-920 480-920 518-920 548.5-898 579-876 592-840L760-840Q793-840 816.5-816.5 840-793 840-760L840-492Q821-501 801-507.5 781-514 760-517L760-760 200-760 200-200 442-200Q445-178 451.5-158 458-138 467-120L200-120z M280-280L443-280Q446-301 452.5-321 459-341 467-360L280-360 280-280z M280-440L524-440Q556-470 595.5-490 635-510 680-517L680-520 280-520 280-440z M280-600L680-600 680-680 280-680 280-600z M480-790Q493-790 501.5-798.5 510-807 510-820 510-833 501.5-841.5 493-850 480-850 467-850 458.5-841.5 450-833 450-820 450-807 458.5-798.5 467-790 480-790z M720-40Q637-40 578.5-98.5 520-157 520-240 520-323 578.5-381.5 637-440 720-440 803-440 861.5-381.5 920-323 920-240 920-157 861.5-98.5 803-40 720-40z M700-120L740-120 740-220 840-220 840-260 740-260 740-360 700-360 700-260 600-260 600-220 700-220 700-120z"/>
+                            </svg>
+                            <span class="menu-text">Activer le mode note</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M120-120L120-280 280-280 280-120 120-120z M120-320L120-480 280-480 280-320 120-320z M320-120L320-280 480-280 480-120 320-120z M320-320L320-480 480-480 480-320 320-320z M520-120L520-280 680-280 680-120 520-120z M520-320L520-480 680-480 680-320 520-320z M120-520L120-680 280-680 280-520 120-520z M320-520L320-680 480-680 480-520 320-520z M520-520L520-680 680-680 680-520 520-520z"/>
+                            </svg>
+                            <span class="menu-text">Activer le mode tuile</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M560-160L560-680 360-680 360-800 880-800 880-680 680-680 680-160 560-160z M200-160L200-480 80-480 80-600 440-600 440-480 320-480 320-160 200-160z"/>
+                            </svg>
+                            <span class="menu-text">Taille de la police de la note</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M480-80Q398-80 325-111.5 252-143 197-197 143-251 111.5-324 80-397 80-480 80-563 112.5-636 145-709 200-763 256-817 330-848.5 404-880 488-880 568-880 639-852.5 710-825 763-776 816-727 847.5-660 879-593 880-518 880-403 810-341.5 740-280 640-280L566-280Q557-280 553.5-275 550-270 550-264 550-252 565-229.5 580-207 580-178 580-128 552.5-104 525-80 480-80z M260-440Q286-440 303-457 320-474 320-500 320-526 303-543 286-560 260-560 234-560 217-543 200-526 200-500 200-474 217-457 234-440 260-440z M380-600Q406-600 423-617 440-634 440-660 440-686 423-703 406-720 380-720 354-720 337-703 320-686 320-660 320-634 337-617 354-600 380-600z M580-600Q606-600 623-617 640-634 640-660 640-686 623-703 606-720 580-720 554-720 537-703 520-686 520-660 520-634 537-617 554-600 580-600z M700-440Q726-440 743-457 760-474 760-500 760-526 743-543 726-560 700-560 674-560 657-543 640-526 640-500 640-474 657-457 674-440 700-440z M480-160Q489-160 494.5-165 500-170 500-178 500-192 485-211 470-230 470-268 470-310 499-335 528-360 570-360L640-360Q706-360 753-398.5 800-437 800-518 800-639 707.5-719.5 615-800 488-800 352-800 256-707 160-614 160-480 160-347 253.5-253.5 347-160 480-160z"/>
+                            </svg>
+                            <span class="menu-text">Couleur du texte de la note</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M338-241Q354-241 361-251.5 368-262 370-276 372-286 373.5-296 375-306 377-318 379-329 381.5-342 384-355 387-372 410-377 432-380.5 454-384 475-386 498-389 520.5-390.5 543-392 564-394 569-370 574.5-351 580-332 586-315 594-292 603.5-277 613-262 627-251 641-240 657.5-239 674-238 686-248 695-255 695-269 695-283 687-304 682-315 678.5-326.5 675-338 670-350 665-364 661-375.5 657-387 654-398 667-399 677.5-402.5 688-406 695-412 702-418 705.5-426.5 709-435 709-445 709-456 704.5-463.5 700-471 691-476 682-481 668.5-482.5 655-484 638-482 636-500 634-517.5 632-535 629-553 626-570 623.5-588 621-606 616-623 610-649 599-667.5 588-686 574-698 561-709 545.5-714.5 530-720 511-720 489-720 469-711 449-702 429-684 418-673 407-660.5 396-648 386-631 378-637 371.5-639 365-641 357-641 346-641 338.5-635 331-629 331-615 331-597 329-579 327-561 323-543 318-517 312-491.5 306-466 301-440 290-438 281.5-434.5 273-431 267-427 259-422 255.5-414.5 252-407 252-399 252-392 254-386 256-380 261-375 266-370 273-367.5 280-365 289-364 288-352 287.5-341.5 287-331 287-321 287-300 290-285 293-270 299-260 305-250 314.5-245.5 324-241 338-241z M409-464Q415-487 423-508.5 431-530 441-553 457-590 475-612 493-634 507-634 518-634 526-617 534-600 539-566 542-546 544-523 546-500 548-480 531-479 513-477.5 495-476 478-474 461-472 443.5-469.5 426-467 409-464z M160-80Q127-80 103.5-103.5 80-127 80-160L80-800Q80-833 103.5-856.5 127-880 160-880L800-880Q833-880 856.5-856.5 880-833 880-800L880-160Q880-127 856.5-103.5 833-80 800-80L160-80z M160-160L800-160 800-800 160-800 160-160z M160-160L160-800 160-160z"/>
+                            </svg>
+                            <span class="menu-text">Police de la note</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                            </svg>
+                            <span class="menu-text">Supprimer la note</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="menu-section">
+                <div class="menu-section-header">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M582-298 L440-440 v-200 h80 v167 l118,118 -56,57 Z M440-720 v-80 h80 v80 h-80 Z M720-440 v-80 h80 v80 h-80 Z M440-160 v-80 h80 v80 h-80 Z M160-440 v-80 h80 v80 h-80 Z M480-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
+                    </svg>
+                    <span class="menu-text">Afficher l'horloge</span>
+                    <svg class="section-arrow" viewBox="0 0 24 24">
+                        <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                    </svg>
+                </div>
+                <div class="submenu">
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M582,-298 L440,-440 v-200 h80 v167 l118,118 -56,57 Z M440,-720 v-80 h80 v80 h-80 Z M720,-440 v-80 h80 v80 h-80 Z M440,-160 v-80 h80 v80 h-80 Z M160,-440 v-80 h80 v80 h-80 Z M480,-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
+                            </svg>
+                            <span class="menu-text">Masquer l'horloge</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M120,-120 L120,-360 L200,-360 L200,-256 L324,-380 L380,-324 L256,-200 L360,-200 L360,-120 L120,-120 Z M600,-120 L600,-200 L704,-200 L580,-324 L636,-380 L760,-256 L760,-360 L840,-360 L840,-120 L600,-120 Z M324,-580 L200,-704 L200,-600 L120,-600 L120,-840 L360,-840 L360,-760 L256,-760 L380,-636 L324,-580 Z M636,-580 L580,-636 L704,-760 L600,-760 L600,-840 L840,-840 L840,-600 L760,-600 L760,-704 L636,-580 Z"/>
+                            </svg>
+                            <span class="menu-text">Taille de l'horloge</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
+                            </svg>
+                            <span class="menu-text">Personnaliser l'horloge</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M240,-80 q-33,0 -56.5,-23.5 T160,-160 v-400 q0,-33 23.5,-56.5 T240,-640 h40 v-80 q0,-83 58.5,-141.5 T480,-920 q83,0 141.5,58.5 T680,-720 v80 h40 q33,0 56.5,23.5 T800,-560 v400 q0,33 -23.5,56.5 T720,-80 H240 Z m0,-80 h480 v-400 H240 v400 Z m240,-120 q33,0 56.5,-23.5 T560,-360 q0,-33 -23.5,-56.5 T480,-440 q-33,0 -56.5,23.5 T400,-360 q0,33 23.5,56.5 T480,-280 Z M360,-640 h240 v-80 q0,-50 -35,-85 t-85,-35 q-50,0 -85,35 t-35,85 v80 Z m-120,480 v-400 400 Z"/>
+                            </svg>
+                            <span class="menu-text">Verrouiller l'horloge</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="menu-separator"></div>
+
+            <div class="menu-item disabled">
+                <svg class="menu-icon" viewBox="0 -960 960 960">
+                    <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                </svg>
+                <span class="menu-text">Édition</span>
+            </div>
+
+            <button class="menu-item menu-item-with-help">
+                <div class="menu-item-content">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M520-400L600-400 600-520 720-520 720-600 600-600 600-720 520-720 520-600 400-600 400-520 520-520 520-400z M320-240Q287-240 263.5-263.5 240-287 240-320L240-800Q240-833 263.5-856.5 287-880 320-880L800-880Q833-880 856.5-856.5 880-833 880-800L880-320Q880-287 856.5-263.5 833-240 800-240L320-240z M320-320L800-320 800-800 320-800 320-320z M160-80Q127-80 103.5-103.5 80-127 80-160L80-720 160-720 160-160 720-160 720-80 160-80z M320-800L320-320 320-800z"/>
+                    </svg>
+                    <span class="menu-text">Dupliquer la bulle</span>
+                </div>
+                <div class="help-button">?</div>
+            </button>
+
+            <button class="menu-item menu-item-with-help">
+                <div class="menu-item-content">
+                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                    </svg>
+                    <span class="menu-text">Supprimer</span>
+                </div>
+                <div class="help-button">?</div>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.help-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        document.querySelectorAll('.menu-item:not(.disabled)').forEach(item => {
+            item.addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) {
+                    const text = this.querySelector('.menu-text').textContent;
+                    console.log(`Action cliquée: ${text}`);
+                }
+            });
+        });
+
+        document.querySelectorAll('.menu-section-header').forEach(header => {
+            header.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const section = this.parentElement;
+                const submenu = section.querySelector('.submenu');
+                
+                if (submenu) {
+                    document.querySelectorAll('.menu-section').forEach(otherSection => {
+                        if (otherSection !== section) {
+                            otherSection.classList.remove('open');
+                        }
+                    });
+                    
+                    section.classList.toggle('open');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.context-menu')) {
+                document.querySelectorAll('.menu-section').forEach(section => {
+                    section.classList.remove('open');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Ajuster Position Étiquette - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .demo-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-description {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Canvas adapté pour la fenêtre de personnalisation */
+        .demo-canvas {
+            /* Hérite de demo-elements.css, adaptations spécifiques */
+            width: 600px;
+            height: 400px;
+        }
+
+        /* Menu contextuel complet du projet */
+        .context-menu {
+            background: #26292C;
+            border: 2px solid #444;
+            border-radius: 14px;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
+            padding: 8px;
+            min-width: 350px;
+            max-width: 350px;
+            min-height: 180px;
+            height: 500px;
+            font-size: 15px;
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+            z-index: 1000;
+            position: absolute;
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(1);
+            left: 254px;
+            top: 139px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: transparent;
+            width: calc(100% - 8px);
+            text-align: left;
+            font-size: 16px;
+            font-weight: bold;
+            color: #F0F0F0;
+            transition: all 0.2s;
+            gap: 8px;
+            border-radius: 6px;
+            margin: 2px 4px;
+            min-height: 30px;
+        }
+        .menu-item:hover:not(.disabled) {
+            background: #2A2D31;
+            color: cyan;
+        }
+        .menu-item.disabled {
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.6;
+            font-weight: normal;
+            font-size: 15px;
+            background: transparent;
+        }
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            fill: #F0F0F0;
+            margin: 0 5px 0 5px;
+            color: #F0F0F0;
+            opacity: 1;
+            z-index: 10;
+        }
+        .menu-text {
+            flex: 1;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 5px;
+        }
+
+        /* Section headers avec flèche - comportement submenu */
+        .menu-section {
+            position: relative;
+        }
+        .menu-section-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: transparent;
+            width: calc(100% - 8px);
+            text-align: left;
+            font-size: 17px;
+            font-weight: bold;
+            color: #F0F0F0;
+            transition: all 0.2s;
+            gap: 8px;
+            border-radius: 6px;
+            margin: 2px 4px;
+            min-height: 30px;
+        }
+        .menu-section-header:hover {
+            background: #2A2D31;
+            color: cyan;
+        }
+        .section-arrow {
+            width: 12px;
+            height: 12px;
+            fill: #F0F0F0;
+            margin-left: auto;
+            transition: transform 0.2s;
+        }
+        
+        /* Sous-menu séparé */
+        .submenu {
+            position: absolute;
+            left: 100%;
+            top: 0;
+            background: #26292C;
+            border: 2px solid #444;
+            border-radius: 14px;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
+            padding: 8px;
+            min-width: 200px;
+            font-size: 15px;
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+            z-index: 1001;
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.2s ease;
+            margin-left: 5px;
+        }
+        .menu-section.open .submenu {
+            visibility: visible;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Séparateurs */
+        .menu-separator {
+            height: 1px;
+            background: #444;
+            margin: 4px 8px;
+        }
+
+        /* Boutons d'aide */
+        .help-button {
+            width: 28px;
+            height: 28px;
+            background: #505050;
+            border: 2px solid #FFFFFF;
+            border-radius: 14px;
+            color: #FFFFFF;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            transition: all 0.2s ease;
+        }
+        .help-button:hover {
+            background: #005EA2;
+        }
+        .help-button:active {
+            background: #003C74;
+        }
+
+        /* Styles pour les éléments avec aide */
+        .menu-item-with-help {
+            justify-content: space-between;
+        }
+        .menu-item-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+        }
+
+        /* Poignée de redimensionnement (adaptations pour cette démo) */
+        .resize-handle {
+            /* Override de demo-elements.css pour cette démo */
+            width: 12px;
+            height: 12px;
+            left: 243px !important;
+            top: 133px !important;
+            z-index: 5;
+        }
+
+        /* Fenêtre de dialogue de position */
+        .position-dialog {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            z-index: 2000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .dialog-border {
+            background: #ffffff;
+            border: 2px solid #c0c0c0;
+            border-radius: 25px;
+            padding: 8px;
+            width: 400px;
+            min-width: 400px;
+            max-width: 600px;
+            min-height: 275px;
+            max-height: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .dialog-content {
+            margin: 12px;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 15px;
+            min-height: 235px;
+        }
+
+        .dialog-title {
+            text-align: center;
+            font-weight: bold;
+            color: #000000;
+            font-size: 24px;
+            margin: 20px 0;
+            font-family: 'Segoe UI Variable';
+        }
+
+        .dialog-inputs {
+            margin: 0 0 10px 0;
+        }
+
+        .dialog-inputs .input-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dialog-inputs .input-label {
+            color: #000000;
+            font-size: 16px;
+            font-family: 'Segoe UI Variable';
+            margin: 10px 10px 10px 10px;
+            text-align: left;
+        }
+
+        .dialog-inputs .input-textbox {
+            height: 30px;
+            background: #f0f0f0;
+            border: 1px solid #c0c0c0;
+            color: #000000;
+            font-size: 16px;
+            font-family: 'Segoe UI Variable';
+            padding: 5px;
+            margin: 5px 10px;
+            border-radius: 0;
+            outline: none;
+        }
+
+        .dialog-inputs .input-textbox:focus {
+            border-color: #0078d4;
+            background: #ffffff;
+        }
+
+        .dialog-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .dialog-button {
+            width: 100px;
+            height: 30px;
+            background: #f0f0f0;
+            border: 1px solid #c0c0c0;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #000000;
+            cursor: pointer;
+            font-family: 'Segoe UI Variable';
+        }
+
+        .dialog-button:hover {
+            background: #e0e0e0;
+        }
+
+        .dialog-button:active {
+            background: #d0d0d0;
+        }
+
+        .dialog-button.ok-button {
+            font-weight: bold;
+        }
+
+        /* Curseur de souris avec z-index élevé */
+        .mouse-cursor {
+            z-index: 1500 !important;
+        }
+
+        /* Position de la souris ajustée pour le canvas agrandi */
+        .mouse-zero-click,
+        .mouse-left-click,
+        .mouse-right-click {
+            left: 555px !important;
+            top: 25px !important;
+        }
+
+
+        .back-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Démonstration - Ajuster Position Étiquette</h1>
+        <p class="demo-description">
+            Cette démonstration montre comment accéder aux options de l'étiquette et ajuster précisément sa position via la fenêtre de dialogue. Effectuez un clic droit sur la poignée pour ouvrir le menu, sélectionnez "Options de l'étiquette" puis "Ajuster la position de l'étiquette".
+        </p>
+        
+        <div class="demo-canvas-container">
+            <div class="demo-canvas">
+                <!-- Bordure dynamique -->
+                <div class="dynamic-border"></div>
+
+                <!-- Étiquette centrée automatiquement -->
+                <div class="label-border">
+                    <div class="label-text">Ajuster la position de l'étiquette</div>
+                </div>
+
+                <!-- Curseur de souris -->
+                <div class="mouse-cursor"></div>
+
+                <!-- Poignée de redimensionnement -->
+                <div class="resize-handle"></div>
+
+                <!-- Cercle d'animation de clic -->
+                <div class="click-animation"></div>
+
+                <!-- Souris avec boutons (état normal) -->
+                <div class="mouse-zero-click"></div>
+
+                <!-- Souris avec bouton droit coloré (pour les clics) -->
+                <div class="mouse-right-click"></div>
+
+                <!-- Souris avec bouton gauche coloré (pour les clics) -->
+                <div class="mouse-left-click"></div>
+
+                <!-- Menu contextuel complet de référence -->
+                <div class="context-menu">
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/>
+                            </svg>
+                            <span class="menu-text">Ouvrir dossier CustomDesk</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M480-80Q398-80 325-111.5 252-143 197-197 143-251 111.5-324 80-397 80-480 80-563 112.5-636 145-709 200-763 256-817 330-848.5 404-880 488-880 568-880 639-852.5 710-825 763-776 816-727 847.5-660 879-593 880-518 880-403 810-341.5 740-280 640-280L566-280Q557-280 553.5-275 550-270 550-264 550-252 565-229.5 580-207 580-178 580-128 552.5-104 525-80 480-80z M260-440Q286-440 303-457 320-474 320-500 320-526 303-543 286-560 260-560 234-560 217-543 200-526 200-500 200-474 217-457 234-440 260-440z M380-600Q406-600 423-617 440-634 440-660 440-686 423-703 406-720 380-720 354-720 337-703 320-686 320-660 320-634 337-617 354-600 380-600z M580-600Q606-600 623-617 640-634 640-660 640-686 623-703 606-720 580-720 554-720 537-703 520-686 520-660 520-634 537-617 554-600 580-600z M700-440Q726-440 743-457 760-474 760-500 760-526 743-543 726-560 700-560 674-560 657-543 640-526 640-500 640-474 657-457 674-440 700-440z M480-160Q489-160 494.5-165 500-170 500-178 500-192 485-211 470-230 470-268 470-310 499-335 528-360 570-360L640-360Q706-360 753-398.5 800-437 800-518 800-639 707.5-719.5 615-800 488-800 352-800 256-707 160-614 160-480 160-347 253.5-253.5 347-160 480-160z"/>
+                            </svg>
+                            <span class="menu-text">Personnaliser la bulle</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+
+                    <div class="menu-section">
+                        <div class="menu-section-header">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M420-160L420-680 200-680 200-800 760-800 760-680 540-680 540-160 420-160z"/>
+                            </svg>
+                            <span class="menu-text">Personnaliser le titre</span>
+                            <svg class="section-arrow" viewBox="0 0 24 24">
+                                <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                            </svg>
+                        </div>
+                        <div class="submenu">
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                                    </svg>
+                                    <span class="menu-text">Renommer l'étiquette</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-header">
+                            <svg class="menu-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1c0 .33.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66Z"/>
+                            </svg>
+                            <span class="menu-text">Options de l'étiquette</span>
+                            <svg class="section-arrow" viewBox="0 0 24 24">
+                                <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                            </svg>
+                        </div>
+                        <div class="submenu">
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h560v-280h80v280q0 33-23.5 56.5T760-120H200Zm188-212-56-56 372-372H560v-80h280v280h-80v-144L388-332Z"/>
+                                    </svg>
+                                    <span class="menu-text">Ajuster la position de l'étiquette</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M240-400h120v-80H240v80Zm200 0h280v-80H440v80ZM240-240h120v-80H240v80Zm200 0h280v-80H440v80ZM240-560h120v-80H240v80Zm200 0h280v-80H440v80ZM160-80q-33 0-56.5-23.5T80-160v-640q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v640q0 33-23.5 56.5T800-80H160Zm0-80h640v-640H160v640Z"/>
+                                    </svg>
+                                    <span class="menu-text">Masquer l'étiquette</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-header">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M473-80Q449-80 427-89 405-98 388-115L184-320 214-351Q230-367 251.5-372.5 273-378 294-371.5L360-352 360-679Q360-696 371.5-707.5 383-719 400-719 417-719 428.5-707.5 440-696 440-680L440-247 343-274 445-172Q450-167 457.5-163.5 465-160 473-160L640-160Q673-160 696.5-183.5 720-207 720-240L720-400Q720-417 731.5-428.5 743-440 760-440 777-440 788.5-428.5 800-417 800-400L800-240Q800-174 753-127 706-80 640-80L473-80z M480-360L480-520Q480-537 491.5-548.5 503-560 520-560 537-560 548.5-548.5 560-537 560-520L560-360 480-360z M600-360L600-480Q600-497 611.5-508.5 623-520 640-520 657-520 668.5-508.5 680-497 680-480L680-360 600-360z M880-440L680-440 680-500 796-500Q730-558 649-589.5 568-621 480-621 392-621 311-589.5 230-558 164-500L280-500 280-440 80-440 80-640 140-640 140-559Q212-618 299-648.5 386-679 480-679 574-679 661-648.5 748-618 820-559L820-640 880-640 880-440z"/>
+                            </svg>
+                            <span class="menu-text">Activer Glisser/Déposer</span>
+                            <svg class="section-arrow" viewBox="0 0 24 24">
+                                <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                            </svg>
+                        </div>
+                        <div class="submenu">
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M473-80Q449-80 427-89 405-98 388-115L184-320 214-351Q230-367 251.5-372.5 273-378 294-371.5L360-352 360-679Q360-696 371.5-707.5 383-719 400-719 417-719 428.5-707.5 440-696 440-680L440-247 343-274 445-172Q450-167 457.5-163.5 465-160 473-160L640-160Q673-160 696.5-183.5 720-207 720-240L720-400Q720-417 731.5-428.5 743-440 760-440 777-440 788.5-428.5 800-417 800-400L800-240Q800-174 753-127 706-80 640-80L473-80z"/>
+                                    </svg>
+                                    <span class="menu-text">Activer le glisser-déposer</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M120-120 L120-360 L200-360 L200-256 L324-380 L380-324 L256-200 L360-200 L360-120 L120-120 Z M600-120 L600-200 L704-200 L580-324 L636-380 L760-256 L760-360 L840-360 L840-120 L600-120 Z M324-580 L200-704 L200-600 L120-600 L120-840 L360-840 L360-760 L256-760 L380-636 L324-580 Z M636-580 L580-636 L704-760 L600-760 L600-840 L840-840 L840-600 L760-600 L760-704 L636-580 Z"/>
+                                    </svg>
+                                    <span class="menu-text">Taille des icônes</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M480-80Q398-80 325-111.5 252-143 197-197 143-251 111.5-324 80-397 80-480 80-563 112.5-636 145-709 200-763 256-817 330-848.5 404-880 488-880 568-880 639-852.5 710-825 763-776 816-727 847.5-660 879-593 880-518 880-403 810-341.5 740-280 640-280L566-280Q557-280 553.5-275 550-270 550-264 550-252 565-229.5 580-207 580-178 580-128 552.5-104 525-80 480-80z M260-440Q286-440 303-457 320-474 320-500 320-526 303-543 286-560 260-560 234-560 217-543 200-526 200-500 200-474 217-457 234-440 260-440z M380-600Q406-600 423-617 440-634 440-660 440-686 423-703 406-720 380-720 354-720 337-703 320-686 320-660 320-634 337-617 354-600 380-600z M580-600Q606-600 623-617 640-634 640-660 640-686 623-703 606-720 580-720 554-720 537-703 520-686 520-660 520-634 537-617 554-600 580-600z M700-440Q726-440 743-457 760-474 760-500 760-526 743-543 726-560 700-560 674-560 657-543 640-526 640-500 640-474 657-457 674-440 700-440z M480-160Q489-160 494.5-165 500-170 500-178 500-192 485-211 470-230 470-268 470-310 499-335 528-360 570-360L640-360Q706-360 753-398.5 800-437 800-518 800-639 707.5-719.5 615-800 488-800 352-800 256-707 160-614 160-480 160-347 253.5-253.5 347-160 480-160z"/>
+                                    </svg>
+                                    <span class="menu-text">Couleur du texte des icônes</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M560-160L560-680 360-680 360-800 880-800 880-680 680-680 680-160 560-160z M200-160L200-480 80-480 80-600 440-600 440-480 320-480 320-160 200-160z"/>
+                                    </svg>
+                                    <span class="menu-text">Taille du texte des icônes</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M120-120L120-280 280-280 280-120 120-120z M120-320L120-480 280-480 280-320 120-320z M320-120L320-280 480-280 480-120 320-120z M320-320L320-480 480-480 480-320 320-320z M520-120L520-280 680-280 680-120 520-120z M520-320L520-480 680-480 680-320 520-320z M120-520L120-680 280-680 280-520 120-520z M320-520L320-680 480-680 480-520 320-520z M520-520L520-680 680-680 680-520 520-520z"/>
+                                    </svg>
+                                    <span class="menu-text">Activer le mode tuile</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-header">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M200-120Q167-120 143.5-143.5 120-167 120-200L120-760Q120-793 143.5-816.5 167-840 200-840L368-840Q381-876 411.5-898 442-920 480-920 518-920 548.5-898 579-876 592-840L760-840Q793-840 816.5-816.5 840-793 840-760L840-492Q821-501 801-507.5 781-514 760-517L760-760 200-760 200-200 442-200Q445-178 451.5-158 458-138 467-120L200-120z M280-280L443-280Q446-301 452.5-321 459-341 467-360L280-360 280-280z M280-440L524-440Q556-470 595.5-490 635-510 680-517L680-520 280-520 280-440z M280-600L680-600 680-680 280-680 280-600z M480-790Q493-790 501.5-798.5 510-807 510-820 510-833 501.5-841.5 493-850 480-850 467-850 458.5-841.5 450-833 450-820 450-807 458.5-798.5 467-790 480-790z M720-40Q637-40 578.5-98.5 520-157 520-240 520-323 578.5-381.5 637-440 720-440 803-440 861.5-381.5 920-323 920-240 920-157 861.5-98.5 803-40 720-40z M700-120L740-120 740-220 840-220 840-260 740-260 740-360 700-360 700-260 600-260 600-220 700-220 700-120z"/>
+                            </svg>
+                            <span class="menu-text">Notes</span>
+                            <svg class="section-arrow" viewBox="0 0 24 24">
+                                <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                            </svg>
+                        </div>
+                        <div class="submenu">
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M200-120Q167-120 143.5-143.5 120-167 120-200L120-760Q120-793 143.5-816.5 167-840 200-840L368-840Q381-876 411.5-898 442-920 480-920 518-920 548.5-898 579-876 592-840L760-840Q793-840 816.5-816.5 840-793 840-760L840-492Q821-501 801-507.5 781-514 760-517L760-760 200-760 200-200 442-200Q445-178 451.5-158 458-138 467-120L200-120z M280-280L443-280Q446-301 452.5-321 459-341 467-360L280-360 280-280z M280-440L524-440Q556-470 595.5-490 635-510 680-517L680-520 280-520 280-440z M280-600L680-600 680-680 280-680 280-600z M480-790Q493-790 501.5-798.5 510-807 510-820 510-833 501.5-841.5 493-850 480-850 467-850 458.5-841.5 450-833 450-820 450-807 458.5-798.5 467-790 480-790z M720-40Q637-40 578.5-98.5 520-157 520-240 520-323 578.5-381.5 637-440 720-440 803-440 861.5-381.5 920-323 920-240 920-157 861.5-98.5 803-40 720-40z M700-120L740-120 740-220 840-220 840-260 740-260 740-360 700-360 700-260 600-260 600-220 700-220 700-120z"/>
+                                    </svg>
+                                    <span class="menu-text">Activer le mode note</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="menu-section">
+                        <div class="menu-section-header">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M582-298 L440-440 v-200 h80 v167 l118,118 -56,57 Z M440-720 v-80 h80 v80 h-80 Z M720-440 v-80 h80 v80 h-80 Z M440-160 v-80 h80 v80 h-80 Z M160-440 v-80 h80 v80 h-80 Z M480-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
+                            </svg>
+                            <span class="menu-text">Afficher l'horloge</span>
+                            <svg class="section-arrow" viewBox="0 0 24 24">
+                                <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
+                            </svg>
+                        </div>
+                        <div class="submenu">
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M582,-298 L440,-440 v-200 h80 v167 l118,118 -56,57 Z M440,-720 v-80 h80 v80 h-80 Z M720-440 v-80 h80 v80 h-80 Z M440-160 v-80 h80 v80 h-80 Z M160-440 v-80 h80 v80 h-80 Z M480,-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
+                                    </svg>
+                                    <span class="menu-text">Masquer l'horloge</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M120-120 L120-360 L200-360 L200-256 L324-380 L380-324 L256-200 L360-200 L360-120 L120-120 Z M600-120 L600-200 L704-200 L580-324 L636-380 L760-256 L760-360 L840-360 L840-120 L600-120 Z M324-580 L200-704 L200-600 L120-600 L120-840 L360-840 L360-760 L256-760 L380-636 L324-580 Z M636-580 L580-636 L704-760 L600-760 L600-840 L840-840 L840-600 L760-600 L760-704 L636-580 Z"/>
+                                    </svg>
+                                    <span class="menu-text">Taille de l'horloge</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
+                                    </svg>
+                                    <span class="menu-text">Personnaliser l'horloge</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M240,-80 q-33,0 -56.5,-23.5 T160,-160 v-400 q0,-33 23.5,-56.5 T240,-640 h40 v-80 q0,-83 58.5,-141.5 T480,-920 q83,0 141.5,58.5 T680,-720 v80 h40 q33,0 56.5,23.5 T800,-560 v400 q0,33 -23.5,56.5 T720,-80 H240 Z m0,-80 h480 v-400 H240 v400 Z m240,-120 q33,0 56.5,-23.5 T560,-360 q0,-33 -23.5,-56.5 T480,-440 q-33,0 -56.5,23.5 T400,-360 q0,33 23.5,56.5 T480,-280 Z M360,-640 h240 v-80 q0,-50 -35,-85 t-85,-35 q-50,0 -85,35 t-35,85 v80 Z m-120,480 v-400 400 Z"/>
+                                    </svg>
+                                    <span class="menu-text">Verrouiller l'horloge</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="menu-separator"></div>
+
+                    <div class="menu-item disabled">
+                        <svg class="menu-icon" viewBox="0 -960 960 960">
+                            <path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/>
+                        </svg>
+                        <span class="menu-text">Édition</span>
+                    </div>
+
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M520-400L600-400 600-520 720-520 720-600 600-600 600-720 520-720 520-600 400-600 400-520 520-520 520-400z M320-240Q287-240 263.5-263.5 240-287 240-320L240-800Q240-833 263.5-856.5 287-880 320-880L800-880Q833-880 856.5-856.5 880-833 880-800L880-320Q880-287 856.5-263.5 833-240 800-240L320-240z M320-320L800-320 800-800 320-800 320-320z M160-80Q127-80 103.5-103.5 80-127 80-160L80-720 160-720 160-160 720-160 720-80 160-80z M320-800L320-320 320-800z"/>
+                            </svg>
+                            <span class="menu-text">Dupliquer la bulle</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+
+                    <button class="menu-item menu-item-with-help">
+                        <div class="menu-item-content">
+                            <svg class="menu-icon" viewBox="0 -960 960 960">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                            </svg>
+                            <span class="menu-text">Supprimer</span>
+                        </div>
+                        <div class="help-button">?</div>
+                    </button>
+                </div>
+
+                <!-- Fenêtre de dialogue de position -->
+                <div class="position-dialog" id="positionDialog">
+                    <div class="dialog-border">
+                        <div class="dialog-content">
+                            <div class="dialog-title">Position de l'étiquette</div>
+                            <div class="dialog-inputs">
+                                <div class="input-row">
+                                    <div class="input-label">Décalage horizontal :</div>
+                                    <div class="input-container">
+                                        <input id="dialogXInput" class="input-textbox" type="text" value="0" />
+                                    </div>
+                                </div>
+                                <div class="input-row">
+                                    <div class="input-label">Décalage vertical :</div>
+                                    <div class="input-container">
+                                        <input id="dialogYInput" class="input-textbox" type="text" value="0" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dialog-actions">
+                                <button class="dialog-button">Annuler</button>
+                                <button id="dialogOkButton" class="dialog-button ok-button">OK</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contrôle de vitesse standardisé -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+        </div>
+
+        <button class="back-button" onclick="window.close()">Fermer</button>
+    </div>
+
+    <script>
+        // Variables pour l'animation avec standardisation
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let baseInterval = 50; // Intervalle de base pour cette démo
+        const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
+
+        // Éléments DOM
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseRightClick = document.querySelector('.mouse-right-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const clickAnimation = document.querySelector('.click-animation');
+        const contextMenu = document.querySelector('.context-menu');
+        const resizeHandle = document.querySelector('.resize-handle');
+        const positionDialog = document.querySelector('#positionDialog');
+        const menuItems = document.querySelectorAll('.menu-item');
+        const menuSections = document.querySelectorAll('.menu-section');
+        const submenus = document.querySelectorAll('.submenu');
+
+        function startAnimation() {
+            function runAnimationFrame() {
+                animationPhase++;
+
+                // Phase 1: Curseur se déplace vers la poignée (vitesse standardisée)
+                const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
+                if (animationPhase <= moveToHandleFrames) {
+                    const progress = animationPhase / moveToHandleFrames;
+                    const startX = 143, startY = 92;
+                    const endX = 243, endY = 133;
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                }
+                // Phase 2: Animation de clic droit et expansion de la poignée
+                else if (animationPhase <= moveToHandleFrames + 23) {
+                    const clickPhase = animationPhase - moveToHandleFrames;
+                    
+                    // Animation de clic très rapide
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (239 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (129 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (236 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (126 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+
+                    // Changement de souris pour le clic droit (synchronisé)
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseRightClick.style.visibility = 'visible';
+                    }
+                    
+                    // Retour immédiat à la souris normale après le clic
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseRightClick.style.visibility = 'hidden';
+                    }
+
+                    // Animation d'expansion et rétraction de la poignée
+                    if (clickPhase >= 3) {
+                        const expandPhase = clickPhase - 3;
+                        if (expandPhase <= 3) {
+                            const scale = 1 + (expandPhase * 0.3);
+                            resizeHandle.style.transform = `scale(${scale})`;
+                            resizeHandle.style.background = '#ffffff';
+                            resizeHandle.style.border = '2px solid #ffffff';
+                        } else if (expandPhase <= 6) {
+                            const shrinkPhase = expandPhase - 3;
+                            const scale = 1.9 - (shrinkPhase * 0.3);
+                            resizeHandle.style.transform = `scale(${scale})`;
+                            resizeHandle.style.background = '#00ffff';
+                            resizeHandle.style.border = '1px solid #000';
+                        } else {
+                            resizeHandle.style.transform = 'scale(1)';
+                            resizeHandle.style.background = '#ffffff';
+                            resizeHandle.style.border = '1px solid #000';
+                        }
+                    }
+                }
+                // Phase 3: Menu apparaît
+                else if (animationPhase <= moveToHandleFrames + 27) {
+                    const menuProgress = (animationPhase - (moveToHandleFrames + 23)) / 4;
+                    contextMenu.style.visibility = 'visible';
+                    contextMenu.style.opacity = menuProgress;
+                    contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
+                }
+                // Phase 4: Menu visible
+                else if (animationPhase <= moveToHandleFrames + 33) {
+                    contextMenu.style.opacity = '1';
+                    contextMenu.style.transform = 'scale(1)';
+                }
+                // Phase 5: Curseur se déplace vers "Options de l'étiquette" (vitesse standardisée)
+                else {
+                    const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (302-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
+                    if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames) {
+                        const progress = (animationPhase - (moveToHandleFrames + 33)) / moveToMenuFrames;
+                        const startX = 243, startY = 133;
+                        const endX = 429, endY = 320; // Centre exact de l'option "Options de l'étiquette" (4ème option)
+                        mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                        mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                    }
+                    // Phase 6: Clic sur "Options de l'étiquette"
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
+                        const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
+                    
+                    // Animation de clic
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (425 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (298 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (422 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (295 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+
+                    // Changement de souris au clic gauche (synchronisé)
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    
+                    // Retour immédiat à la souris normale après le clic
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+
+                    // Effet hover sur l'option "Options de l'étiquette" (4ème option - section)
+                    if (clickPhase >= 1) {
+                        menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
+                    }
+                    }
+                    // Phase 7: Sous-menu "Options de l'étiquette" s'ouvre
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 15) {
+                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 8)) / 7;
+                        if (submenus[1]) {
+                            submenus[1].style.visibility = 'visible';
+                            submenus[1].style.opacity = progress;
+                            submenus[1].style.transform = `scale(${0.8 + progress * 0.2})`;
+                        }
+                    }
+                    // Phase 8: Sous-menu visible
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25) {
+                        if (submenus[1]) {
+                            submenus[1].style.visibility = 'visible';
+                            submenus[1].style.opacity = '1';
+                            submenus[1].style.transform = 'scale(1)';
+                        }
+                    }
+                    // Phase 9: Curseur se déplace vers "Ajuster la position de l'étiquette"
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 35) {
+                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 25)) / 10;
+                        const startX = 429, startY = 320;
+                        const endX = 750, endY = 320; // Centre du sous-menu "Ajuster la position de l'étiquette"
+                        mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                        mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                    }
+                    // Phase 10: Clic sur "Ajuster la position de l'étiquette"
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 43) {
+                        const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 35);
+                    
+                    // Animation de clic
+                    if (clickPhase <= 2) {
+                        clickAnimation.style.visibility = 'visible';
+                        clickAnimation.style.opacity = '0.5';
+                        clickAnimation.style.width = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.height = (8 + clickPhase * 3) + 'px';
+                        clickAnimation.style.left = (546 - clickPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (298 - clickPhase * 1.5) + 'px';
+                    } else if (clickPhase <= 4) {
+                        const shrinkPhase = clickPhase - 2;
+                        clickAnimation.style.width = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.height = (14 - shrinkPhase * 3) + 'px';
+                        clickAnimation.style.left = (543 + shrinkPhase * 1.5) + 'px';
+                        clickAnimation.style.top = (295 + shrinkPhase * 1.5) + 'px';
+                    } else {
+                        clickAnimation.style.opacity = '0';
+                    }
+
+                    // Changement de souris au clic gauche (synchronisé)
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                    
+                    // Retour immédiat à la souris normale après le clic
+                    if (clickPhase >= 4) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+
+                    // Effet hover sur "Ajuster la position de l'étiquette"
+                    if (clickPhase >= 1) {
+                        const submenuItem = submenus[1].querySelector('.menu-item');
+                        if (submenuItem) {
+                            submenuItem.style.background = '#0078D4';
+                        }
+                    }
+                    }
+                    // Phase 11: Menu et sous-menu disparaissent, fenêtre de dialogue apparaît
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 55) {
+                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 43)) / 12;
+                        contextMenu.style.opacity = 1 - progress;
+                        contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
+                        if (submenus[1]) {
+                            submenus[1].style.opacity = 1 - progress;
+                            submenus[1].style.transform = `scale(${1 - progress * 0.2})`;
+                        }
+                        
+                        if (progress >= 0.5) {
+                            positionDialog.style.visibility = 'visible';
+                            positionDialog.style.opacity = (progress - 0.5) * 2;
+                            positionDialog.style.transform = `translate(-50%, -50%) scale(${0.8 + (progress - 0.5) * 0.4})`;
+                        }
+                    }
+                    // Phase 12: Fenêtre de dialogue visible
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 75) {
+                        positionDialog.style.visibility = 'visible';
+                        positionDialog.style.opacity = '1';
+                        positionDialog.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
+                    // Phase 13: Fenêtre de dialogue se ferme
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 85) {
+                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 75)) / 10;
+                        positionDialog.style.opacity = 1 - progress;
+                        positionDialog.style.transform = `translate(-50%, -50%) scale(${1 - progress * 0.2})`;
+                        if (progress >= 0.8) {
+                            positionDialog.style.visibility = 'hidden';
+                        }
+                    }
+                    // Reset immédiat après fermeture de la fenêtre
+                    else {
+                    animationPhase = 0;
+                    mouseCursor.style.left = '143px';
+                    mouseCursor.style.top = '92px';
+                    contextMenu.style.visibility = 'hidden';
+                    contextMenu.style.opacity = '0';
+                    contextMenu.style.transform = 'scale(0.8)';
+                    positionDialog.style.opacity = '0';
+                    positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    clickAnimation.style.visibility = 'hidden';
+                    clickAnimation.style.opacity = '0';
+                    resizeHandle.style.transform = 'scale(1)';
+                    resizeHandle.style.background = '#ffffff';
+                    resizeHandle.style.border = '1px solid #000';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                    menuSections[1].querySelector('.menu-section-header').style.background = 'transparent';
+                    positionDialog.style.visibility = 'hidden';
+                    positionDialog.style.opacity = '0';
+                    positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    
+                    // Reset des sous-menus
+                    submenus.forEach(submenu => {
+                        submenu.style.visibility = 'hidden';
+                        submenu.style.opacity = '0';
+                        submenu.style.transform = 'scale(0.8)';
+                    });
+                    
+                    // Reset des éléments de sous-menu
+                    submenus.forEach(submenu => {
+                        const submenuItems = submenu.querySelectorAll('.menu-item');
+                        submenuItems.forEach(item => {
+                            item.style.background = 'transparent';
+                        });
+                    });
+                    }
+                }
+                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                const currentInterval = Math.round(baseInterval / animationSpeed);
+                animationTimer = setTimeout(runAnimationFrame, currentInterval);
+            }
+            
+            // Démarrer la première frame
+            runAnimationFrame();
+        }
+
+        function restartAnimationWithNewSpeed() {
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+            }
+            startAnimation();
+        }
+
+        // Fonction pour changer la vitesse sans restart (réactivité maximale)
+        function changeAnimationSpeed(newSpeed) {
+            animationSpeed = newSpeed;
+            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+
+        // Fonctions pour la fenêtre de dialogue de position
+        function onDialogInputChange() {
+            const xInput = document.getElementById('dialogXInput');
+            const yInput = document.getElementById('dialogYInput');
+            
+            if (xInput && yInput) {
+                const x = parseInt(xInput.value) || 0;
+                const y = parseInt(yInput.value) || 0;
+                console.log(`Position mise à jour: X=${x}, Y=${y}`);
+            }
+        }
+
+        function onDialogOkClick() {
+            const xInput = document.getElementById('dialogXInput');
+            const yInput = document.getElementById('dialogYInput');
+            
+            if (xInput && yInput) {
+                const x = parseInt(xInput.value) || 0;
+                const y = parseInt(yInput.value) || 0;
+                console.log(`Position appliquée: X=${x}, Y=${y}`);
+            }
+        }
+
+        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
+        document.querySelectorAll('.help-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        document.querySelectorAll('.menu-item:not(.disabled)').forEach(item => {
+            item.addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) {
+                    const text = this.querySelector('.menu-text').textContent;
+                    console.log(`Action cliquée: ${text}`);
+                }
+            });
+        });
+
+        document.querySelectorAll('.menu-section-header').forEach(header => {
+            header.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const section = this.parentElement;
+                const submenu = section.querySelector('.submenu');
+                
+                if (submenu) {
+                    document.querySelectorAll('.menu-section').forEach(otherSection => {
+                        if (otherSection !== section) {
+                            otherSection.classList.remove('open');
+                        }
+                    });
+                    
+                    section.classList.toggle('open');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.context-menu')) {
+                document.querySelectorAll('.menu-section').forEach(section => {
+                    section.classList.remove('open');
+                });
+            }
+        });
+
+        // Démarrer l'animation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            
+            if (speedSlider && speedValue) {
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    changeAnimationSpeed(newSpeed);
+                });
+                
+                speedValue.textContent = animationSpeed + 'x';
+            } else {
+                console.warn('Éléments du slider non trouvés');
+            }
+
+            // Configurer les événements de la fenêtre de dialogue
+            const dialogXInput = document.getElementById('dialogXInput');
+            const dialogYInput = document.getElementById('dialogYInput');
+            const dialogOkButton = document.getElementById('dialogOkButton');
+            
+            if (dialogXInput) {
+                dialogXInput.addEventListener('input', onDialogInputChange);
+            }
+            if (dialogYInput) {
+                dialogYInput.addEventListener('input', onDialogInputChange);
+            }
+            if (dialogOkButton) {
+                dialogOkButton.addEventListener('click', onDialogOkClick);
+            }
+            
+            // Démarrer l'animation
+            setTimeout(() => {
+                setTimeout(startAnimation, 500);
+            }, 100);
+        });
+    </script>
+</body>
+</html>

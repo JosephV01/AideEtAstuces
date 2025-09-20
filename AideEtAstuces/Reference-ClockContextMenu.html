@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Contextuel de l'Horloge - Référence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            width: 400px;
+            height: 300px;
+            min-width: 350px;
+            min-height: 250px;
+            margin: 20px auto;
+            background: transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-border {
+            border: 2px solid #d1d1d1;
+            border-radius: 15px;
+            padding: 6px;
+            background: #ffffff;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .content-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin: 6px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* En-tête */
+        .header {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            margin-bottom: 8px;
+            min-height: 0;
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+        }
+
+        .close-button {
+            width: 26px;
+            height: 26px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-button:hover {
+            background: #e5e5e5;
+        }
+
+        /* Menu contextuel - strictement identique au projet C# (MenuContextMenuStyles.xaml) */
+        .context-menu {
+            background: #26292C;
+            border: 2px solid #444;
+            border-radius: 14px;
+            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
+            padding: 8px;
+            min-width: 280px;
+            max-width: 350px;
+            font-size: 15px;
+            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            border: 1px solid #444;
+            background: transparent;
+            width: calc(100% - 8px);
+            text-align: left;
+            font-size: 16px;
+            font-weight: bold;
+            color: #F0F0F0;
+            transition: all 0.2s;
+            gap: 8px;
+            border-radius: 6px;
+            margin: 2px 4px;
+            min-height: 30px;
+        }
+
+        .menu-item:hover:not(.disabled) {
+            background: #2A2D31;
+            color: cyan;
+        }
+
+        .menu-item.disabled {
+            color: #888;
+            cursor: not-allowed;
+            opacity: 0.6;
+            font-weight: normal;
+            font-size: 15px;
+            background: transparent;
+        }
+
+        .menu-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            fill: #F0F0F0;
+            margin: 0 5px 0 5px;
+        }
+
+        .menu-text {
+            flex: 1;
+            font-weight: bold;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 5px;
+        }
+
+        /* Séparateurs */
+        .menu-separator {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 4px 8px;
+        }
+
+        /* États spéciaux */
+        .menu-item.toggle-on .menu-text::after {
+            content: " ✓";
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        .menu-item.locked .menu-text::after {
+            content: " 🔒";
+        }
+
+        /* Animation d'apparition */
+        .context-menu {
+            animation: fadeInUp 0.2s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Icônes SVG */
+        .clock-icon {
+            fill: currentColor;
+        }
+
+        .size-icon {
+            fill: currentColor;
+        }
+
+        .customize-icon {
+            fill: currentColor;
+        }
+
+        .lock-icon {
+            fill: currentColor;
+        }
+
+        /* Info panel */
+        .info-panel {
+            margin-top: 12px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #666666;
+            line-height: 1.4;
+        }
+
+        .info-title {
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="main-border">
+            <div class="content-container">
+                <!-- En-tête -->
+                 <div class="header">
+                     <div class="title">Menu Contextuel - Horloge</div>
+                     <button class="close-button">✕</button>
+                 </div>
+
+                 <!-- Menu contextuel de l'horloge -->
+                 <div class="context-menu" id="clockContextMenu">
+                     <!-- Afficher/Masquer l'horloge -->
+                     <button class="menu-item" id="toggleClockItem">
+                         <svg class="menu-icon clock-icon" viewBox="0 -960 960 960">
+                             <path d="M582,-298 L440,-440 v-200 h80 v167 l118,118 -56,57 Z M440,-720 v-80 h80 v80 h-80 Z M720,-440 v-80 h80 v80 h-80 Z M440,-160 v-80 h80 v80 h-80 Z M160,-440 v-80 h80 v80 h-80 Z M480,-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
+                         </svg>
+                         <span class="menu-text">Afficher l'horloge</span>
+                     </button>
+
+                     <!-- Taille de l'horloge -->
+                     <button class="menu-item disabled" id="clockSizeItem">
+                         <svg class="menu-icon size-icon" viewBox="0 -960 960 960">
+                             <path d="M120,-120 L120,-360 L200,-360 L200,-256 L324,-380 L380,-324 L256,-200 L360,-200 L360,-120 L120,-120 Z M600,-120 L600,-200 L704,-200 L580,-324 L636,-380 L760,-256 L760,-360 L840,-360 L840,-120 L600,-120 Z M324,-580 L200,-704 L200,-600 L120,-600 L120,-840 L360,-840 L360,-760 L256,-760 L380,-636 L324,-580 Z M636,-580 L580,-636 L704,-760 L600,-760 L600,-840 L840,-840 L840,-600 L760,-600 L760,-704 L636,-580 Z"/>
+                         </svg>
+                         <span class="menu-text">Taille de l'horloge</span>
+                     </button>
+
+                     <!-- Personnaliser l'horloge -->
+                     <button class="menu-item disabled" id="customizeClockItem">
+                         <svg class="menu-icon customize-icon" viewBox="0 -960 960 960">
+                             <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
+                         </svg>
+                         <span class="menu-text">Personnaliser l'horloge</span>
+                     </button>
+
+                     <!-- Verrouiller/Déverrouiller l'horloge -->
+                     <button class="menu-item disabled" id="lockClockItem">
+                         <svg class="menu-icon lock-icon" viewBox="0 -960 960 960">
+                             <path d="M240,-80 q-33,0 -56.5,-23.5 T160,-160 v-400 q0,-33 23.5,-56.5 T240,-640 h40 v-80 q0,-83 58.5,-141.5 T480,-920 q83,0 141.5,58.5 T680,-720 v80 h40 q33,0 56.5,23.5 T800,-560 v400 q0,33 -23.5,56.5 T720,-80 H240 Z m0,-80 h480 v-400 H240 v400 Z m240,-120 q33,0 56.5,-23.5 T560,-360 q0,-33 -23.5,-56.5 T480,-440 q-33,0 -56.5,23.5 T400,-360 q0,33 23.5,56.5 T480,-280 Z M360,-640 h240 v-80 q0,-50 -35,-85 t-85,-35 q-50,0 -85,35 t-35,85 v80 Z m-120,480 v-400 400 Z"/>
+                         </svg>
+                         <span class="menu-text">Verrouiller l'horloge</span>
+                     </button>
+                 </div>
+
+                <!-- Panneau d'information -->
+                <div class="info-panel">
+                    <div class="info-title">Menu Contextuel de l'Horloge</div>
+                    <div>Ce menu permet de contrôler l'horloge : affichage, taille, personnalisation et verrouillage. Les options sont activées uniquement quand l'horloge est visible.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

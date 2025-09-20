@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Déplacer la Bulle Horloge - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .demo-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-description {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Styles spécifiques à cette démonstration */
+        .demo-canvas {
+            width: 400px;
+            height: 200px;
+        }
+
+        .floating-clock {
+            position: absolute;
+            background: rgba(45, 45, 48, 0.95);
+            border: 2px solid white;
+            border-radius: 8px;
+            padding: 8px 12px;
+            left: 120px;
+            top: 130px;
+            z-index: 1001;
+            visibility: visible;
+            opacity: 1;
+            transform: translateX(0);
+            transition: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .clock-time {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            font-family: 'Segoe UI', monospace;
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .clock-date {
+            color: #cccccc;
+            font-size: 10px;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+        }
+
+        .destination-marker {
+            position: absolute;
+            border: 2px dashed cyan;
+            background: transparent;
+            border-radius: 8px;
+            left: 260px;
+            top: 130px;
+            z-index: 998;
+            opacity: 0.35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: cyan;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 10px;
+            text-align: center;
+        }
+
+        .back-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        /* S'assurer que le curseur reste au-dessus de tout */
+        .mouse-cursor {
+            z-index: 1500 !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Démonstration - Déplacer la Bulle Horloge</h1>
+        <p class="demo-description">
+            • Cette démonstration montre comment déplacer l'horloge.<br>
+            • Maintenez le clic gauche tout en déplaçant la souris sur votre écran.<br>
+            • Relâchez le clic une fois l'horloge correctement positionnée.
+        </p>
+        <div class="demo-canvas-container">
+            <div class="demo-canvas large">
+                <div class="floating-clock" id="floating-clock">
+                    <div class="clock-time">14:32:15</div>
+                    <div class="clock-date">Lun 16 Déc 2024</div>
+                </div>
+                <div class="destination-marker" id="destination-marker">Nouvel emplacement</div>
+                <div class="mouse-cursor"></div>
+                <div class="mouse-zero-click large"></div>
+                <div class="mouse-left-click large"></div>
+                <div class="click-animation"></div>
+            </div>
+        </div>
+        <!-- Contrôle de vitesse standardisé -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+        </div>
+        
+        <button class="back-button" onclick="window.close()">Fermer</button>
+    </div>
+
+    <script>
+        // Variables pour l'animation avec standardisation
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let baseInterval = 30; // Intervalle de base pour cette démo
+        const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
+
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const clickAnimation = document.querySelector('.click-animation');
+        const floatingClock = document.querySelector('#floating-clock');
+        const destinationMarker = document.querySelector('#destination-marker');
+
+        function startAnimation() {
+            function runAnimationFrame() {
+                animationPhase++;
+
+                // Calculer les frames de mouvement avec vitesse standardisée
+                const moveToClockFrames = Math.ceil(Math.sqrt((165-143)**2 + (148-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
+                const movingFrames = Math.ceil(Math.sqrt((260-120)**2 + (0)**2) / CURSOR_SPEED_PX_PER_FRAME);
+                const returnFrames = Math.ceil(Math.sqrt((260-120)**2 + (0)**2) / CURSOR_SPEED_PX_PER_FRAME);
+
+                // Phase 1: Curseur se déplace vers le centre de l'horloge (vitesse standardisée)
+                if (animationPhase <= moveToClockFrames) {
+                    const p = animationPhase / moveToClockFrames;
+                    const sx = 143, sy = 92;
+                    const ex = 120 + 45, ey = 130 + 18; // Centre de l'horloge
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                // Phase 2: Animation de clic pour commencer le déplacement
+                } else if (animationPhase <= moveToClockFrames + 10) {
+                    const cp = animationPhase - moveToClockFrames;
+                    clickAnimation.style.visibility = 'visible';
+                    clickAnimation.style.opacity = '0.7';
+                    clickAnimation.style.width = '12px';
+                    clickAnimation.style.height = '12px';
+                    clickAnimation.style.left = (120 + 45 - 6) + 'px';
+                    clickAnimation.style.top = (130 + 18 - 6) + 'px';
+                    if (cp >= 3) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                // Phase 3: Déplacement de l'horloge vers la droite (vitesse standardisée)
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames) {
+                    const mp = (animationPhase - (moveToClockFrames + 10)) / movingFrames;
+                    const startX = 120, startY = 130;
+                    const endX = 260, endY = 130;
+                    const x = startX + (endX - startX) * mp;
+                    const y = startY + (endY - startY) * mp;
+                    floatingClock.style.left = x + 'px';
+                    floatingClock.style.top = y + 'px';
+                    // Adapter le marqueur à la taille de l'horloge
+                    destinationMarker.style.width = floatingClock.offsetWidth + 'px';
+                    destinationMarker.style.height = floatingClock.offsetHeight + 'px';
+                    const cx = x + 45, cy = y + 18;
+                    mouseCursor.style.left = cx + 'px';
+                    mouseCursor.style.top = cy + 'px';
+                    clickAnimation.style.opacity = '0.7';
+                    clickAnimation.style.width = '12px';
+                    clickAnimation.style.height = '12px';
+                    clickAnimation.style.left = (cx - 6) + 'px';
+                    clickAnimation.style.top = (cy - 6) + 'px';
+                // Phase 4: Relâcher le clic
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 10) {
+                    clickAnimation.style.opacity = '0';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                // Phase 5: Pause
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 30) {
+                    // Pause
+                // Phase 6: Nouveau clic pour retour
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40) {
+                    const cp = animationPhase - (moveToClockFrames + 10 + movingFrames + 30);
+                    clickAnimation.style.visibility = 'visible';
+                    clickAnimation.style.opacity = '0.7';
+                    clickAnimation.style.width = '12px';
+                    clickAnimation.style.height = '12px';
+                    clickAnimation.style.left = (260 + 45 - 6) + 'px';
+                    clickAnimation.style.top = (130 + 18 - 6) + 'px';
+                    if (cp >= 3) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                // Phase 7: Retour de l'horloge (vitesse standardisée)
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40 + returnFrames) {
+                    const mp = (animationPhase - (moveToClockFrames + 10 + movingFrames + 40)) / returnFrames;
+                    const startX = 260, startY = 130;
+                    const endX = 120, endY = 130;
+                    const x = startX + (endX - startX) * mp;
+                    const y = startY + (endY - startY) * mp;
+                    floatingClock.style.left = x + 'px';
+                    floatingClock.style.top = y + 'px';
+                    // Adapter le marqueur à la taille de l'horloge
+                    destinationMarker.style.width = floatingClock.offsetWidth + 'px';
+                    destinationMarker.style.height = floatingClock.offsetHeight + 'px';
+                    const cx = x + 45, cy = y + 18;
+                    mouseCursor.style.left = cx + 'px';
+                    mouseCursor.style.top = cy + 'px';
+                    clickAnimation.style.opacity = '0.7';
+                    clickAnimation.style.width = '12px';
+                    clickAnimation.style.height = '12px';
+                    clickAnimation.style.left = (cx - 6) + 'px';
+                    clickAnimation.style.top = (cy - 6) + 'px';
+                // Phase 8: Relâcher le clic final
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 10) {
+                    clickAnimation.style.opacity = '0';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                // Phase 9: Pause finale
+                } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 20) {
+                    // Pause finale
+                // Reset pour boucle
+                } else {
+                    animationPhase = 0;
+                    floatingClock.style.left = '120px';
+                    floatingClock.style.top = '130px';
+                    mouseCursor.style.left = '143px';
+                    mouseCursor.style.top = '92px';
+                    mouseCursor.style.opacity = '1';
+                    clickAnimation.style.visibility = 'hidden';
+                    clickAnimation.style.opacity = '0';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                }
+                
+                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                const currentInterval = Math.round(baseInterval / animationSpeed);
+                animationTimer = setTimeout(runAnimationFrame, currentInterval);
+            }
+            
+            // Démarrer la première frame
+            runAnimationFrame();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // S'assurer que le curseur est toujours visible
+            if (mouseCursor) {
+                mouseCursor.style.visibility = 'visible';
+                mouseCursor.style.opacity = '1';
+            }
+            // Dimensionner la zone pointillée dès le départ
+            const syncDestinationSize = () => {
+                if (destinationMarker && floatingClock) {
+                    destinationMarker.style.width = floatingClock.offsetWidth + 'px';
+                    destinationMarker.style.height = floatingClock.offsetHeight + 'px';
+                }
+            };
+            syncDestinationSize();
+            // Re-synchroniser après le rendu des polices et à la prochaine frame
+            setTimeout(syncDestinationSize, 50);
+            requestAnimationFrame(syncDestinationSize);
+            window.addEventListener('resize', syncDestinationSize);
+            setTimeout(startAnimation, 1000);
+        });
+
+        // Fonction pour redémarrer l'animation avec la nouvelle vitesse
+        function restartAnimationWithNewSpeed() {
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+            }
+            startAnimation();
+        }
+
+        // Fonction pour changer la vitesse sans restart (réactivité maximale)
+        function changeAnimationSpeed(newSpeed) {
+            animationSpeed = newSpeed;
+            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+
+        // Gestion du slider de vitesse
+        document.addEventListener('DOMContentLoaded', function() {
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+
+            if (speedSlider && speedValue) {
+                // Écouteur d'événement pour le slider
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    
+                    console.log('Nouvelle vitesse (move-clock):', newSpeed);
+                    
+                    // Changement de vitesse réactif sans restart
+                    changeAnimationSpeed(newSpeed);
+                });
+
+                // Initialiser l'affichage de la vitesse
+                speedValue.textContent = animationSpeed + 'x';
+            } else {
+                console.warn('Éléments du slider non trouvés dans demo-move-clock');
+            }
+        });
+    </script>
+</body>
+</html>
+

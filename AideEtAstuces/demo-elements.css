@@ -1,0 +1,568 @@
+/* ========================================
+   ÉLÉMENTS COMMUNS POUR LES DÉMONSTRATIONS
+   ======================================== */
+
+/* === CANVAS DE DÉMONSTRATION === */
+.demo-canvas {
+    position: relative;
+    background: #2D2D2D;
+    width: 320px;
+    height: 220px;
+    margin: 0 auto;
+    border-radius: 8px;
+    overflow: visible;
+}
+
+.demo-canvas.large {
+    width: 400px;
+    height: 280px;
+}
+
+/* === BORDURE DYNAMIQUE (BULLE) === */
+.dynamic-border {
+    position: absolute;
+    border: 2px solid white;
+    background: #2D2D30;
+    border-radius: 6px;
+    width: 200px;
+    height: 80px;
+    left: 50px;
+    top: 60px;
+    transition: all 0.3s ease;
+}
+
+/* === ÉTIQUETTE STANDARD === */
+.label-border {
+    position: absolute;
+    background: #2D2D30;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 3px 6px;
+    height: 20px;
+    /* Centrage dynamique sur la bulle : position de la bulle (50px) + largeur de la bulle (200px) / 2 = 150px */
+    left: 150px;
+    top: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* L'étiquette s'adapte automatiquement à la largeur du texte et reste centrée */
+    width: auto;
+    min-width: fit-content;
+    transform: translateX(-50%);
+}
+
+.label-text {
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* === WIDGET DE BUREAU === */
+.desktop-widget {
+    position: absolute;
+    border: 2px solid white;
+    background: black;
+    border-radius: 10px;
+    width: 50px;
+    height: 100px;
+    left: 50px;
+    top: 60px;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.desktop-widget.bottom {
+    top: 80px;
+}
+
+.widget-button {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: transparent;
+    border: none;
+}
+
+.widget-button:hover {
+    background: rgba(0,255,255,0.2);
+    color: cyan;
+}
+
+.widget-button.add-button {
+    font-size: 20px;
+}
+
+/* === CURSEUR DE SOURIS === */
+.mouse-cursor {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    left: 143px;
+    top: 92px;
+    z-index: 1000;
+    background: url('../Files/Cursor.png') no-repeat center;
+    background-size: contain;
+}
+
+.mouse-cursor.bottom {
+    top: 112px;
+}
+
+/* === SOURIS AVEC BOUTONS === */
+.mouse-zero-click {
+    position: absolute;
+    width: 50px;
+    height: 76px;
+    left: 280px;
+    top: 5px;
+    z-index: 1003;
+    background: url('../Files/MouseZeroClick.png') no-repeat center;
+    background-size: contain;
+}
+
+.mouse-zero-click.large {
+    left: 360px;
+}
+
+.mouse-left-click {
+    position: absolute;
+    width: 50px;
+    height: 76px;
+    left: 280px;
+    top: 5px;
+    z-index: 1004;
+    background: url('../Files/MouseLeftClick.png') no-repeat center;
+    background-size: contain;
+    visibility: hidden;
+}
+
+.mouse-left-click.large {
+    left: 360px;
+}
+
+.mouse-right-click {
+    position: absolute;
+    width: 50px;
+    height: 76px;
+    left: 280px;
+    top: 5px;
+    z-index: 1004;
+    background: url('../Files/MouseRightClick.png') no-repeat center;
+    background-size: contain;
+    visibility: hidden;
+}
+
+.mouse-right-click.large {
+    left: 360px;
+}
+
+/* === POIGNÉE DE REDIMENSIONNEMENT === */
+.resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 50%;
+    left: 244px;
+    top: 133px;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+/* === ANIMATION DE CLIC === */
+.click-animation {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: cyan;
+    border-radius: 50%;
+    opacity: 0.7;
+    z-index: 1002;
+    visibility: hidden;
+}
+
+/* === MENU CONTEXTUEL === */
+.context-menu {
+    position: absolute;
+    background: #2F2F2F;
+    border: 1px solid #555555;
+    border-radius: 4px;
+    width: 85px;
+    height: 125px;
+    left: 180px;
+    top: 40px;
+    z-index: 999;
+    visibility: hidden;
+    padding: 6px 3px;
+}
+
+.menu-item {
+    background: transparent;
+    padding: 4px 8px;
+    margin: 1px 0;
+    color: #F0F0F0;
+    font-size: 9px;
+    font-family: 'Segoe UI', sans-serif;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.menu-item:hover {
+    background: #404040;
+}
+
+.menu-separator {
+    height: 1px;
+    background: #404040;
+    margin: 2px 4px;
+}
+
+/* === MARQUEUR DE DESTINATION === */
+.destination-marker {
+    position: absolute;
+    border: 2px solid cyan;
+    background: transparent;
+    border-radius: 10px;
+    width: 50px;
+    height: 100px;
+    left: 200px;
+    top: 60px;
+    z-index: 999;
+    opacity: 0.3;
+}
+
+/* === BULLE COMPLÈTE (POUR DÉMO AJOUT) === */
+.new-bubble-container {
+    position: absolute;
+    left: 200px;
+    top: 100px;
+    z-index: 999;
+    opacity: 0;
+    transform: scale(1);
+    transition: opacity 0.3s ease;
+}
+
+/* Corps de la nouvelle bulle */
+.new-bubble {
+    position: relative;
+    border: 2px solid white;
+    background: #2D2D30;
+    border-radius: 6px;
+    width: 200px;
+    height: 80px;
+}
+
+/* Poignée de redimensionnement de la nouvelle bulle */
+.new-bubble-resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border: 1px solid black;
+    border-radius: 50%;
+    right: -5px;
+    bottom: -5px;
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+/* === ÉTIQUETTE DE NOUVELLE BULLE === */
+.new-bubble-label {
+    position: absolute;
+    background: #2D2D30;
+    border: 1px solid white;
+    border-radius: 3px;
+    padding: 3px 6px;
+    height: 20px;
+    top: 75px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(1);
+    transition: opacity 0.3s ease;
+    /* L'étiquette s'adapte automatiquement à la largeur du texte */
+    width: auto;
+    min-width: fit-content;
+    /* Centrage horizontal par rapport à la bulle (200px de large, positionnée à left: 200px) */
+    left: 300px; /* Centre de la bulle (200px + 100px de marge) */
+    transform: translateX(-50%) scale(1);
+}
+
+.new-bubble-label-text {
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* === LOGIQUE DE CLIC SYNCHRONISÉ === */
+/* 
+   Cette section définit la logique standard pour les clics simples (gauche ou droit).
+   Pour un clic simple, la souris doit :
+   1. Afficher le clic de façon synchronisée (clickPhase >= 2)
+   2. Cesser immédiatement d'afficher le clic après l'action (clickPhase >= 4)
+   
+   Utilisation dans le JavaScript :
+   - Premier clic (clic gauche) : 
+     if (clickPhase >= 2) {
+         mouseZeroClick.style.visibility = 'hidden';
+         mouseLeftClick.style.visibility = 'visible';
+     }
+     if (clickPhase >= 4) {
+         mouseZeroClick.style.visibility = 'visible';
+         mouseLeftClick.style.visibility = 'hidden';
+     }
+   
+   - Premier clic (clic droit) :
+     if (clickPhase >= 2) {
+         mouseZeroClick.style.visibility = 'hidden';
+         mouseRightClick.style.visibility = 'visible';
+     }
+     if (clickPhase >= 4) {
+         mouseZeroClick.style.visibility = 'visible';
+         mouseRightClick.style.visibility = 'hidden';
+     }
+   
+   - Second clic (clic gauche) :
+     if (clickPhase >= 2) {
+         mouseZeroClick.style.visibility = 'hidden';
+         mouseLeftClick.style.visibility = 'visible';
+     }
+     if (clickPhase >= 4) {
+         mouseZeroClick.style.visibility = 'visible';
+         mouseLeftClick.style.visibility = 'hidden';
+     }
+   
+   - Second clic (clic droit) :
+     if (clickPhase >= 2) {
+         mouseZeroClick.style.visibility = 'hidden';
+         mouseRightClick.style.visibility = 'visible';
+     }
+     if (clickPhase >= 4) {
+         mouseZeroClick.style.visibility = 'visible';
+         mouseRightClick.style.visibility = 'hidden';
+     }
+   
+   Note : Cette logique s'applique uniquement aux clics simples.
+   Pour les clics maintenus, utiliser une logique différente.
+*/
+
+/* === STANDARDISATION DES ANIMATIONS === */
+/* 
+   Règle de standardisation pour la vitesse de déplacement du curseur :
+   - Vitesse standard : 9 pixels par frame (à 80ms par frame = 112.5 pixels/seconde)
+   - Pour calculer la durée en frames : distance / CURSOR_SPEED_PX_PER_FRAME
+   - Cette règle doit être appliquée à TOUS les déplacements de curseur dans les démonstrations
+   
+   Utilisation dans le JavaScript :
+   const CURSOR_SPEED_PX_PER_FRAME = 9;
+   const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+   const animationFrames = Math.ceil(distance / CURSOR_SPEED_PX_PER_FRAME);
+   
+   Exemple :
+   - Distance de 120px → 14 frames (1.12 secondes à 80ms/frame)
+   - Distance de 90px → 10 frames (0.8 secondes à 80ms/frame)
+*/
+
+/* === CONTRÔLE DE VITESSE STANDARDISÉ === */
+/* 
+   Règle de standardisation pour le contrôle de vitesse des animations :
+   - Vitesses disponibles : 0.25x à 3x par pas de 0.25x
+   - Vitesse par défaut : 1x (intervalle de base 80ms ou selon la démo)
+   - Position : Centré sous la démonstration
+   - Style : Cohérent avec le thème sombre de l'application
+   
+   Structure HTML requise :
+   <div class="speed-control">
+       <label for="speedSlider">Vitesse de l'animation :</label>
+       <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+       <span id="speedValue">1x</span>
+   </div>
+   
+   JavaScript standard (APPROCHE AUTONOME RECOMMANDÉE) :
+   
+   // Variables requises
+   let animationSpeed = 1;
+   let baseInterval = 80; // ou selon votre démo (50ms, etc.)
+   let animationTimer;
+   
+   function startAnimation() {
+       function runAnimationFrame() {
+           animationPhase++;
+           
+           // Votre logique d'animation ici
+           
+           // Calculer l'intervalle juste avant de programmer la prochaine frame
+           const currentInterval = Math.round(baseInterval / animationSpeed);
+           animationTimer = setTimeout(runAnimationFrame, currentInterval);
+       }
+       
+       // Démarrer la première frame
+       runAnimationFrame();
+   }
+   
+   function restartAnimationWithNewSpeed() {
+       if (animationTimer) {
+           clearTimeout(animationTimer);
+       }
+       // Reset de l'état d'animation
+       animationPhase = 0;
+       // Autres resets nécessaires selon votre démo
+       startAnimation();
+   }
+   
+   // APPROCHE ALTERNATIVE PLUS RÉACTIVE (optionnelle) :
+   // Pour une réactivité immédiate sans restart, vous pouvez utiliser :
+   function changeAnimationSpeed(newSpeed) {
+       animationSpeed = newSpeed;
+       // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+   }
+   
+   // Initialisation dans DOMContentLoaded
+   document.addEventListener('DOMContentLoaded', function() {
+       const speedSlider = document.getElementById('speedSlider');
+       const speedValue = document.getElementById('speedValue');
+       
+       if (speedSlider && speedValue) {
+           speedSlider.addEventListener('input', function() {
+               animationSpeed = parseFloat(this.value);
+               speedValue.textContent = animationSpeed + 'x';
+               
+               // OPTION 1: Restart complet (recommandé pour les animations complexes)
+               restartAnimationWithNewSpeed();
+               
+               // OPTION 2: Changement sans restart (pour une réactivité maximale)
+               // changeAnimationSpeed(parseFloat(this.value));
+           });
+           
+           speedValue.textContent = animationSpeed + 'x';
+       } else {
+           console.warn('Éléments du slider non trouvés');
+       }
+   });
+   
+   Utilisation :
+   1. Inclure cette structure HTML entre la démo et le bouton de fermeture
+   2. Copier le JavaScript standard dans votre script
+   3. Adapter baseInterval selon votre démonstration
+   4. Utiliser setTimeout récursif avec calcul d'intervalle en fin de frame
+   5. Choisir entre restart complet (Option 1) ou changement sans restart (Option 2)
+   6. Pour l'Option 2, remplacer restartAnimationWithNewSpeed() par changeAnimationSpeed()
+   
+   IMPORTANT : setTimeout récursif vs setInterval
+   - setTimeout récursif permet de recalculer l'intervalle à chaque frame
+   - setInterval a un intervalle fixe qui ne peut pas être modifié dynamiquement
+   - Cette approche assure un contrôle de vitesse bidirectionnel fonctionnel
+   
+   TESTÉ ET FONCTIONNEL dans :
+   - demo-add-bubble.html
+   - demo-context-menu.html
+   - demo-Show-Clock.html (avec correction setTimeout récursif)
+*/
+
+.speed-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    background: #2D2D30;
+    border: 1px solid #444;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #F0F0F0;
+}
+
+.speed-control label {
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.speed-slider {
+    width: 200px;
+    height: 6px;
+    background: #444;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+}
+
+.speed-slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: #0078D4;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+.speed-slider::-webkit-slider-thumb:hover {
+    background: #005EA2;
+    transform: scale(1.1);
+}
+
+.speed-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: #0078D4;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+}
+
+.speed-slider::-moz-range-thumb:hover {
+    background: #005EA2;
+    transform: scale(1.1);
+}
+
+.speed-slider::-moz-range-track {
+    height: 6px;
+    background: #444;
+    border-radius: 3px;
+}
+
+.speed-control #speedValue {
+    font-weight: bold;
+    color: #0078D4;
+    min-width: 30px;
+    text-align: center;
+}
+
+/* === UTILITAIRES === */
+.hidden {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-1 {
+    opacity: 1;
+}

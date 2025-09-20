@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Redimensionner une Bulle - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+        }
+
+        .demo-title {
+            color: var(--text-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .demo-description {
+            color: var(--text-light);
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        /* Adaptations spécifiques pour cette démo */
+        .dynamic-border {
+            transition: none; /* Pas de transition CSS pour un contrôle JavaScript précis */
+        }
+
+        /* Étiquette positionnée au-dessus de la bulle pour cette démo */
+        .label-border {
+            top: -25px; /* Position relative à la bulle (au-dessus) */
+            left: 50%; /* Centre de la bulle (50% de la largeur) */
+            transform: translateX(-50%);
+        }
+
+        /* Poignée de redimensionnement spécifique à cette démo */
+        .resize-handle {
+            /* Override des styles de demo-elements.css pour cette démo */
+            left: auto !important;
+            top: auto !important;
+            right: -5px; /* Position relative à la bulle (coin droit) */
+            bottom: -5px; /* Position relative à la bulle (coin bas) */
+            transition: none; /* Pas de transition CSS pour un contrôle JavaScript précis */
+        }
+
+        .back-button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Démonstration - Redimensionner une Bulle</h1>
+        <p class="demo-description">
+            Cette démonstration montre comment redimensionner une Bulle à l'aide de sa poignée. Maintenez le clic gauche de votre souris sur la poignée en bas à droite. Relâchez le clic une fois la Bulle correctement dimensionnée.
+        </p>
+
+        <div class="demo-canvas-container">
+            <div class="demo-canvas">
+                <!-- Bordure dynamique -->
+                <div class="dynamic-border">
+                    <!-- Étiquette centrée horizontalement (enfant de la bulle) -->
+                    <div class="label-border">
+                        <div class="label-text">Redimensionner la Bulle</div>
+                    </div>
+                    <!-- Poignée de redimensionnement (enfant de la bulle) -->
+                    <div class="resize-handle"></div>
+                </div>
+
+                <!-- Curseur de souris -->
+                <div class="mouse-cursor"></div>
+
+                <!-- Souris avec boutons (état normal) -->
+                <div class="mouse-zero-click"></div>
+
+                <!-- Souris avec bouton gauche coloré (pour les clics) -->
+                <div class="mouse-left-click"></div>
+            </div>
+        </div>
+
+        <!-- Contrôle de vitesse standardisé -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+        </div>
+
+        <button class="back-button" onclick="window.close()">Fermer</button>
+    </div>
+
+    <script>
+        // Variables pour l'animation avec standardisation
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let baseInterval = 30; // Intervalle de base pour cette démo
+        const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
+
+        // Éléments DOM
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const resizeHandle = document.querySelector('.resize-handle');
+        const dynamicBorder = document.querySelector('.dynamic-border');
+
+        function startAnimation() {
+            function runAnimationFrame() {
+                animationPhase++;
+
+                // Phase 1: Curseur se déplace vers la poignée
+                if (animationPhase <= 60) {
+                    const progress = animationPhase / 60;
+                    const startX = 143, startY = 92;
+                    // Position de la poignée : centre de la poignée à la taille initiale de la bulle (200x80)
+                    const endX = 50 + 200 - 5 + 5 - 8, endY = 60 + 80 - 5 + 5 - 8; // Position calculée selon la même logique
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                }
+                // Phase 2: Poignée clignote
+                else if (animationPhase <= 100) {
+                    const blinkPhase = (animationPhase - 60) % 15;
+                    resizeHandle.style.background = blinkPhase < 8 ? '#00ffff' : '#ffffff';
+                }
+                // Phase 3: Redimensionnement
+                else if (animationPhase <= 200) {
+                    const resizeProgress = (animationPhase - 100) / 100;
+                    const isGrowing = resizeProgress < 0.5;
+                    const localProgress = isGrowing ? resizeProgress * 2 : (resizeProgress - 0.5) * 2;
+
+                    // Poignée reste cyan pendant tout le redimensionnement
+                    resizeHandle.style.background = '#00ffff';
+
+                    // Changement de souris pour indiquer le clic
+                    if (animationPhase === 101) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+
+                    if (isGrowing) {
+                        dynamicBorder.style.width = (200 + localProgress * 40) + 'px';
+                        dynamicBorder.style.height = (80 + localProgress * 20) + 'px';
+                    } else {
+                        dynamicBorder.style.width = (240 - localProgress * 40) + 'px';
+                        dynamicBorder.style.height = (100 - localProgress * 20) + 'px';
+                    }
+                    
+                    // La poignée suit automatiquement la bulle (elle est un enfant)
+                    // Calculer la position du curseur pour qu'il suive la poignée
+                    const newWidth = parseFloat(dynamicBorder.style.width);
+                    const newHeight = parseFloat(dynamicBorder.style.height);
+                    // Position du curseur = position de la bulle + taille de la bulle - décalage de la poignée + centre du curseur
+                    mouseCursor.style.left = (50 + newWidth - 5 + 5 - 8) + 'px'; // 50 (left bulle) + width - 5 (right poignée) + 5 (centre poignée) - 8 (centre curseur)
+                    mouseCursor.style.top = (60 + newHeight - 5 + 5 - 8) + 'px';  // 60 (top bulle) + height - 5 (bottom poignée) + 5 (centre poignée) - 8 (centre curseur)
+                }
+                // Phase 4: Retour à la position initiale
+                else if (animationPhase <= 260) {
+                    const progress = (animationPhase - 200) / 60;
+                    // Position de départ : centre de la poignée à la taille finale de la bulle (200x80)
+                    const startX = 50 + 200 - 5 + 5 - 8, startY = 60 + 80 - 5 + 5 - 8; // Même calcul que pour le suivi
+                    // Position d'arrivée : position initiale du curseur
+                    const endX = 143, endY = 92;
+                    mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                    mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+
+                    // Poignée redevient blanche dès le début du retour
+                    resizeHandle.style.background = '#ffffff';
+
+                    // Retour de la souris normale
+                    if (animationPhase === 201) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                    }
+                }
+                // Reset
+                else {
+                    animationPhase = 0;
+                    dynamicBorder.style.width = '200px';
+                    dynamicBorder.style.height = '80px';
+                    resizeHandle.style.background = '#ffffff';
+                    mouseCursor.style.left = '143px';
+                    mouseCursor.style.top = '92px';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                }
+                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                const currentInterval = Math.round(baseInterval / animationSpeed);
+                animationTimer = setTimeout(runAnimationFrame, currentInterval);
+            }
+            
+            // Démarrer la première frame
+            runAnimationFrame();
+        }
+
+        function restartAnimationWithNewSpeed() {
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+            }
+            startAnimation();
+        }
+
+        // Fonction pour changer la vitesse sans restart (réactivité maximale)
+        function changeAnimationSpeed(newSpeed) {
+            animationSpeed = newSpeed;
+            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+
+        // Démarrer l'animation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            
+            if (speedSlider && speedValue) {
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    changeAnimationSpeed(newSpeed);
+                });
+                
+                speedValue.textContent = animationSpeed + 'x';
+            } else {
+                console.warn('Éléments du slider non trouvés');
+            }
+
+            setTimeout(startAnimation, 1000);
+        });
+    </script>
+</body>
+</html>

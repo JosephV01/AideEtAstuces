@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template - Démonstration avec Contrôle de Vitesse - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f0f0f0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Template - Démonstration avec Contrôle de Vitesse</h1>
+        <p class="demo-description">
+            Ce template montre comment intégrer le contrôle de vitesse standardisé dans une démonstration.
+            Utilisez le slider ci-dessous pour ajuster la vitesse de l'animation.
+        </p>
+        
+        <div class="demo-canvas-container">
+            <div class="demo-canvas">
+                <!-- Élément animé simple -->
+                <div class="dynamic-border" id="animatedElement"></div>
+                
+                <!-- Curseur de souris -->
+                <div class="mouse-cursor" id="mouseCursor"></div>
+            </div>
+        </div>
+
+        <!-- ========================================
+             CONTRÔLE DE VITESSE STANDARDISÉ
+             ======================================== -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+        </div>
+
+        <button class="back-button" onclick="window.close()">Fermer</button>
+    </div>
+
+    <script src="demo-speed-control.js"></script>
+    <script>
+        /* ========================================
+           VARIABLES STANDARDISÉES REQUISES
+           ======================================== */
+        let animationTimer;
+        let animationSpeed = 1;           // Vitesse standardisée
+        let baseInterval = 80;            // Intervalle de base standardisé
+        
+        // Variables spécifiques à cette démo
+        let animationPhase = 0;
+        const mouseCursor = document.getElementById('mouseCursor');
+        const animatedElement = document.getElementById('animatedElement');
+
+        /* ========================================
+           FONCTION D'ANIMATION PRINCIPALE
+           ======================================== */
+        function startAnimation() {
+            // Utiliser la fonction standardisée pour calculer l'intervalle
+            const currentInterval = getAnimationInterval();
+            
+            animationTimer = setInterval(() => {
+                animationPhase++;
+                
+                // Animation simple : déplacement de l'élément
+                if (animationPhase <= 40) {
+                    const progress = animationPhase / 40;
+                    const x = 50 + (150 * progress);
+                    animatedElement.style.left = x + 'px';
+                    mouseCursor.style.left = (x + 10) + 'px';
+                }
+                // Reset pour boucle
+                else {
+                    animationPhase = 0;
+                    animatedElement.style.left = '50px';
+                    mouseCursor.style.left = '60px';
+                }
+            }, currentInterval);
+        }
+
+        /* ========================================
+           INITIALISATION
+           ======================================== */
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialiser le contrôle de vitesse standardisé
+            initSpeedControl(startAnimation);
+            
+            // Démarrer l'animation après un délai
+            setTimeout(startAnimation, 1000);
+        });
+
+        /* ========================================
+           EXEMPLE D'UTILISATION AVANCÉE
+           ======================================== */
+        
+        // Fonctions utilitaires pour cette démo
+        function pauseAnimation() {
+            if (animationTimer) {
+                clearInterval(animationTimer);
+                animationTimer = null;
+            }
+        }
+        
+        function resumeAnimation() {
+            if (!animationTimer) {
+                startAnimation();
+            }
+        }
+        
+        // Exemple de changement de vitesse programmatique
+        function setFastSpeed() {
+            setAnimationSpeed(ANIMATION_SPEEDS.FAST, startAnimation);
+        }
+        
+        function setSlowSpeed() {
+            setAnimationSpeed(ANIMATION_SPEEDS.SLOW, startAnimation);
+        }
+    </script>
+</body>
+</html>
