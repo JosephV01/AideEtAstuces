@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Glisser des fichiers - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+            height: 350px;
+            width: 450px;
+        }
+
+        /* Élément représentant un fichier (hors bulle) */
+        .file-item {
+            position: absolute;
+            width: 64px;
+            height: 56px;
+            left: 140px; /* près de la bulle par défaut */
+            top: 200px;
+            background: #1f1f1f;
+            border: 1px solid #ffffff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            z-index: 900;
+        }
+
+        .file-item .file-glyph {
+            width: 18px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Fichier placé dans la bulle */
+        .bubble-file {
+            position: absolute;
+            width: 64px;
+            height: 56px;
+            left: 95px; /* coordonnées internes de la bulle */
+            top: 78px;
+            background: #1f1f1f;
+            border: 1px solid #ffffff;
+            border-radius: 6px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #ffffff;
+            font-size: 9px;
+            font-weight: 700;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            z-index: 1002;
+        }
+
+        .mouse-zero-click {
+            z-index: 900 !important;
+            left: 310px !important;
+            top: 15px !important;
+        }
+        
+        .mouse-right-click {
+            z-index: 900 !important;
+        }
+
+        .mouse-left-click {
+            z-index: 900 !important;
+            left: 310px !important;
+            top: 15px !important;
+        }
+
+        .bubble-file .file-glyph { width: 18px; height: 22px; display: flex; align-items: center; justify-content: center; }
+
+        /* Nom de fichier sous l'icône dans la bulle */
+        .file-name { color: #e0e0e0; font-size: 8px; font-weight: 600; margin-top: 2px; }
+    </style>
+    </head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Glisser des fichiers</h1>
+            <p class="demo-description">
+                • Étape 1: Glisser/Déposer le fichier dans la bulle.<br>
+                • Étape 2: Glisser/Déposer le fichier en dehors de la bulle.
+            </p>
+        </div>
+
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
+        </div>
+
+        <div class="demo-canvas-container">
+            <div class="demo-canvas">
+                <div class="dynamic-border">
+                    <div class="label-border">
+                        <div class="label-text">Glisser des fichiers dans la bulle</div>
+                        <div class="blue-cursor"></div>
+                    </div>
+                    <div class="resize-handle"></div>
+                </div>
+
+                <div class="mouse-cursor"></div>
+
+                <div class="mouse-zero-click"></div>
+                <div class="mouse-left-click"></div>
+                <div class="mouse-right-click"></div>
+
+                <div class="file-item" id="outside-file">
+                    <div class="file-glyph"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="16" height="16" fill="#e3e3e3"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/></svg></div>
+                    <div class="file-name" id="outside-file-name">Mon dossier</div>
+                </div>
+                <div class="bubble-file" id="inside-file">
+                    <div class="file-glyph"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="12" height="12" fill="#e3e3e3"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/></svg></div>
+                    <div class="file-name" id="inside-file-name">Mon dossier</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let isPaused = false;
+        let baseInterval = 80;
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
+
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const contextMenu = document.querySelector('.context-menu');
+        const canvas = document.querySelector('.demo-canvas');
+        const labelBorder = document.querySelector('.label-border');
+        const dynamicBorder = document.querySelector('.dynamic-border');
+        const outsideFile = document.getElementById('outside-file');
+        const insideFile = document.getElementById('inside-file');
+        const insideFileName = document.getElementById('inside-file-name');
+        const outsideFileName = document.getElementById('outside-file-name');
+        const resizeHandle = document.querySelector('.resize-handle');
+        const blueCursor = document.querySelector('.blue-cursor');
+
+        let canvasCenterX = 160; // 320 / 2
+        let canvasCenterY = 110; // 220 / 2
+        let defaultCursorX = 0;
+        let defaultCursorY = 0;
+        let outsideFileCenterX = 257; // 235 + 22
+        let outsideFileCenterY = 168; // 140 + 28
+        let bubbleDropX = 150; // centre approximatif de la bulle
+        let bubbleDropY = 100;
+        let labelCenterX = 0;
+        let labelCenterY = 0;
+        let bubbleOffsetX = 0;
+        let bubbleOffsetY = 0;
+        let bubbleBaseLeft = 0;
+        let bubbleBaseTop = 0;
+        let moveToFileFrames = 0;
+        let dragToBubbleFrames = 0;
+        let pauseAfterInFrames = 18;
+        let moveToLabelFrames = 0;
+        let bubbleClickHoldFrames = 6;
+        let bubbleMoveOutFrames = 20;
+        let bubbleMoveBackFrames = 20;
+        let bubbleReleaseFrames = 6;
+        let bubblePostMovePauseFrames = 10;
+        let dragOutFrames = 0;
+        let cursorReturnFrames = 12;
+        let postOutPauseFrames = 18;
+        let totalAnimationFrames = 0;
+
+        function startAnimation() {
+            function runAnimationFrame() {
+                if (isPaused) {
+                    animationTimer = setTimeout(runAnimationFrame, 100);
+                    return;
+                }
+
+                animationPhase++;
+                // S'assurer que le curseur reste toujours visible et au-dessus
+                mouseCursor.style.opacity = '1';
+                mouseCursor.style.visibility = 'visible';
+                mouseCursor.style.zIndex = '1500';
+
+                // 1) Déplacement vers le fichier (ramasser)
+                if (animationPhase <= moveToFileFrames) {
+                    const p = animationPhase / moveToFileFrames;
+                    const sx = defaultCursorX, sy = defaultCursorY;
+                    const ex = outsideFileCenterX, ey = outsideFileCenterY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                }
+                // 2) Clic gauche et maintenir (ramassage)
+                else if (animationPhase <= moveToFileFrames + 6) {
+                    const clickPhase = animationPhase - moveToFileFrames;
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                }
+        // 3) Glisser du fichier vers la bulle (maintenir clic)
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames) {
+                    const p = (animationPhase - (moveToFileFrames + 6)) / dragToBubbleFrames;
+                    const sx = outsideFileCenterX, sy = outsideFileCenterY;
+                    const ex = bubbleDropX, ey = bubbleDropY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                    outsideFile.style.left = (sx - 22 + (ex - sx) * p) + 'px';
+                    outsideFile.style.top = (sy - 28 + (ey - sy) * p) + 'px';
+                }
+                // 4) Lâcher dans la bulle (déposer)
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6) {
+                    const dropPhase = animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames);
+                    if (dropPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                        // afficher le fichier dans la bulle
+                        insideFile.style.display = 'flex';
+                        // déposer dans la bulle comme en grille (première case, à gauche/haut)
+                        if (insideFile.parentElement !== dynamicBorder) {
+                            dynamicBorder.appendChild(insideFile);
+                        }
+                        insideFile.style.left = (10) + 'px';
+                        insideFile.style.top = (10) + 'px';
+                        // assurer la visibilité du curseur au-dessus pendant le lâcher
+                        mouseCursor.style.zIndex = '1500';
+                        insideFile.style.zIndex = '1002';
+                        insideFileName.style.display = 'block';
+                        // masquer l'original hors bulle
+                        outsideFile.style.display = 'none';
+                    }
+                }
+                // 5) Petite pause (fichier dedans)
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames) {
+                }
+                // 5b) Aller vers l'étiquette de la bulle
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames) {
+                    const p = (animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames)) / moveToLabelFrames;
+                    const sx = mouseCursor.offsetLeft; const sy = mouseCursor.offsetTop;
+                    const ex = labelCenterX; const ey = labelCenterY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                }
+                // 5c) Clic et maintenir sur l'étiquette
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames) {
+                    const step = animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames);
+                    if (step >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                        // activer le curseur bleu au centre de l'étiquette et masquer le curseur normal
+                        if (blueCursor) blueCursor.style.display = 'block';
+                        mouseCursor.style.display = 'none';
+                    }
+                }
+                // 5d) Déplacer la bulle (avec son contenu) vers une nouvelle position
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames) {
+                    const p = (animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames)) / bubbleMoveOutFrames;
+                    const targetOffsetX = 0;
+                    const targetOffsetY = 80;
+                    bubbleOffsetX = targetOffsetX * p;
+                    bubbleOffsetY = targetOffsetY * p;
+                    if (insideFile.parentElement !== dynamicBorder) {
+                        dynamicBorder.appendChild(insideFile);
+                        insideFile.style.left = '10px';
+                        insideFile.style.top = '10px';
+                    }
+                    dynamicBorder.style.left = (bubbleBaseLeft + bubbleOffsetX) + 'px';
+                    dynamicBorder.style.top = (bubbleBaseTop + bubbleOffsetY) + 'px';
+                    // pendant le déplacement, garder le curseur bleu visible et masquer le curseur normal
+                    if (blueCursor) blueCursor.style.display = 'block';
+                    mouseCursor.style.display = 'none';
+                    insideFile.style.zIndex = '1002';
+                }
+                // 5e) Revenir à la position initiale de la bulle
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames) {
+                    const p = (animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames)) / bubbleMoveBackFrames;
+                    const startOffsetX = 0;
+                    const startOffsetY = 80;
+                    bubbleOffsetX = startOffsetX * (1 - p);
+                    bubbleOffsetY = startOffsetY * (1 - p);
+                    dynamicBorder.style.left = (bubbleBaseLeft + bubbleOffsetX) + 'px';
+                    dynamicBorder.style.top = (bubbleBaseTop + bubbleOffsetY) + 'px';
+                    if (blueCursor) blueCursor.style.display = 'block';
+                    mouseCursor.style.display = 'none';
+                }
+                // 5f) Relâcher le clic sur la bulle
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames) {
+                    const step = animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames);
+                    if (step >= 2) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                        // revenir au curseur normal à la position actuelle de l'étiquette, masquer le curseur bleu
+                        if (blueCursor) blueCursor.style.display = 'none';
+                        mouseCursor.style.display = 'block';
+                        const currentBubbleLeft3 = parseInt(dynamicBorder.style.left || (bubbleBaseLeft + '')) || bubbleBaseLeft;
+                        const currentBubbleTop3 = parseInt(dynamicBorder.style.top || (bubbleBaseTop + '')) || bubbleBaseTop;
+                        mouseCursor.style.left = (labelCenterX + (currentBubbleLeft3 - bubbleBaseLeft)) + 'px';
+                        mouseCursor.style.top = (labelCenterY + (currentBubbleTop3 - bubbleBaseTop)) + 'px';
+                        mouseCursor.style.zIndex = '1500';
+                        insideFile.style.zIndex = '';
+                    }
+                }
+                // 5g) Petite pause après déplacement de la bulle
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames) {
+                }
+                // 6) Reprendre le fichier dans la bulle (déplacement précis puis clic maintenir)
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10) {
+                    const phaseBase = moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames;
+                    const step = animationPhase - phaseBase;
+                    // amener doucement le curseur au centre du fichier (1ère case de la bulle) (4 frames)
+                    const currentBubbleLeft = parseInt(dynamicBorder.style.left || (bubbleBaseLeft + '')) || bubbleBaseLeft;
+                    const currentBubbleTop = parseInt(dynamicBorder.style.top || (bubbleBaseTop + '')) || bubbleBaseTop;
+                    const fileCenterX = currentBubbleLeft + 10 + 18;
+                    const fileCenterY = currentBubbleTop + 10 + 23;
+                    if (step <= 4) {
+                        const p = step / 4;
+                        const sx = mouseCursor.offsetLeft; const sy = mouseCursor.offsetTop;
+                        const ex = fileCenterX; const ey = fileCenterY;
+                        mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                        mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                        mouseCursor.style.zIndex = '1500';
+                        insideFile.style.zIndex = '1002';
+                    }
+                    // puis appuyer (clic gauche maintenu) (à partir de 6)
+                    if (step >= 6) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseLeftClick.style.visibility = 'visible';
+                    }
+                }
+                // 7) Glisser le fichier vers l'extérieur (maintenir clic) – l'élément suit la souris
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10 + dragOutFrames) {
+                    // s'assurer que le curseur reste visible au-dessus de l'élément pendant le glisser vers l'extérieur
+                    mouseCursor.style.zIndex = '1003';
+                    insideFile.style.zIndex = '1002';
+                    const currentBubbleLeft2 = parseInt(dynamicBorder.style.left || (bubbleBaseLeft + '')) || bubbleBaseLeft;
+                    const currentBubbleTop2 = parseInt(dynamicBorder.style.top || (bubbleBaseTop + '')) || bubbleBaseTop;
+                    const startFileCenterX = currentBubbleLeft2 + 10 + 18;
+                    const startFileCenterY = currentBubbleTop2 + 10 + 23;
+                    if (insideFile.parentElement === dynamicBorder) {
+                        canvas.appendChild(insideFile);
+                        insideFile.style.left = (startFileCenterX - 18) + 'px';
+                        insideFile.style.top = (startFileCenterY - 23) + 'px';
+                    }
+                    const p = (animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10)) / dragOutFrames;
+                    const sx = startFileCenterX, sy = startFileCenterY;
+                    const ex = outsideFileCenterX, ey = outsideFileCenterY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                    // déplacer visuellement le fichier de la bulle avec le curseur
+                    insideFile.style.display = 'flex';
+                    insideFile.style.left = (sx - 18 + (ex - sx) * p) + 'px';
+                    insideFile.style.top = (sy - 23 + (ey - sy) * p) + 'px';
+                    insideFileName.style.display = 'block';
+                    insideFileName.style.left = (sx - 25 + (ex - sx) * p) + 'px';
+                    insideFileName.style.top = (sy + 26 + (ey - sy) * p) + 'px';
+                }
+                // 8) Déposer à l'extérieur
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10 + dragOutFrames + 6) {
+                    const drop2Phase = animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10 + dragOutFrames);
+                    if (drop2Phase >= 2) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                        // masquer dans la bulle, réafficher l'extérieur
+                        insideFile.style.display = 'none';
+                        insideFileName.style.display = 'none';
+                        outsideFile.style.display = 'flex';
+            outsideFile.style.left = (outsideFileCenterX - 22) + 'px';
+            outsideFile.style.top = (outsideFileCenterY - 28) + 'px';
+            if (outsideFileName) {
+                outsideFileName.style.display = 'block';
+                outsideFileName.style.left = (outsideFileCenterX - 30) + 'px';
+                outsideFileName.style.top = (outsideFileCenterY + 30) + 'px';
+            }
+                        // réinitialiser les z-index temporaires
+                        mouseCursor.style.zIndex = '1500';
+                        insideFile.style.zIndex = '';
+                    }
+                }
+                // 8b) Retour du curseur vers la position par défaut
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10 + dragOutFrames + 6 + cursorReturnFrames) {
+                    const p = (animationPhase - (moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10 + dragOutFrames + 6)) / cursorReturnFrames;
+                    const sx = outsideFileCenterX, sy = outsideFileCenterY;
+                    const ex = defaultCursorX, ey = defaultCursorY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                }
+                // 9) Pause extérieure
+                else if (animationPhase <= moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames + 10 + dragOutFrames + 6 + cursorReturnFrames + postOutPauseFrames) {
+                }
+                else {
+                    // Reset
+                    animationPhase = 0;
+                    mouseCursor.style.left = defaultCursorX + 'px';
+                    mouseCursor.style.top = defaultCursorY + 'px';
+                    mouseCursor.style.display = 'block';
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                    outsideFile.style.display = 'flex';
+                    outsideFile.style.left = (outsideFileCenterX - 22) + 'px';
+                    outsideFile.style.top = (outsideFileCenterY - 28) + 'px';
+                    insideFile.style.display = 'none';
+                    insideFileName.style.display = 'none';
+                    // réinitialiser les z-index temporaires
+                    mouseCursor.style.zIndex = '1500';
+                    insideFile.style.zIndex = '';
+                    if (blueCursor) blueCursor.style.display = 'none';
+                    bubbleOffsetX = 0;
+                    bubbleOffsetY = 0;
+                    if (dynamicBorder) {
+                        dynamicBorder.style.left = bubbleBaseLeft + 'px';
+                        dynamicBorder.style.top = bubbleBaseTop + 'px';
+                    }
+                }
+
+                updateProgress(animationPhase, totalAnimationFrames);
+                const currentInterval = Math.round(baseInterval / animationSpeed);
+                animationTimer = setTimeout(runAnimationFrame, currentInterval);
+            }
+
+            updateProgress(0, totalAnimationFrames);
+            runAnimationFrame();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvasRect = canvas.getBoundingClientRect();
+            canvasCenterX = Math.round(canvasRect.width / 2);
+            canvasCenterY = Math.round(canvasRect.height / 2);
+
+            // centre approximatif de la bulle (dynamic-border: left 50, top 60, width 200, height 80)
+            bubbleDropX = 50 + 100; // 150
+            bubbleDropY = 60 + 40;  // 100
+
+            // Position de départ centrée sous la bulle avec 50px de marge
+            outsideFileCenterX = bubbleDropX;
+            outsideFileCenterY = 60 + 80 + 50 + 28;
+            outsideFile.style.left = (outsideFileCenterX - 22) + 'px';
+            outsideFile.style.top = (outsideFileCenterY - 28) + 'px';
+
+            // calcul centre de l'étiquette
+            // position de base de la bulle
+            const bubbleRect = dynamicBorder.getBoundingClientRect();
+            bubbleBaseLeft = Math.round(bubbleRect.left - canvasRect.left);
+            bubbleBaseTop = Math.round(bubbleRect.top - canvasRect.top);
+
+            // S'assurer que l'étiquette conserve sa position relative attendue (centrée au-dessus de la bulle)
+            // Alignement identique à demo-move.html
+            labelBorder.style.position = 'absolute';
+            labelBorder.style.left = '100px';
+            labelBorder.style.top = '-25px';
+            labelBorder.style.transform = 'translateX(-50%)';
+
+            // Positionner correctement la poignée de redimensionnement par défaut (coin bas-droit)
+            if (resizeHandle) {
+                resizeHandle.style.left = 'auto';
+                resizeHandle.style.top = 'auto';
+                resizeHandle.style.right = '-5px';
+                resizeHandle.style.bottom = '-5px';
+                resizeHandle.style.zIndex = '1000';
+            }
+
+            // Recalculer le centre de l'étiquette après application du style
+            const labelRect = labelBorder.getBoundingClientRect();
+            labelCenterX = Math.round(labelRect.left - canvasRect.left + labelRect.width / 2);
+            labelCenterY = Math.round(labelRect.top - canvasRect.top + labelRect.height / 2);
+
+            // Position fixe du curseur bleu à l'intérieur de l'étiquette (en coordonnées px de l'étiquette)
+            // On place le centre de l'icône 16x16 au centre visuel de l'étiquette
+            if (blueCursor) {
+                blueCursor.style.position = 'absolute';
+                blueCursor.style.left = Math.round(labelRect.width / 2 - 0) + 'px';
+                blueCursor.style.top = Math.round(labelRect.height / 2 - 0) + 'px';
+                blueCursor.style.transform = 'none';
+            }
+
+            // Position par défaut du curseur: position d'arrivée sur l'élément + 50px vers le bas
+            defaultCursorX = outsideFileCenterX;
+            defaultCursorY = outsideFileCenterY + 50;
+
+            // frames selon standardisation
+            moveToFileFrames = Math.max(8, Math.ceil(Math.hypot(outsideFileCenterX - defaultCursorX, outsideFileCenterY - defaultCursorY) / CURSOR_SPEED_PX_PER_FRAME));
+            dragToBubbleFrames = Math.max(10, Math.ceil(Math.hypot(bubbleDropX - outsideFileCenterX, bubbleDropY - outsideFileCenterY) / CURSOR_SPEED_PX_PER_FRAME));
+            moveToLabelFrames = Math.max(8, Math.ceil(Math.hypot(labelCenterX - bubbleDropX, labelCenterY - bubbleDropY) / CURSOR_SPEED_PX_PER_FRAME));
+            dragOutFrames = Math.max(10, Math.ceil(Math.hypot(outsideFileCenterX - bubbleDropX, outsideFileCenterY - bubbleDropY) / CURSOR_SPEED_PX_PER_FRAME));
+
+            totalAnimationFrames =
+                moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames +
+                moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames + bubblePostMovePauseFrames +
+                10 + dragOutFrames + 6 + cursorReturnFrames + postOutPauseFrames;
+
+            mouseCursor.style.left = defaultCursorX + 'px';
+            mouseCursor.style.top = defaultCursorY + 'px';
+
+            setTimeout(startAnimation, 800);
+        });
+
+        function updateProgress(phase, totalFrames) {
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+
+            const step1 = moveToFileFrames; // vers fichier
+            const step2 = moveToFileFrames + 6 + Math.floor(dragToBubbleFrames * 0.6); // en cours de glisser vers bulle
+            const step3 = moveToFileFrames + 6 + dragToBubbleFrames + 6; // déposé dans bulle
+            const step4 = moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + Math.floor(bubbleMoveOutFrames * 0.6);
+            const step5 = moveToFileFrames + 6 + dragToBubbleFrames + 6 + pauseAfterInFrames + moveToLabelFrames + bubbleClickHoldFrames + bubbleMoveOutFrames + bubbleMoveBackFrames + bubbleReleaseFrames;
+            const step6 = step5 + 10 + Math.floor(dragOutFrames * 0.6);
+            const step7 = step5 + 10 + dragOutFrames + 6; // dépôt extérieur
+            const step8 = step7 + cursorReturnFrames; // retour curseur position par défaut
+
+            if (phase <= step1) progressText.textContent = 'Aller vers le fichier...';
+            else if (phase <= step2) progressText.textContent = 'Glisser vers la bulle...';
+            else if (phase <= step3) progressText.textContent = 'Fichier déposé dans la bulle';
+            else if (phase <= step4) progressText.textContent = 'Déplacer la bulle avec son contenu...';
+            else if (phase <= step5) progressText.textContent = 'Bulle repositionnée';
+            else if (phase <= step6) progressText.textContent = 'Glisser le fichier en dehors...';
+            else if (phase <= step7) progressText.textContent = 'Fichier déposé à l’extérieur';
+            else if (phase <= step8) progressText.textContent = 'Retour à la position du curseur...';
+            else progressText.textContent = 'Préparation du redémarrage...';
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseButton = document.getElementById('pauseButton');
+            if (isPaused) {
+                pauseButton.textContent = 'Reprendre';
+                pauseButton.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause';
+                pauseButton.classList.remove('paused');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            const pauseButton = document.getElementById('pauseButton');
+
+            if (speedSlider && speedValue) {
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    animationSpeed = newSpeed;
+                });
+                speedValue.textContent = animationSpeed + 'x';
+            }
+
+            if (pauseButton) {
+                pauseButton.addEventListener('click', togglePause);
+            }
+        });
+    </script>
+</body>
+</html>
+
+

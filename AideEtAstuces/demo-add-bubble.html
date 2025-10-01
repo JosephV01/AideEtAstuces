@@ -37,24 +37,6 @@
         }
 
         /* Styles spécifiques à cette démonstration */
-
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
@@ -64,6 +46,19 @@
             <p class="demo-description">
                 Cette démonstration montre comment créer une nouvelle bulle en cliquant sur le bouton + du widget de bureau.
             </p>
+        </div>
+        
+        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
         </div>
         
         <div class="demo-canvas-container">
@@ -99,21 +94,17 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
+        
     </div>
 
     <script>
         // Variables pour l'animation
         let animationPhase = 0;
         let animationTimer;
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
         
         // Variables standardisées pour le contrôle de vitesse
         let animationSpeed = 1;
@@ -122,6 +113,9 @@
         
         // Standardisation de la vitesse du curseur (selon demo-elements.css)
         const CURSOR_SPEED_PX_PER_FRAME = 9;
+        
+        // Calculer le nombre total de frames de l'animation
+        const totalAnimationFrames = 60; // Total jusqu'au redémarrage
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -232,10 +226,16 @@
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
                 }
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -253,6 +253,29 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur le nombre total de frames
+            const step1 = Math.floor(totalFrames * 0.30); // 30% - Déplacement vers bouton
+            const step2 = Math.floor(totalFrames * 0.60); // 60% - Clic sur bouton +
+            const step3 = Math.floor(totalFrames * 0.90); // 90% - Bulle créée
+            
+            // Mettre à jour le texte de progression
+            if (phase <= step1) {
+                progressText.textContent = 'Déplacement vers le bouton +...';
+            } else if (phase <= step2) {
+                progressText.textContent = 'Clic sur le bouton +...';
+            } else if (phase <= step3) {
+                progressText.textContent = 'Nouvelle bulle créée !';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
         }
 
         function togglePause() {

@@ -22,7 +22,7 @@
             border-radius: 15px;
             box-shadow: 0 10px 30px var(--shadow-light);
             text-align: center;
-            padding: 5px 50px 5px 50px;
+            padding: 5px 25px 5px 25px;
         }
 
         .demo-canvas-container {
@@ -30,33 +30,18 @@
             border: 2px solid #555555;
             border-radius: 15px;
             display: inline-block;
-            height: 900px;
+            height: 800px;
             width: 900px;
+            padding: 5px 5px 5px 5px;
         }
 
         .demo-canvas.large {
-            width: 800px;
-            height: 800px;
+            width: 700px;
+            height: 700px;
         }
 
 
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
+        /* back-button styles removed to use global styles in demo-elements.css */
 
         /* Fenêtre de paramètres complète */
         .settings-window {
@@ -348,65 +333,13 @@
             font-size: 40px !important;
         }
 
-        /* Contrôle de vitesse et pause */
-        .speed-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin: 20px 0;
-            padding: 15px;
-            background: #2D2D30;
-            border: 1px solid #444;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #F0F0F0;
-        }
-
-        .speed-control label {
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .speed-slider {
-            width: 200px;
-            height: 6px;
-            background: #444;
-            border-radius: 3px;
-            outline: none;
-            cursor: pointer;
-            appearance: none;
-        }
-
-        .speed-slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            background: #0078D4;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            transition: all 0.2s ease;
-        }
-
-        .speed-slider::-webkit-slider-thumb:hover {
-            background: #005EA2;
-            transform: scale(1.1);
-        }
-
-        .speed-control #speedValue {
-            font-weight: bold;
-            color: #0078D4;
-            min-width: 30px;
-            text-align: center;
-        }
+        /* speed-control local styles removed to use global styles in demo-elements.css */
 
 
 
         .desktop-widget.bottom {
-            left: 350px;
-            top: 350px;
+            left: 300px;
+            top: 300px;
             width: 100px;
             height: 200px;
         }
@@ -418,13 +351,13 @@
         }
 
         .mouse-zero-click.large {
-            left: 700px;
-            top: 100px;
+            left: 650px;
+            top: 50px;
         }
 
         .mouse-left-click.large {
-            left: 700px;
-            top: 100px;
+            left: 650px;
+            top: 50px;
         }
 
     </style>
@@ -436,6 +369,19 @@
         <p class="demo-description">
             Cette démonstration montre comment ouvrir la fenêtre des paramètres en cliquant sur le bouton P du widget de bureau.
         </p>
+        </div>
+        
+        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
         </div>
         
         <div class="demo-canvas-container">
@@ -677,15 +623,7 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
+        
     </div>
 
     <script>
@@ -694,12 +632,16 @@
         let animationTimer;
         let isPaused = false;
         
-        // Variables standardisées pour le contrôle de vitesse
-        let animationSpeed = 1;
-        let baseInterval = 50; // Intervalle de base pour cette démo (50ms)
-        
         // Standardisation de la vitesse du curseur (selon demo-elements.css)
         const CURSOR_SPEED_PX_PER_FRAME = 9;
+        
+        // Calculer le nombre total de frames de l'animation
+        const movementFrames = Math.ceil(Math.sqrt((600-350)**2 + (250-400)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const totalAnimationFrames = movementFrames + 81; // Total jusqu'au redémarrage
+        
+        // Variables standardisées pour le contrôle de vitesse
+        let animationSpeed = 1;
+        let baseInterval = 50; // Intervalle de base pour cette démo
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -709,8 +651,6 @@
         const settingsButton = document.querySelector('.settings-button');
         const settingsWindow = document.querySelector('.settings-window');
         
-        // Calculer les frames de déplacement selon la standardisation
-        let movementFrames = 50; // Sera calculé dynamiquement
 
         function startAnimation() {
             function runAnimationFrame() {
@@ -726,7 +666,7 @@
                 if (animationPhase <= movementFrames) {
                     const progress = animationPhase / movementFrames;
                     const startX = 600, startY = 250;
-                    const endX = 400, endY = 500; // Position du bouton P (centre du bouton P dans le widget repositionné)
+                    const endX = 340, endY = 415; // Position du bouton P (centre du bouton P dans le widget repositionné)
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
@@ -807,10 +747,16 @@
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
                 }
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -828,9 +774,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Calculer la durée de déplacement selon la standardisation
             const startX = 600, startY = 250;
-            const endX = 400, endY = 500; // Position du bouton P (centre du bouton P dans le widget repositionné)
+            const endX = 350, endY = 400; // Position du bouton P (centre du bouton P dans le widget repositionné)
             const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
-            movementFrames = Math.ceil(distance / CURSOR_SPEED_PX_PER_FRAME);
+            // movementFrames est déjà calculé en haut du script
             
             console.log(`Distance: ${Math.round(distance)}px, Frames: ${movementFrames}, Vitesse: ${CURSOR_SPEED_PX_PER_FRAME}px/frame`);
             
@@ -871,6 +817,41 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur les phases réelles de l'animation
+            const phase1End = movementFrames; // Fin du déplacement vers le bouton P
+            const phase2End = movementFrames + 8; // Fin du clic sur le bouton P
+            const phase3End = movementFrames + 15; // Fin de l'apparition de la fenêtre
+            const phase4End = movementFrames + 21; // Fin de l'affichage de la fenêtre
+            const phase5End = movementFrames + 51; // Fin de l'affichage prolongé
+            const phase6End = movementFrames + 61; // Fin de la préparation de fermeture
+            const phase7End = movementFrames + 81; // Fin de la fermeture de la fenêtre
+            
+            // Mettre à jour le texte de progression
+            if (phase <= phase1End) {
+                progressText.textContent = 'Déplacement vers le bouton P...';
+            } else if (phase <= phase2End) {
+                progressText.textContent = 'Clic sur le bouton P...';
+            } else if (phase <= phase3End) {
+                progressText.textContent = 'Ouverture de la fenêtre des paramètres...';
+            } else if (phase <= phase4End) {
+                progressText.textContent = 'Fenêtre des paramètres affichée...';
+            } else if (phase <= phase5End) {
+                progressText.textContent = 'Affichage des paramètres...';
+            } else if (phase <= phase6End) {
+                progressText.textContent = 'Préparation de la fermeture...';
+            } else if (phase <= phase7End) {
+                progressText.textContent = 'Fermeture de la fenêtre...';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
         }
 
         // Fonction pour gérer la pause/reprise

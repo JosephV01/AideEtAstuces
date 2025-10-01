@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Démonstration - Ajuster Position Étiquette - MyCustomDesk</title>
+    <title>Démonstration - Personnaliser une Bulle Note - MyCustomDesk</title>
     <link rel="stylesheet" href="HelpAndTips.css">
     <link rel="stylesheet" href="demo-elements.css">
     <style>
@@ -22,8 +22,8 @@
             background: var(--background-white);
             border: 2px solid var(--border-color);
             border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px var(--shadow-light);
+            padding: 25px;
+            box-shadow: 0 10px 10px var(--shadow-light);
             text-align: center;
         }
 
@@ -31,16 +31,16 @@
             background: #2D2D2D;
             border: 2px solid #555555;
             border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 10px;
+            margin: 0px 0;
             display: inline-block;
         }
 
         /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
             /* Hérite de demo-elements.css, adaptations spécifiques */
-            width: 600px;
-            height: 400px;
+            width: 750px;
+            height: 750px;
         }
 
         /* Menu contextuel complet du projet */
@@ -226,115 +226,418 @@
             z-index: 5;
         }
 
-        /* Fenêtre de dialogue de position */
-        .position-dialog {
+        /* Curseur de souris avec z-index élevé */
+        .mouse-cursor {
+            z-index: 1500 !important;
+        }
+
+        /* Position de la souris ajustée pour le canvas agrandi */
+        .mouse-zero-click,
+        .mouse-zero-click.large {
+            left: 655px !important;
+            top: 55px !important;
+        }
+        .mouse-left-click,
+        .mouse-left-click.large {
+            left: 655px !important;
+            top: 55px !important;
+        }
+        .mouse-right-click,
+        .mouse-right-click.large {
+            left: 655px !important;
+            top: 55px !important;
+        }
+
+        /* back-button styles removed to use global styles in demo-elements.css */
+
+        /* Fenêtre de personnalisation réelle */
+        .customization-window {
             position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .dialog-border {
             background: #ffffff;
-            border: 2px solid #c0c0c0;
+            border: 2px solid #808080;
             border-radius: 25px;
+            width: 725px;
+            height: 725px;
+            left: 50px;
+            top: 10px;
+            z-index: 2000;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
             padding: 8px;
-            width: 400px;
-            min-width: 400px;
-            max-width: 600px;
-            min-height: 275px;
-            max-height: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-sizing: border-box;
+            visibility: hidden;
+            overflow: hidden;
         }
 
-        .dialog-content {
-            margin: 12px;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            min-height: 235px;
-        }
-
-        .dialog-title {
-            text-align: center;
-            font-weight: bold;
-            color: #000000;
-            font-size: 24px;
-            margin: 20px 0;
-            font-family: 'Segoe UI Variable';
-        }
-
-        .dialog-inputs {
-            margin: 0 0 10px 0;
-        }
-
-        .dialog-inputs .input-row {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .dialog-inputs .input-label {
-            color: #000000;
-            font-size: 16px;
-            font-family: 'Segoe UI Variable';
-            margin: 10px 10px 10px 10px;
-            text-align: left;
-        }
-
-        .dialog-inputs .input-textbox {
-            height: 30px;
-            background: #f0f0f0;
-            border: 1px solid #c0c0c0;
-            color: #000000;
-            font-size: 16px;
-            font-family: 'Segoe UI Variable';
-            padding: 5px;
-            margin: 5px 10px;
+        .main-border {
+            border: none;
             border-radius: 0;
-            outline: none;
-        }
-
-        .dialog-inputs .input-textbox:focus {
-            border-color: #0078d4;
+            padding: 8px;
             background: #ffffff;
-        }
-
-        .dialog-actions {
+            box-shadow: none;
+            height: 100%;
             display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin: 10px 0;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .dialog-button {
-            width: 100px;
-            height: 30px;
-            background: #f0f0f0;
-            border: 1px solid #c0c0c0;
-            border-radius: 4px;
-            font-size: 12px;
+        .content-grid {
+            flex: 1;
+            display: grid;
+            grid-template-rows: 140px 1fr auto;
+            gap: 0;
+            margin: 8px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        /* Zone d'aperçu */
+        .preview-section {
+            background: #2D2D2D;
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid #808080;
+            margin: 5px 20px 10px 20px;
+            width: 300px;
+            justify-self: center;
+        }
+
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100px;
+            margin: 0;
+        }
+
+        .preview-area {
+            width: 200px;
+            height: 100px;
+            background: transparent;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding-top: 15px;
+        }
+
+        .preview-bubble {
+            width: 180px;
+            height: 70px;
+            border: 2px solid white;
+            border-radius: 6px;
+            background: #2D2D30;
+            position: relative;
+        }
+
+        .preview-label {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 18px;
+            width: auto;
+            min-width: fit-content;
+            background: #2D2D30;
+            border: 1px solid white;
+            border-radius: 3px;
+            padding: 2px 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .preview-label-text {
+            font-size: 9px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Contenu principal */
+        .main-content {
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .customization-title {
+            font-weight: bold;
+            font-size: 16px;
             color: #000000;
-            cursor: pointer;
-            font-family: 'Segoe UI Variable';
+            text-align: center;
+            margin-bottom: 8px;
         }
 
-        .dialog-button:hover {
+        /* GroupBox styles */
+        .groupbox {
+            border: 1px solid #000000;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .groupbox-header {
+            background: #f0f0f0;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+
+        .groupbox-content {
+            padding: 3px;
+        }
+
+        /* Section Styles */
+        .styles-section {
+            margin-bottom: 8px;
+        }
+
+        .style-selector {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .style-selector label {
+            width: 150px;
+            font-size: 12px;
+            margin-right: 8px;
+            color: #000000;
+        }
+
+        .style-combobox {
+            width: 160px;
+            height: 22px;
+            padding: 0 6px;
+            border: 1px solid #000000;
+            background: #ffffff;
+            font-size: 12px;
+        }
+
+        .style-buttons {
+            display: flex;
+            gap: 5px;
+            margin-left: 5px;
+        }
+
+        .style-button {
+            height: 22px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            padding: 0 6px;
+            border-radius: 3px;
+        }
+
+        .style-button:hover {
             background: #e0e0e0;
         }
 
-        .dialog-button:active {
-            background: #d0d0d0;
+        .apply-button {
+            width: 80px;
         }
 
-        .dialog-button.ok-button {
+        .delete-button {
+            width: 70px;
+        }
+
+        /* Section Styles par défaut */
+        .default-styles-section {
+            margin-bottom: 8px;
+        }
+
+        .apply-to-all-button {
+            min-width: 140px;
+            height: 20px;
+            margin-bottom: 5px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
             font-weight: bold;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .apply-to-all-button:hover {
+            background: #e0e0e0;
+        }
+
+        .default-styles-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 1px;
+            margin-bottom: 3px;
+        }
+
+        .default-style-button {
+            width: 30px;
+            height: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .default-style-button:hover {
+            opacity: 0.8;
+        }
+
+        /* Panneaux de personnalisation */
+        .customization-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .bubble-panel, .label-panel {
+            border: 1px solid #000000;
+            border-radius: 4px;
+        }
+
+        .panel-header {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffffff;
+            border-bottom: 1px solid #000000;
+        }
+
+        .panel-content {
+            padding: 5px;
+        }
+
+        .control-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .control-icon {
+            width: 18px;
+            height: 18px;
+            margin-right: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #333;
+        }
+
+        .control-label {
+            width: 110px;
+            font-size: 12px;
+            margin-right: 8px;
+            color: #000000;
+        }
+
+        .control-button {
+            width: 25px;
+            height: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+        }
+
+        .control-slider {
+            width: 60px;
+            margin-left: 3px;
+        }
+
+        .image-buttons {
+            display: flex;
+            gap: 3px;
+            margin-top: 3px;
+        }
+
+        .image-button {
+            min-width: 60px;
+            height: 18px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .image-button:hover {
+            background: #e0e0e0;
+        }
+
+        .clear-button {
+            min-width: 50px;
+        }
+
+        .edit-title-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 3px;
+        }
+
+        .edit-title-label {
+            width: 60px;
+            font-size: 12px;
+            margin-right: 8px;
+            color: #000000;
+        }
+
+        .edit-title-button {
+            min-width: 50px;
+            height: 20px;
+            border: none;
+            background: #f0f0f0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .edit-title-button:hover {
+            background: #e0e0e0;
+        }
+
+        /* Barre d'action */
+        .action-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .action-button {
+            min-width: 120px;
+            height: 26px;
+            border: 1px solid #cccccc;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .action-button:hover {
+            background: #f0f0f0;
+        }
+
+        .create-style-button {
+            min-width: 140px;
         }
 
         /* Curseur de souris avec z-index élevé */
@@ -349,20 +652,18 @@
             left: 550px !important;
             top: 15px !important;
         }
-
-        /* back-button styles removed to use global styles in demo-elements.css */
+        
     </style>
-</head>
+    </head>
 <body>
     <div class="demo-container">
         <div class="demo-header">
-            <h1 class="demo-title">Démonstration - Ajuster Position Étiquette</h1>
+            <h1 class="demo-title">Démonstration - Personnaliser une Bulle Note</h1>
             <p class="demo-description">
-                Cette démonstration montre comment accéder aux options de l'étiquette et ajuster précisément sa position via la fenêtre de dialogue. Effectuez un clic droit sur la poignée pour ouvrir le menu, sélectionnez "Options de l'étiquette" puis "Ajuster la position de l'étiquette".
+                Cette démonstration montre comment accéder aux options de personnalisation d'une Bulle Note via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu et sélectionnez "Personnaliser la Bulle".
             </p>
         </div>
         
-        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
         <div class="speed-control">
             <label for="speedSlider">Vitesse de l'animation :</label>
             <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
@@ -382,7 +683,7 @@
 
                 <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
-                    <div class="label-text">Ajuster la position de l'étiquette</div>
+                    <div class="label-text">Personnaliser la Bulle Note</div>
                 </div>
 
                 <!-- Curseur de souris -->
@@ -391,16 +692,14 @@
                 <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Cercle d'animation de clic -->
-
                 <!-- Souris avec boutons (état normal) -->
-                <div class="mouse-zero-click"></div>
+                <div class="mouse-zero-click large"></div>
 
                 <!-- Souris avec bouton droit coloré (pour les clics) -->
-                <div class="mouse-right-click"></div>
+                <div class="mouse-right-click large"></div>
 
                 <!-- Souris avec bouton gauche coloré (pour les clics) -->
-                <div class="mouse-left-click"></div>
+                <div class="mouse-left-click large"></div>
 
                 <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
@@ -555,11 +854,11 @@
                                         <path d="M200-120Q167-120 143.5-143.5 120-167 120-200L120-760Q120-793 143.5-816.5 167-840 200-840L368-840Q381-876 411.5-898 442-920 480-920 518-920 548.5-898 579-876 592-840L760-840Q793-840 816.5-816.5 840-793 840-760L840-492Q821-501 801-507.5 781-514 760-517L760-760 200-760 200-200 442-200Q445-178 451.5-158 458-138 467-120L200-120z M280-280L443-280Q446-301 452.5-321 459-341 467-360L280-360 280-280z M280-440L524-440Q556-470 595.5-490 635-510 680-517L680-520 280-520 280-440z M280-600L680-600 680-680 280-680 280-600z M480-790Q493-790 501.5-798.5 510-807 510-820 510-833 501.5-841.5 493-850 480-850 467-850 458.5-841.5 450-833 450-820 450-807 458.5-798.5 467-790 480-790z M720-40Q637-40 578.5-98.5 520-157 520-240 520-323 578.5-381.5 637-440 720-440 803-440 861.5-381.5 920-323 920-240 920-157 861.5-98.5 803-40 720-40z M700-120L740-120 740-220 840-220 840-260 740-260 740-360 700-360 700-260 600-260 600-220 700-220 700-120z"/>
                                     </svg>
                                     <span class="menu-text">Activer le mode note</span>
-                                </div>
+                        </div>
                                 <div class="help-button">?</div>
                             </button>
-                        </div>
                     </div>
+                </div>
 
                     <div class="menu-section">
                         <div class="menu-section-header">
@@ -570,7 +869,7 @@
                             <svg class="section-arrow" viewBox="0 0 24 24">
                                 <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
                             </svg>
-                        </div>
+            </div>
                         <div class="submenu">
                             <button class="menu-item menu-item-with-help">
                                 <div class="menu-item-content">
@@ -578,7 +877,7 @@
                                         <path d="M582,-298 L440,-440 v-200 h80 v167 l118,118 -56,57 Z M440,-720 v-80 h80 v80 h-80 Z M720-440 v-80 h80 v80 h-80 Z M440-160 v-80 h80 v80 h-80 Z M160-440 v-80 h80 v80 h-80 Z M480,-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
                                     </svg>
                                     <span class="menu-text">Masquer l'horloge</span>
-                                </div>
+        </div>
                                 <div class="help-button">?</div>
                             </button>
                             <button class="menu-item menu-item-with-help">
@@ -641,36 +940,196 @@
                     </button>
                 </div>
 
-                <!-- Fenêtre de dialogue de position -->
-                <div class="position-dialog" id="positionDialog">
-                    <div class="dialog-border">
-                        <div class="dialog-content">
-                            <div class="dialog-title">Position de l'étiquette</div>
-                            <div class="dialog-inputs">
-                                <div class="input-row">
-                                    <div class="input-label">Décalage horizontal :</div>
-                                    <div class="input-container">
-                                        <input id="dialogXInput" class="input-textbox" type="text" value="0" />
-                                    </div>
-                                </div>
-                                <div class="input-row">
-                                    <div class="input-label">Décalage vertical :</div>
-                                    <div class="input-container">
-                                        <input id="dialogYInput" class="input-textbox" type="text" value="0" />
+                <!-- Fenêtre de personnalisation réelle -->
+                <div class="customization-window">
+                    <div class="main-border">
+                        <div class="content-grid">
+                            <!-- Zone d'aperçu -->
+                            <div class="preview-section">
+                                <div class="preview-container">
+                                    <div class="preview-area">
+                                        <div class="preview-bubble" id="previewBubble">
+                                            <div class="preview-label" id="previewLabel">
+                                                <div class="preview-label-text" id="previewLabelText">Aperçu</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <div class="dialog-actions">
-                                <button class="dialog-button">Annuler</button>
-                                <button id="dialogOkButton" class="dialog-button ok-button">OK</button>
+
+                            <!-- Contenu principal -->
+                            <div class="main-content">
+                                <div class="customization-title">Personnalisation</div>
+
+                                <!-- Section Styles -->
+                                <div class="groupbox styles-section">
+                                    <div class="groupbox-header">Gérer les styles</div>
+                                    <div class="groupbox-content">
+                                        <div class="style-selector">
+                                            <label>Sélectionner un style:</label>
+                                            <select class="style-combobox" id="stylesComboBox">
+                                                <option>Sélectionner un style</option>
+                                                <option>Style Rouge</option>
+                                                <option>Style Bleu</option>
+                                                <option>Style Vert</option>
+                                            </select>
+                                        </div>
+                                        <div class="style-buttons">
+                                            <button class="style-button apply-button" onclick="loadStyle()">Appliquer</button>
+                                            <button class="style-button delete-button" onclick="deleteStyle()">Supprimer</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Section Styles par défaut -->
+                                <div class="groupbox default-styles-section">
+                                    <div class="groupbox-header">Styles par défaut</div>
+                                    <div class="groupbox-content">
+                                        <button class="apply-to-all-button" onclick="applyToAllBorders()">Appliquer à toutes les bulles</button>
+                                        <div class="default-styles-grid">
+                                            <button class="default-style-button" style="background: #E74C3C;" onclick="selectDefaultStyle(1)" data-style="1"></button>
+                                            <button class="default-style-button" style="background: #3498DB;" onclick="selectDefaultStyle(2)" data-style="2"></button>
+                                            <button class="default-style-button" style="background: #2ECC71;" onclick="selectDefaultStyle(3)" data-style="3"></button>
+                                            <button class="default-style-button" style="background: #F39C12;" onclick="selectDefaultStyle(4)" data-style="4"></button>
+                                            <button class="default-style-button" style="background: #9B59B6;" onclick="selectDefaultStyle(5)" data-style="5"></button>
+                                            <button class="default-style-button" style="background: #1ABC9C;" onclick="selectDefaultStyle(6)" data-style="6"></button>
+                                            <button class="default-style-button" style="background: #E67E22;" onclick="selectDefaultStyle(7)" data-style="7"></button>
+                                            <button class="default-style-button" style="background: #34495E;" onclick="selectDefaultStyle(8)" data-style="8"></button>
+                                            <button class="default-style-button" style="background: #95A5A6;" onclick="selectDefaultStyle(9)" data-style="9"></button>
+                                            <button class="default-style-button" style="background: #16A085;" onclick="selectDefaultStyle(10)" data-style="10"></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Panneaux de personnalisation -->
+                                <div class="customization-panels">
+                                    <!-- Panneau Bulle -->
+                                    <div class="groupbox bubble-panel">
+                                        <div class="panel-header">Bulle</div>
+                                        <div class="panel-content">
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="80 -800 800 640">
+                                                        <path d="M160,-160q-33,0-56.5,-23.5T80,-240v-480q0-33,23.5,-56.5T160,-800h640q33,0,56.5,23.5T880,-720v480q0,33-23.5,56.5T800,-160H160Zm0,-80h640v-480H160v480Zm160,-120h320v-240H320v240ZM160,-240v-480 480Z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Couleur de fond:</div>
+                                                <button class="control-button" id="rectBgColorButton" onclick="pickColor('rectBg')" style="background: #2D2D30;"></button>
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Couleur de bordure:</div>
+                                                <button class="control-button" id="borderColorButton" onclick="pickColor('border')" style="background: white;"></button>
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Épaisseur de bordure:</div>
+                                                <input type="range" class="control-slider" id="borderThicknessSlider" min="1" max="10" value="2" oninput="updatePreview()">
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="200 -760 560 640">
+                                                        <path d="M200-120v-440h80v360h360v80H200Zm200-200v-440h80v360h360v80H400Z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Rayon des coins:</div>
+                                                <input type="range" class="control-slider" id="borderCornerRadiusSlider" min="0" max="50" value="6" oninput="updatePreview()">
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="40 -920 880 800">
+                                                        <path d="M440,-440 ZM120,-120 Q87,-120 63.5,-143.5 T40,-200 V-680 Q40,-713 63.5,-736.5 T120,-760 H246 L320,-840 H560 V-760 H355 L282,-680 H120 V-200 H760 V-560 H840 V-200 Q840,-167 816.5,-143.5 T760,-120 H120 ZM760,-680 V-760 H680 V-840 H760 V-920 H840 V-840 H920 V-760 H840 V-680 H760 ZM440,-260 Q515,-260 567.5,-312.5 T620,-440 Q620,-515 567.5,-567.5 T440,-620 Q365,-620 312.5,-567.5 T260,-440 Q260,-365 312.5,-312.5 T440,-260 ZM440,-340 Q398,-340 369,-369 T340,-441 Q441,-482 369,-511 T440,-540 Q482,-540 511,-511 T540,-440 Q540,-398 511,-369 T440,-340 Z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Image de fond:</div>
+                                            </div>
+                                            <div class="image-buttons">
+                                                <button class="image-button" onclick="importImage()">Importer</button>
+                                                <button class="image-button" onclick="openImageLibrary()">Bibliothèque</button>
+                                                <button class="image-button clear-button" onclick="clearImage()">Effacer</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Panneau Label -->
+                                    <div class="groupbox label-panel">
+                                        <div class="panel-header">Label</div>
+                                        <div class="panel-content">
+                                            <div class="edit-title-section">
+                                                <div class="edit-title-label">Titre:</div>
+                                                <button class="edit-title-button" onclick="editTitle()">Modifier</button>
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="80 -800 800 640">
+                                                        <path d="M160,-160q-33,0-56.5,-23.5T80,-240v-480q0-33,23.5,-56.5T160,-800h640q33,0,56.5,23.5T880,-720v480q0,33-23.5,56.5T800,-160H160Zm0,-80h640v-480H160v480Zm160,-120h320v-240H320v240ZM160,-240v-480 480Z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Couleur de fond:</div>
+                                                <button class="control-button" id="labelBgColorButton" onclick="pickColor('labelBg')" style="background: #2D2D30;"></button>
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M3 3h18v18H3V3zm2 2v14h14V5H5z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Couleur de bordure:</div>
+                                                <button class="control-button" id="labelBorderColorButton" onclick="pickColor('labelBorder')" style="background: white;"></button>
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="80 -880 800 800">
+                                                        <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Couleur du texte:</div>
+                                                <button class="control-button" id="titleColorButton" onclick="pickColor('title')" style="background: white;"></button>
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="0 0 24 24">
+                                                        <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Épaisseur de bordure:</div>
+                                                <input type="range" class="control-slider" id="labelBorderThicknessSlider" min="1" max="10" value="1" oninput="updatePreview()">
+                                            </div>
+                                            <div class="control-row">
+                                                <div class="control-icon">
+                                                    <svg viewBox="200 -760 560 640">
+                                                        <path d="M200-120v-440h80v360h360v80H200Zm200-200v-440h80v360h360v80H400Z"/>
+                                                    </svg>
+                                                </div>
+                                                <div class="control-label">Rayon des coins:</div>
+                                                <input type="range" class="control-slider" id="labelCornerRadiusSlider" min="0" max="30" value="3" oninput="updatePreview()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Barre d'action -->
+                            <div class="action-bar">
+                                <button class="action-button create-style-button" onclick="createStyle()">Créer un style</button>
+                                <button class="action-button" onclick="cancel()">Annuler</button>
+                                <button class="action-button" onclick="apply()">Appliquer</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
 
-        
     </div>
 
     <script>
@@ -691,7 +1150,7 @@
         // Calculer le nombre total de frames de l'animation
         const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 85; // Total jusqu'au redémarrage
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Total jusqu'au redémarrage
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -700,10 +1159,8 @@
         const mouseLeftClick = document.querySelector('.mouse-left-click');
         const contextMenu = document.querySelector('.context-menu');
         const resizeHandle = document.querySelector('.resize-handle');
-        const positionDialog = document.querySelector('#positionDialog');
+        const customizationWindow = document.querySelector('.customization-window');
         const menuItems = document.querySelectorAll('.menu-item');
-        const menuSections = document.querySelectorAll('.menu-section');
-        const submenus = document.querySelectorAll('.submenu');
 
         function startAnimation() {
             function runAnimationFrame() {
@@ -727,13 +1184,6 @@
                 // Phase 2: Animation de clic droit et expansion de la poignée
                 else if (animationPhase <= moveToHandleFrames + 23) {
                     const clickPhase = animationPhase - moveToHandleFrames;
-                    
-                    // Animation de clic très rapide
-                    if (clickPhase <= 2) {
-                    } else if (clickPhase <= 4) {
-                        const shrinkPhase = clickPhase - 2;
-                    } else {
-                    }
 
                     // Changement de souris pour le clic droit (synchronisé)
                     if (clickPhase >= 2) {
@@ -780,26 +1230,19 @@
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                 }
-                // Phase 5: Curseur se déplace vers "Options de l'étiquette" (vitesse standardisée)
+                // Phase 5: Curseur se déplace vers "Personnaliser la bulle" (vitesse standardisée)
                 else {
-                    const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (302-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
+                    const moveToMenuFrames = Math.ceil(Math.sqrt((254-243)**2 + (80-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
                     if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames) {
                         const progress = (animationPhase - (moveToHandleFrames + 33)) / moveToMenuFrames;
                         const startX = 243, startY = 133;
-                        const endX = 429, endY = 320; // Centre exact de l'option "Options de l'étiquette" (4ème option)
+                        const endX = 429, endY = 208; // Centre exact de l'option "Personnaliser la bulle" (2ème option)
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 6: Clic sur "Options de l'étiquette"
+                    // Phase 6: Clic sur "Personnaliser"
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
-                    
-                    // Animation de clic
-                    if (clickPhase <= 2) {
-                    } else if (clickPhase <= 4) {
-                        const shrinkPhase = clickPhase - 2;
-                    } else {
-                    }
 
                     // Changement de souris au clic gauche (synchronisé)
                     if (clickPhase >= 2) {
@@ -813,97 +1256,39 @@
                         mouseLeftClick.style.visibility = 'hidden';
                     }
 
-                    // Effet hover sur l'option "Options de l'étiquette" (4ème option - section)
+                    // Effet hover sur l'option "Personnaliser la bulle" (2ème option)
                     if (clickPhase >= 1) {
-                        menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
+                        menuItems[1].style.background = '#0078D4';
                     }
                     }
-                    // Phase 7: Sous-menu "Options de l'étiquette" s'ouvre
+                    // Phase 7: Menu disparaît et fenêtre de personnalisation apparaît
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 15) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 8)) / 7;
-                        if (submenus[1]) {
-                            submenus[1].style.visibility = 'visible';
-                            submenus[1].style.opacity = progress;
-                            submenus[1].style.transform = `scale(${0.8 + progress * 0.2})`;
-                        }
-                    }
-                    // Phase 8: Sous-menu visible
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25) {
-                        if (submenus[1]) {
-                            submenus[1].style.visibility = 'visible';
-                            submenus[1].style.opacity = '1';
-                            submenus[1].style.transform = 'scale(1)';
-                        }
-                    }
-                    // Phase 9: Curseur se déplace vers "Ajuster la position de l'étiquette"
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 35) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 25)) / 10;
-                        const startX = 429, startY = 320;
-                        const endX = 750, endY = 320; // Centre du sous-menu "Ajuster la position de l'étiquette"
-                        mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
-                        mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
-                    }
-                    // Phase 10: Clic sur "Ajuster la position de l'étiquette"
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 43) {
-                        const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 35);
+                    contextMenu.style.opacity = 1 - progress;
+                    contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
                     
-                    // Animation de clic
-                    if (clickPhase <= 2) {
-                    } else if (clickPhase <= 4) {
-                        const shrinkPhase = clickPhase - 2;
-                    } else {
-                    }
-
-                    // Changement de souris au clic gauche (synchronisé)
-                    if (clickPhase >= 2) {
-                        mouseZeroClick.style.visibility = 'hidden';
-                        mouseLeftClick.style.visibility = 'visible';
-                    }
+                    // La souris est déjà revenue à la normale après le clic
                     
-                    // Retour immédiat à la souris normale après le clic
-                    if (clickPhase >= 4) {
-                        mouseZeroClick.style.visibility = 'visible';
-                        mouseLeftClick.style.visibility = 'hidden';
-                    }
-
-                    // Effet hover sur "Ajuster la position de l'étiquette"
-                    if (clickPhase >= 1) {
-                        const submenuItem = submenus[1].querySelector('.menu-item');
-                        if (submenuItem) {
-                            submenuItem.style.background = '#0078D4';
-                        }
+                    if (progress >= 0.5) {
+                        customizationWindow.style.visibility = 'visible';
+                        customizationWindow.style.opacity = (progress - 0.5) * 2;
+                        customizationWindow.style.transform = `scale(${0.8 + (progress - 0.5) * 0.4})`;
                     }
                     }
-                    // Phase 11: Menu et sous-menu disparaissent, fenêtre de dialogue apparaît
+                    // Phase 8: Fenêtre de personnalisation visible
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 45) {
+                        customizationWindow.style.visibility = 'visible';
+                        customizationWindow.style.opacity = '1';
+                        customizationWindow.style.transform = 'scale(1)';
+                    }
+                    // Phase 9: Fenêtre de personnalisation se ferme
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 55) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 43)) / 12;
-                        contextMenu.style.opacity = 1 - progress;
-                        contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
-                        if (submenus[1]) {
-                            submenus[1].style.opacity = 1 - progress;
-                            submenus[1].style.transform = `scale(${1 - progress * 0.2})`;
-                        }
-                        
-                        if (progress >= 0.5) {
-                            positionDialog.style.visibility = 'visible';
-                            positionDialog.style.opacity = (progress - 0.5) * 2;
-                            positionDialog.style.transform = `translate(-50%, -50%) scale(${0.8 + (progress - 0.5) * 0.4})`;
-                        }
+                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 45)) / 10;
+                    customizationWindow.style.opacity = 1 - progress;
+                    customizationWindow.style.transform = `scale(${1 - progress * 0.2})`;
+                    if (progress >= 0.8) {
+                        customizationWindow.style.visibility = 'hidden';
                     }
-                    // Phase 12: Fenêtre de dialogue visible
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 75) {
-                        positionDialog.style.visibility = 'visible';
-                        positionDialog.style.opacity = '1';
-                        positionDialog.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }
-                    // Phase 13: Fenêtre de dialogue se ferme
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 85) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 75)) / 10;
-                        positionDialog.style.opacity = 1 - progress;
-                        positionDialog.style.transform = `translate(-50%, -50%) scale(${1 - progress * 0.2})`;
-                        if (progress >= 0.8) {
-                            positionDialog.style.visibility = 'hidden';
-                        }
                     }
                     // Reset immédiat après fermeture de la fenêtre
                     else {
@@ -913,32 +1298,17 @@
                     contextMenu.style.visibility = 'hidden';
                     contextMenu.style.opacity = '0';
                     contextMenu.style.transform = 'scale(0.8)';
-                    positionDialog.style.opacity = '0';
-                    positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    customizationWindow.style.opacity = '0';
+                    customizationWindow.style.transform = 'scale(0.8)';
                     resizeHandle.style.transform = 'scale(1)';
                     resizeHandle.style.background = '#ffffff';
                     resizeHandle.style.border = '1px solid #000';
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
-                    menuSections[1].querySelector('.menu-section-header').style.background = 'transparent';
-                    positionDialog.style.visibility = 'hidden';
-                    positionDialog.style.opacity = '0';
-                    positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                    
-                    // Reset des sous-menus
-                    submenus.forEach(submenu => {
-                        submenu.style.visibility = 'hidden';
-                        submenu.style.opacity = '0';
-                        submenu.style.transform = 'scale(0.8)';
-                    });
-                    
-                    // Reset des éléments de sous-menu
-                    submenus.forEach(submenu => {
-                        const submenuItems = submenu.querySelectorAll('.menu-item');
-                        submenuItems.forEach(item => {
-                            item.style.background = 'transparent';
-                        });
-                    });
+                    menuItems[1].style.background = 'transparent';
+                    customizationWindow.style.visibility = 'hidden';
+                    customizationWindow.style.opacity = '0';
+                    customizationWindow.style.transform = 'scale(0.8)';
                     }
                 }
                 // Mettre à jour la progression
@@ -980,15 +1350,11 @@
             const phase2End = moveToHandleFrames + 23; // Fin du clic droit
             const phase3End = moveToHandleFrames + 27; // Fin de l'apparition du menu
             const phase4End = moveToHandleFrames + 33; // Fin de la phase menu visible
-            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; // Fin du déplacement vers "Options de l'étiquette"
-            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; // Fin du clic sur "Options de l'étiquette"
-            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; // Fin de l'apparition du sous-menu
-            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 25; // Fin du déplacement vers "Ajuster la position"
-            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 35; // Fin du clic sur "Ajuster la position"
-            const phase10End = moveToHandleFrames + 33 + moveToMenuFrames + 43; // Fin de la disparition du menu
-            const phase11End = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Fin de l'apparition de la fenêtre
-            const phase12End = moveToHandleFrames + 33 + moveToMenuFrames + 75; // Fin de l'affichage de la fenêtre
-            const phase13End = moveToHandleFrames + 33 + moveToMenuFrames + 85; // Fin de la disparition de la fenêtre
+            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; // Fin du déplacement vers "Personnaliser"
+            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; // Fin du clic sur "Personnaliser"
+            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; // Fin de l'ouverture de la fenêtre
+            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 45; // Fin de l'affichage de la fenêtre
+            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Fin de la fermeture de la fenêtre
             
             // Mettre à jour le texte de progression
             if (phase <= phase1End) {
@@ -1000,49 +1366,36 @@
             } else if (phase <= phase4End) {
                 progressText.textContent = 'Menu contextuel affiché...';
             } else if (phase <= phase5End) {
-                progressText.textContent = 'Déplacement vers "Options de l\'étiquette"...';
+                progressText.textContent = 'Déplacement vers "Personnaliser"...';
             } else if (phase <= phase6End) {
-                progressText.textContent = 'Clic sur "Options de l\'étiquette"...';
+                progressText.textContent = 'Clic sur "Personnaliser"...';
             } else if (phase <= phase7End) {
-                progressText.textContent = 'Ouverture du sous-menu...';
+                progressText.textContent = 'Ouverture de la fenêtre de personnalisation...';
             } else if (phase <= phase8End) {
-                progressText.textContent = 'Déplacement vers "Ajuster la position"...';
+                progressText.textContent = 'Fenêtre de personnalisation affichée !';
             } else if (phase <= phase9End) {
-                progressText.textContent = 'Clic sur "Ajuster la position"...';
-            } else if (phase <= phase10End) {
-                progressText.textContent = 'Fermeture du menu...';
-            } else if (phase <= phase11End) {
-                progressText.textContent = 'Ouverture de la fenêtre de dialogue...';
-            } else if (phase <= phase12End) {
-                progressText.textContent = 'Fenêtre de dialogue affichée...';
-            } else if (phase <= phase13End) {
                 progressText.textContent = 'Fermeture de la fenêtre...';
             } else {
                 progressText.textContent = 'Préparation du redémarrage...';
             }
         }
 
-        // Fonctions pour la fenêtre de dialogue de position
-        function onDialogInputChange() {
-            const xInput = document.getElementById('dialogXInput');
-            const yInput = document.getElementById('dialogYInput');
+        // Fonction pour centrer la fenêtre dans le canvas
+        function centerWindow() {
+            const window = customizationWindow;
+            const canvas = document.querySelector('.demo-canvas');
             
-            if (xInput && yInput) {
-                const x = parseInt(xInput.value) || 0;
-                const y = parseInt(yInput.value) || 0;
-                console.log(`Position mise à jour: X=${x}, Y=${y}`);
-            }
-        }
-
-        function onDialogOkClick() {
-            const xInput = document.getElementById('dialogXInput');
-            const yInput = document.getElementById('dialogYInput');
+            // Centrer la fenêtre dans le canvas avec la nouvelle taille
+            const canvasWidth = canvas.offsetWidth;
+            const canvasHeight = canvas.offsetHeight;
+            const windowWidth = 725;
+            const windowHeight = 725;
             
-            if (xInput && yInput) {
-                const x = parseInt(xInput.value) || 0;
-                const y = parseInt(yInput.value) || 0;
-                console.log(`Position appliquée: X=${x}, Y=${y}`);
-            }
+            const centerX = (canvasWidth - windowWidth) / 2;
+            const centerY = (canvasHeight - windowHeight) / 2;
+            
+            window.style.left = centerX + 'px';
+            window.style.top = centerY + 'px';
         }
 
         // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
@@ -1121,28 +1474,219 @@
             if (pauseButton) {
                 pauseButton.addEventListener('click', togglePause);
             } else {
-                console.warn('Bouton pause non trouvé dans demo-Label-Position-Dialog');
+                console.warn('Bouton pause non trouvé dans demo-OpenBorderCustomization');
             }
 
-            // Configurer les événements de la fenêtre de dialogue
-            const dialogXInput = document.getElementById('dialogXInput');
-            const dialogYInput = document.getElementById('dialogYInput');
-            const dialogOkButton = document.getElementById('dialogOkButton');
-            
-            if (dialogXInput) {
-                dialogXInput.addEventListener('input', onDialogInputChange);
-            }
-            if (dialogYInput) {
-                dialogYInput.addEventListener('input', onDialogInputChange);
-            }
-            if (dialogOkButton) {
-                dialogOkButton.addEventListener('click', onDialogOkClick);
-            }
-            
-            // Démarrer l'animation
+            // Centrer la fenêtre avant de démarrer l'animation
             setTimeout(() => {
+                centerWindow();
                 setTimeout(startAnimation, 500);
             }, 100);
+        });
+
+        // Configuration de démonstration pour la fenêtre de personnalisation
+        let config = {
+            borderColor: 'white',
+            rectBgColor: '#2D2D30',
+            labelBgColor: '#2D2D30',
+            titleColor: 'white',
+            labelBorderColor: 'white',
+            borderThickness: 2,
+            labelBorderThickness: 1,
+            borderCornerRadius: 6,
+            labelCornerRadius: 3,
+            text: 'Aperçu',
+            rectangleImagePath: null
+        };
+
+        let selectedDefaultStyle = 0;
+
+        // Fonctions pour la fenêtre de personnalisation
+        function updatePreview() {
+            const previewBubble = document.getElementById('previewBubble');
+            const previewLabel = document.getElementById('previewLabel');
+            const previewLabelText = document.getElementById('previewLabelText');
+
+            if (previewBubble && previewLabel && previewLabelText) {
+                // Mettre à jour la bulle
+                previewBubble.style.borderColor = config.borderColor;
+                previewBubble.style.borderWidth = config.borderThickness + 'px';
+                previewBubble.style.borderRadius = config.borderCornerRadius + 'px';
+                previewBubble.style.backgroundColor = config.rectBgColor;
+
+                // Mettre à jour le label
+                previewLabel.style.backgroundColor = config.labelBgColor;
+                previewLabel.style.borderColor = config.labelBorderColor;
+                previewLabel.style.borderWidth = config.labelBorderThickness + 'px';
+                previewLabel.style.borderRadius = config.labelCornerRadius + 'px';
+                previewLabelText.style.color = config.titleColor;
+                previewLabelText.textContent = config.text;
+
+                // Ajuster la largeur du label selon le texte
+                adjustLabelWidth();
+            }
+        }
+
+        function adjustLabelWidth() {
+            const previewLabel = document.getElementById('previewLabel');
+            if (previewLabel) {
+                const text = config.text || '';
+                // L'étiquette s'adapte automatiquement à la largeur du texte
+                previewLabel.style.width = 'auto';
+                previewLabel.style.minWidth = 'fit-content';
+            }
+        }
+
+        function pickColor(type) {
+            // Simulation d'un sélecteur de couleur
+            const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF', '#808080', '#2D2D30'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            switch(type) {
+                case 'rectBg':
+                    config.rectBgColor = randomColor;
+                    const rectBgButton = document.getElementById('rectBgColorButton');
+                    if (rectBgButton) rectBgButton.style.backgroundColor = randomColor;
+                    break;
+                case 'border':
+                    config.borderColor = randomColor;
+                    const borderButton = document.getElementById('borderColorButton');
+                    if (borderButton) borderButton.style.backgroundColor = randomColor;
+                    break;
+                case 'labelBg':
+                    config.labelBgColor = randomColor;
+                    const labelBgButton = document.getElementById('labelBgColorButton');
+                    if (labelBgButton) labelBgButton.style.backgroundColor = randomColor;
+                    break;
+                case 'title':
+                    config.titleColor = randomColor;
+                    const titleButton = document.getElementById('titleColorButton');
+                    if (titleButton) titleButton.style.backgroundColor = randomColor;
+                    break;
+                case 'labelBorder':
+                    config.labelBorderColor = randomColor;
+                    const labelBorderButton = document.getElementById('labelBorderColorButton');
+                    if (labelBorderButton) labelBorderButton.style.backgroundColor = randomColor;
+                    break;
+            }
+            
+            updatePreview();
+        }
+
+        function selectDefaultStyle(styleIndex) {
+            selectedDefaultStyle = styleIndex;
+            
+            // Appliquer le style par défaut
+            const styleColors = {
+                1: '#E74C3C', 2: '#3498DB', 3: '#2ECC71', 4: '#F39C12', 5: '#9B59B6',
+                6: '#1ABC9C', 7: '#E67E22', 8: '#34495E', 9: '#95A5A6', 10: '#16A085'
+            };
+            
+            const styleColor = styleColors[styleIndex];
+            const darkBackground = '#2D2D30';
+            
+            config.borderColor = styleColor;
+            config.labelBorderColor = styleColor;
+            config.titleColor = styleColor;
+            config.labelBgColor = darkBackground;
+            config.rectBgColor = darkBackground;
+            config.borderThickness = 2;
+            config.labelBorderThickness = 1;
+            config.borderCornerRadius = 6;
+            config.labelCornerRadius = 3;
+            config.rectangleImagePath = null;
+            
+            // Mettre à jour les contrôles
+            const borderButton = document.getElementById('borderColorButton');
+            const labelBorderButton = document.getElementById('labelBorderColorButton');
+            const titleButton = document.getElementById('titleColorButton');
+            const labelBgButton = document.getElementById('labelBgColorButton');
+            const rectBgButton = document.getElementById('rectBgColorButton');
+            const borderThicknessSlider = document.getElementById('borderThicknessSlider');
+            const labelBorderThicknessSlider = document.getElementById('labelBorderThicknessSlider');
+            const borderCornerRadiusSlider = document.getElementById('borderCornerRadiusSlider');
+            const labelCornerRadiusSlider = document.getElementById('labelCornerRadiusSlider');
+            
+            if (borderButton) borderButton.style.backgroundColor = styleColor;
+            if (labelBorderButton) labelBorderButton.style.backgroundColor = styleColor;
+            if (titleButton) titleButton.style.backgroundColor = styleColor;
+            if (labelBgButton) labelBgButton.style.backgroundColor = darkBackground;
+            if (rectBgButton) rectBgButton.style.backgroundColor = darkBackground;
+            if (borderThicknessSlider) borderThicknessSlider.value = 2;
+            if (labelBorderThicknessSlider) labelBorderThicknessSlider.value = 1;
+            if (borderCornerRadiusSlider) borderCornerRadiusSlider.value = 6;
+            if (labelCornerRadiusSlider) labelCornerRadiusSlider.value = 3;
+            
+            updatePreview();
+        }
+
+        function applyToAllBorders() {
+            if (selectedDefaultStyle > 0) {
+                alert(`Style par défaut ${selectedDefaultStyle} appliqué à toutes les bulles`);
+            } else {
+                alert('Veuillez sélectionner un style par défaut');
+            }
+        }
+
+        function loadStyle() {
+            const selectedStyle = document.getElementById('stylesComboBox');
+            if (selectedStyle && selectedStyle.value && selectedStyle.value !== 'Sélectionner un style') {
+                alert(`Style "${selectedStyle.value}" chargé`);
+            } else {
+                alert('Veuillez sélectionner un style');
+            }
+        }
+
+        function deleteStyle() {
+            const selectedStyle = document.getElementById('stylesComboBox');
+            if (selectedStyle && selectedStyle.value && selectedStyle.value !== 'Sélectionner un style') {
+                if (confirm(`Supprimer le style "${selectedStyle.value}" ?`)) {
+                    alert(`Style "${selectedStyle.value}" supprimé`);
+                }
+            } else {
+                alert('Veuillez sélectionner un style à supprimer');
+            }
+        }
+
+        function createStyle() {
+            const styleName = prompt('Nom du nouveau style:');
+            if (styleName) {
+                alert(`Style "${styleName}" créé`);
+            }
+        }
+
+        function editTitle() {
+            const newTitle = prompt('Nouveau titre:', config.text);
+            if (newTitle !== null) {
+                config.text = newTitle;
+                updatePreview();
+            }
+        }
+
+        function importImage() {
+            alert('Fonction d\'importation d\'image');
+        }
+
+        function openImageLibrary() {
+            alert('Ouverture de la bibliothèque d\'images');
+        }
+
+        function clearImage() {
+            config.rectangleImagePath = null;
+            alert('Image de fond effacée');
+        }
+
+        function apply() {
+            alert('Personnalisation appliquée');
+        }
+
+        function cancel() {
+            alert('Personnalisation annulée');
+        }
+
+        // Initialiser l'aperçu au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(updatePreview, 100);
         });
     </script>
 </body>

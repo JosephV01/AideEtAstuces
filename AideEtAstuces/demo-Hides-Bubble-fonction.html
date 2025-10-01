@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Démonstration - Masquer la bulle - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 15px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+            height: 800px;
+            width: 1000px;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            display: inline-block;
+            height: 350px;
+            width: 950px;
+        }
+        /* Bulle dimension */
+        .demo-canvas .dynamic-border {
+            width: 350px;
+            height: 160px;
+            left: 20px;
+            top: 100px;
+            border-radius: 12px;
+        }
+        .demo-canvas .label-border {
+            left: 200px; /* centre de la bulle (20 + 260/2) */
+            top: 75px;
+        }
+
+
+        /* Bouton masquer intégré dans l'étiquette */
+        .hide-trigger {
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            background: #505050;
+            border: 1px solid #FFFFFF;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            cursor: pointer;
+            z-index: 1200;
+            transition: all 0.2s ease;
+        }
+        .hide-trigger:hover { background: #005EA2; }
+        .hide-trigger:active { background: #003C74; }
+        .hide-trigger svg { width: 16px; height: 16px; fill: currentColor; }
+        /* État masqué */
+        .bubble-hidden .dynamic-border,
+        .bubble-hidden .shortcuts-area,
+        .bubble-hidden .resize-handle {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        /* Icônes simulées (raccourcis) dans la bulle */
+        .shortcuts-area {
+            position: absolute;
+            left: 30px;
+            top: 130px;
+            width: 330px;
+            height: 120px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px 6px;
+            padding: 2px;
+        }
+        .shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .shortcut-icon {
+            width: 30px;
+            height: 30px;
+            background: #3a3a3a;
+            border: 2px solid #777;
+            border-radius: 8px;
+        }
+        .shortcut-text {
+            font-size: 9px;
+            color: #eaeaea;
+            white-space: nowrap;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .hidden-match {
+            opacity: 0.15;
+        }
+        .highlight-match .shortcut-icon {
+            border-color: #FF8C00;
+            box-shadow: 0 0 6px rgba(255,140,0,0.9);
+            animation: blink-orange 0.8s linear infinite;
+        }
+        @keyframes blink-orange {
+            0% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
+            50% { box-shadow: 0 0 10px rgba(255,140,0,1); border-color: #FFA733; }
+            100% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
+        }
+
+        /* Curseur au-dessus de tout */
+        .mouse-cursor { z-index: 2000 !important; }
+        .mouse-zero-click { z-index: 900 !important;
+            left: 600px;
+            top: 15px; }
+        .mouse-left-click { z-index: 900 !important;
+            left: 600px;
+            top: 15px; }
+        .resize-handle { left: 363px; top: 253px; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Masquer la bulle</h1>
+            <p class="demo-description">
+                • Cette démonstration montre comment masquer une bulle via le raccourci situé à droite de l'étiquette de chaque bulle.<br>
+                • Cliquez sur le bouton « Masquer » pour masquer une bulle et son contenu.<br>
+                • Cliquez à nouveau sur le raccourci pour restaurer l'affichage de la bulle et de son contenu.
+            </p>
+        </div>
+
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
+        </div>
+
+        <div class="demo-canvas-container">
+            <div class="demo-canvas large">
+                <!-- Bulle -->
+                <div class="dynamic-border"></div>
+                
+                <!-- Étiquette avec bouton intégré -->
+                <div class="label-border">
+                    <div class="label-text">Bulle - Raccourcis</div>
+                    <button id="hideTrigger" class="hide-trigger" title="Masquer">
+                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5C21.27 7.61 17 4.5 12 4.5zm0 13c-3.03 0-5.5-2.47-5.5-5.5S8.97 6.5 12 6.5s5.5 2.47 5.5 5.5-2.47 5.5-5.5 5.5zm0-9A3.5 3.5 0 0 0 8.5 12c0 .62.16 1.2.44 1.71L13.71 8.94A3.48 3.48 0 0 0 12 8.5zm0 7A3.5 3.5 0 0 0 15.5 12c0-.62-.16-1.2-.44-1.71l-4.77 4.77c.51.28 1.09.44 1.71.44z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Curseur -->
+                <div class="mouse-cursor"></div>
+
+                <!-- Souris avec états -->
+                <div class="mouse-zero-click"></div>
+                <div class="mouse-left-click"></div>
+
+                <!-- Poignée (non utilisée ici, conservée pour cohérence visuelle) -->
+                <div class="resize-handle"></div>
+
+                <!-- Zone des raccourcis -->
+                <div class="shortcuts-area" id="shortcutsArea">
+                    <div class="shortcut" data-name="rapport_2024.pdf" data-display="Rapport 2024">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Rapport 2024</div>
+                    </div>
+                    <div class="shortcut" data-name="notes_projet.txt" data-display="Notes Projet">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Notes Projet</div>
+                    </div>
+                    <div class="shortcut" data-name="image_01.png" data-display="Image 01">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Image 01</div>
+                    </div>
+                    <div class="shortcut" data-name="presentation-final.pptx" data-display="Présentation Finale">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Présentation Finale</div>
+                    </div>
+                    <div class="shortcut" data-name="todo.md" data-display="TODO">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">TODO</div>
+                    </div>
+                    <div class="shortcut" data-name="readme.md" data-display="Readme">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Readme</div>
+                    </div>
+                </div>
+
+                <!-- aucun panneau nécessaire pour cette démonstration -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation state
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let isPaused = false;
+        let baseInterval = 80;
+
+        // Standard cursor speed
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
+
+        // Progress
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        let totalAnimationFrames = 0;
+
+        // DOM
+        const canvas = document.querySelector('.demo-canvas');
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const hideTrigger = document.getElementById('hideTrigger');
+        const shortcuts = Array.from(document.querySelectorAll('.shortcut'));
+
+        // Geometry helpers
+        let canvasCenterX = 0;
+        let canvasCenterY = 0;
+        let toTriggerFrames = 25;
+        let toClickFrames = 8; // animation de clic
+        let toLabelFrames = 25; // déplacement vers étiquette
+        let dragFrames = Math.ceil(80 / CURSOR_SPEED_PX_PER_FRAME); // déplacement de la bulle synchronisé avec le curseur
+        let pauseFrames = 10; // pause entre déplacements
+        let toResetFrames = 30;
+
+        // Positions initiales pour le déplacement
+        let initialPositions = {
+            label: { x: 0, y: 0 },
+            bubble: { x: 0, y: 0 },
+            shortcuts: { x: 0, y: 0 },
+            handle: { x: 0, y: 0 },
+            button: { x: 0, y: 0 }
+        };
+
+        function getCenter(el) {
+            const crect = canvas.getBoundingClientRect();
+            const r = el.getBoundingClientRect();
+            return {
+                x: Math.round(r.left - crect.left + r.width / 2),
+                y: Math.round(r.top - crect.top + r.height / 2)
+            };
+        }
+
+        // pas de dropdown dans cette démonstration
+
+        // pas de tri dans cette démonstration
+
+        function updateProgress(phase, totalFrames) {
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+
+            const step1 = Math.floor(totalFrames * 0.15);
+            const step2 = Math.floor(totalFrames * 0.25);
+            const step3 = Math.floor(totalFrames * 0.35);
+            const step4 = Math.floor(totalFrames * 0.50);
+            const step5 = Math.floor(totalFrames * 0.65);
+            const step6 = Math.floor(totalFrames * 0.80);
+            const step7 = Math.floor(totalFrames * 0.90);
+
+            if (phase <= step1) {
+                progressText.textContent = 'Déplacement vers le bouton Masquer...';
+            } else if (phase <= step2) {
+                progressText.textContent = 'Clic sur Masquer...';
+            } else if (phase <= step3) {
+                progressText.textContent = 'Masquage de la bulle...';
+            } else if (phase <= step4) {
+                progressText.textContent = 'Déplacement vers l\'étiquette...';
+            } else if (phase <= step5) {
+                progressText.textContent = 'Déplacement de la bulle masquée...';
+            } else if (phase <= step6) {
+                progressText.textContent = 'Retour de la bulle à sa position...';
+            } else if (phase <= step7) {
+                progressText.textContent = 'Réaffichage de la bulle...';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
+        }
+
+        function runAnimationFrame() {
+            if (isPaused) {
+                animationTimer = setTimeout(runAnimationFrame, 100);
+                return;
+            }
+
+            animationPhase++;
+
+            // Phases complètes: bouton -> clic -> masquage -> étiquette -> drag -> pause -> retour -> démasquage -> centre
+            const phaseAEnd = toTriggerFrames; // déplacement vers bouton
+            const phaseBEnd = phaseAEnd + toClickFrames; // animation de clic
+            const phaseCEnd = phaseBEnd + 6; // pause après clic
+            const phaseDEnd = phaseCEnd + toLabelFrames; // déplacement vers étiquette
+            const phaseEEnd = phaseDEnd + dragFrames; // premier déplacement
+            const phaseFEnd = phaseEEnd + pauseFrames; // pause
+            const phaseGEnd = phaseFEnd + dragFrames; // retour position
+            const phaseHEnd = phaseGEnd + toClickFrames; // clic pour démasquer
+            const phaseIEnd = phaseHEnd + 6; // pause après démasquage
+            const phaseJEnd = phaseIEnd + toResetFrames; // retour centre
+            const phaseKEnd = phaseJEnd + 10; // micro pause
+
+            if (animationPhase <= phaseAEnd) {
+                const startX = canvasCenterX, startY = canvasCenterY;
+                const trg = getCenter(hideTrigger);
+                mouseCursor.style.left = (startX + (trg.x - startX) * (animationPhase / toTriggerFrames)) + 'px';
+                mouseCursor.style.top = (startY + (trg.y - startY) * (animationPhase / toTriggerFrames)) + 'px';
+            }
+            else if (animationPhase <= phaseBEnd) {
+                const clickPhase = animationPhase - phaseAEnd;
+                if (clickPhase >= 2) {
+                    mouseZeroClick.style.visibility = 'hidden';
+                    mouseLeftClick.style.visibility = 'visible';
+                }
+                if (clickPhase >= 4) {
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                    // appliquer le masquage
+                    const dc = document.querySelector('.demo-canvas');
+                    dc.classList.add('bubble-hidden');
+                }
+            }
+            else if (animationPhase <= phaseCEnd) {
+                // Rester positionné sur le bouton pendant une courte pause après le clic
+                const btnCenter = getCenter(hideTrigger);
+                mouseCursor.style.left = btnCenter.x + 'px';
+                mouseCursor.style.top = btnCenter.y + 'px';
+            }
+            else if (animationPhase <= phaseDEnd) {
+                // Déplacement vers l'étiquette
+                const progress = (animationPhase - phaseCEnd) / toLabelFrames;
+                const from = getCenter(hideTrigger);
+                const to = getCenter(document.querySelector('.label-border'));
+                mouseCursor.style.left = (from.x + (to.x - from.x) * progress) + 'px';
+                mouseCursor.style.top = (from.y + (to.y - from.y) * progress) + 'px';
+            }
+            else if (animationPhase <= phaseEEnd) {
+                // Premier déplacement de la bulle (vers la droite)
+                const dragPhase = animationPhase - phaseDEnd;
+                const p = dragPhase / dragFrames;
+                const dragDistance = 80; // pixels vers la droite
+                const offsetX = dragDistance * p;
+                
+                mouseZeroClick.style.visibility = 'hidden';
+                mouseLeftClick.style.visibility = 'visible';
+                
+                // Le curseur se déplace à la même vitesse que la bulle
+                // Utiliser les positions initiales pour éviter le décalage
+                const startX = initialPositions.label.x;
+                const endX = startX + dragDistance;
+                mouseCursor.style.left = (startX + (endX - startX) * p) + 'px';
+                mouseCursor.style.top = initialPositions.label.y + 'px';
+                
+                // Déplacer tous les éléments ensemble
+                moveBubbleElements(offsetX);
+            }
+            else if (animationPhase <= phaseFEnd) {
+                // Pause avec clic maintenu
+                mouseCursor.style.left = (initialPositions.label.x + 80) + 'px'; // position finale du premier drag
+                mouseCursor.style.top = initialPositions.label.y + 'px';
+                mouseZeroClick.style.visibility = 'hidden';
+                mouseLeftClick.style.visibility = 'visible';
+            }
+            else if (animationPhase <= phaseGEnd) {
+                // Retour de la bulle à sa position d'origine
+                const dragPhase = animationPhase - phaseFEnd;
+                const p = dragPhase / dragFrames;
+                const dragDistance = 80; // pixels vers la droite
+                const offsetX = dragDistance * (1 - p); // inverse du premier déplacement
+                
+                mouseZeroClick.style.visibility = 'hidden';
+                mouseLeftClick.style.visibility = 'visible';
+                
+                // Le curseur se déplace à la même vitesse que la bulle
+                // Utiliser les positions initiales pour éviter le décalage
+                const startX = initialPositions.label.x + dragDistance; // position de départ (après le premier drag)
+                const endX = initialPositions.label.x; // position d'arrivée (position originale)
+                mouseCursor.style.left = (startX + (endX - startX) * p) + 'px';
+                mouseCursor.style.top = initialPositions.label.y + 'px';
+                
+                // Déplacer tous les éléments ensemble
+                moveBubbleElements(offsetX);
+            }
+            else if (animationPhase <= phaseHEnd) {
+                // Relâche le clic et retour vers le bouton pour démasquer
+                mouseZeroClick.style.visibility = 'visible';
+                mouseLeftClick.style.visibility = 'hidden';
+                
+                const progress = (animationPhase - phaseGEnd) / toClickFrames;
+                const from = getCenter(document.querySelector('.label-border'));
+                const to = getCenter(hideTrigger);
+                mouseCursor.style.left = (from.x + (to.x - from.x) * progress) + 'px';
+                mouseCursor.style.top = (from.y + (to.y - from.y) * progress) + 'px';
+            }
+            else if (animationPhase <= phaseIEnd) {
+                // Clic pour démasquer
+                const clickPhase = animationPhase - phaseHEnd;
+                if (clickPhase >= 2) {
+                    mouseZeroClick.style.visibility = 'hidden';
+                    mouseLeftClick.style.visibility = 'visible';
+                }
+                if (clickPhase >= 4) {
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                    const dc = document.querySelector('.demo-canvas');
+                    dc.classList.remove('bubble-hidden');
+                }
+            }
+            else if (animationPhase <= phaseJEnd) {
+                // Retour au centre
+                const movePhase = animationPhase - phaseIEnd;
+                const p = movePhase / toResetFrames;
+                const btnCenter = getCenter(hideTrigger);
+                mouseCursor.style.left = (btnCenter.x + (canvasCenterX - btnCenter.x) * p) + 'px';
+                mouseCursor.style.top = (btnCenter.y + (canvasCenterY - btnCenter.y) * p) + 'px';
+            }
+            else if (animationPhase <= phaseKEnd) {
+                mouseCursor.style.left = canvasCenterX + 'px';
+                mouseCursor.style.top = canvasCenterY + 'px';
+            }
+            else {
+                animationPhase = 0;
+            }
+
+            updateProgress(animationPhase, totalAnimationFrames);
+            const currentInterval = Math.round(baseInterval / animationSpeed);
+            animationTimer = setTimeout(runAnimationFrame, currentInterval);
+        }
+
+        function startAnimation() {
+            updateProgress(0, totalAnimationFrames);
+            runAnimationFrame();
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseButton = document.getElementById('pauseButton');
+            if (isPaused) {
+                pauseButton.textContent = 'Reprendre';
+                pauseButton.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause';
+                pauseButton.classList.remove('paused');
+            }
+        }
+
+        function changeAnimationSpeed(newSpeed) {
+            animationSpeed = newSpeed;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const crect = canvas.getBoundingClientRect();
+            canvasCenterX = Math.round(crect.width / 2);
+            canvasCenterY = Math.round(crect.height / 2);
+            const triggerCenter = getCenter(hideTrigger);
+            toResetFrames = Math.ceil(Math.hypot(canvasCenterX - triggerCenter.x, canvasCenterY - triggerCenter.y) / CURSOR_SPEED_PX_PER_FRAME);
+
+            // Initialiser les positions
+            initBubblePositions();
+
+            totalAnimationFrames = toTriggerFrames + toClickFrames + 6 + toLabelFrames + dragFrames + pauseFrames + dragFrames + toClickFrames + 6 + toResetFrames + 20;
+
+            mouseCursor.style.left = canvasCenterX + 'px';
+            mouseCursor.style.top = canvasCenterY + 'px';
+
+            // UI wiring
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            const pauseButton = document.getElementById('pauseButton');
+            if (speedSlider && speedValue) {
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    changeAnimationSpeed(newSpeed);
+                });
+                speedValue.textContent = animationSpeed + 'x';
+            }
+            if (pauseButton) {
+                pauseButton.addEventListener('click', togglePause);
+            }
+
+            setTimeout(startAnimation, 800);
+        });
+
+        // Fonctions pour gérer le déplacement de la bulle
+        function initBubblePositions() {
+            const label = document.querySelector('.label-border');
+            const bubble = document.querySelector('.dynamic-border');
+            const shortcuts = document.getElementById('shortcutsArea');
+            const handle = document.querySelector('.resize-handle');
+            
+            // Stocker les positions CSS fixes (en pixels)
+            initialPositions.label = { x: 200, y: 75 };
+            initialPositions.bubble = { x: 20, y: 100 };
+            initialPositions.shortcuts = { x: 30, y: 130 };
+            initialPositions.handle = { x: 363, y: 253 };
+            // Le bouton fait maintenant partie de l'étiquette, pas besoin de le traiter séparément
+        }
+
+        function moveBubbleElements(offsetX) {
+            const label = document.querySelector('.label-border');
+            const bubble = document.querySelector('.dynamic-border');
+            const shortcuts = document.getElementById('shortcutsArea');
+            const handle = document.querySelector('.resize-handle');
+            
+            // Déplacer tous les éléments en maintenant leurs positions relatives
+            label.style.left = (initialPositions.label.x + offsetX) + 'px';
+            bubble.style.left = (initialPositions.bubble.x + offsetX) + 'px';
+            shortcuts.style.left = (initialPositions.shortcuts.x + offsetX) + 'px';
+            handle.style.left = (initialPositions.handle.x + offsetX) + 'px';
+            // Le bouton se déplace automatiquement avec l'étiquette puisqu'il en fait partie
+        }
+    </script>
+</body>
+</html>
+
+

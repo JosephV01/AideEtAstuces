@@ -3,46 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Démonstration - Ajuster Position Étiquette - MyCustomDesk</title>
+    <title>Démonstration - Accéder aux paramètres du mode Note - MyCustomDesk</title>
     <link rel="stylesheet" href="HelpAndTips.css">
     <link rel="stylesheet" href="demo-elements.css">
     <style>
-        body {
-            margin: 0;
-            padding: 20px;
-            background: var(--background-white);
-            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
+        body { margin: 0;
+             padding: 0px;
+             background: var(--background-white);
+             font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             display: flex;
+             justify-content: center;
+             align-items: center;
+             min-height: 80vh;
+            }
         .demo-container {
             background: var(--background-white);
             border: 2px solid var(--border-color);
             border-radius: 15px;
-            padding: 30px;
             box-shadow: 0 10px 30px var(--shadow-light);
+            padding: 5px;
             text-align: center;
         }
-
         .demo-canvas-container {
             background: #2D2D2D;
             border: 2px solid #555555;
             border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
+            padding: 5px;
+            margin: 5px 0;
+            width: 1250Px;
+            height: 750px;
             display: inline-block;
         }
-
-        /* Canvas adapté pour la fenêtre de personnalisation */
-        .demo-canvas {
-            /* Hérite de demo-elements.css, adaptations spécifiques */
-            width: 600px;
-            height: 400px;
+        .note-surface {
+            position: absolute;
+            left: 60px;
+            top: 70px;
+            width: 180px;
+            height: 60px;
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            font-size: 11px;
+            line-height: 1.4;
+            padding: 6px 8px;
+            opacity: 0;
+            transition: opacity .25s ease;
+            overflow: hidden;
         }
-
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+        
+        .note-title {
+            position: absolute;
+            top: 58px;
+            left: 150px;
+            transform: translateX(-50%);
+            background: #2D2D30;
+            border: 1px solid #FFFFFF;
+            border-radius: 3px;
+            height: 20px;
+            padding: 3px 6px;
+            color: #FFFFFF;
+            font-size: 10px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity .25s ease;
+        }
         /* Menu contextuel complet du projet */
         .context-menu {
             background: #26292C;
@@ -53,7 +82,7 @@
             min-width: 350px;
             max-width: 350px;
             min-height: 180px;
-            height: 500px;
+            height: 450px;
             font-size: 15px;
             font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
             z-index: 1000;
@@ -64,123 +93,17 @@
             left: 254px;
             top: 139px;
         }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            cursor: pointer;
-            border: 1px solid #444;
-            background: transparent;
-            width: calc(100% - 8px);
-            text-align: left;
-            font-size: 16px;
-            font-weight: bold;
-            color: #F0F0F0;
-            transition: all 0.2s;
-            gap: 8px;
-            border-radius: 6px;
-            margin: 2px 4px;
-            min-height: 30px;
-        }
-        .menu-item:hover:not(.disabled) {
-            background: #2A2D31;
-            color: cyan;
-        }
-        .menu-item.disabled {
-            color: #888;
-            cursor: not-allowed;
-            opacity: 0.6;
-            font-weight: normal;
-            font-size: 15px;
-            background: transparent;
-        }
-        .menu-icon {
-            width: 16px;
-            height: 16px;
-            flex-shrink: 0;
-            fill: #F0F0F0;
-            margin: 0 5px 0 5px;
-            color: #F0F0F0;
-            opacity: 1;
-            z-index: 10;
-        }
-        .menu-text {
-            flex: 1;
-            font-weight: bold;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0 5px;
-        }
-
-        /* Section headers avec flèche - comportement submenu */
-        .menu-section {
-            position: relative;
-        }
-        .menu-section-header {
-            display: flex;
-            align-items: center;
-            padding: 8px 12px;
-            cursor: pointer;
-            border: 1px solid #444;
-            background: transparent;
-            width: calc(100% - 8px);
-            text-align: left;
-            font-size: 17px;
-            font-weight: bold;
-            color: #F0F0F0;
-            transition: all 0.2s;
-            gap: 8px;
-            border-radius: 6px;
-            margin: 2px 4px;
-            min-height: 30px;
-        }
-        .menu-section-header:hover {
-            background: #2A2D31;
-            color: cyan;
-        }
-        .section-arrow {
-            width: 12px;
-            height: 12px;
-            fill: #F0F0F0;
-            margin-left: auto;
-            transition: transform 0.2s;
-        }
+        .menu-item { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; border: 1px solid #444; background: transparent; width: calc(100% - 8px); text-align: left; font-size: 16px; font-weight: bold; color: #F0F0F0; gap: 8px; border-radius: 6px; margin: 2px 4px; min-height: 30px; transition: all .2s; }
+        .menu-item:hover { background: #2A2D31; color: cyan; }
+        .menu-icon { width: 16px; height: 16px; flex-shrink: 0; fill: #F0F0F0; margin: 0 5px; }
+        .menu-text { flex: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin: 0 5px; }
+        .menu-section { position: relative; }
+        .menu-section-header { display: flex; align-items: center; padding: 8px 12px; cursor: pointer; border: 1px solid #444; background: transparent; width: calc(100% - 8px); text-align: left; font-size: 17px; font-weight: bold; color: #F0F0F0; gap: 8px; border-radius: 6px; margin: 2px 4px; min-height: 30px; transition: all .2s; }
+        .menu-section-header:hover { background: #2A2D31; color: cyan; }
+        .section-arrow { width: 12px; height: 12px; fill: #F0F0F0; margin-left: auto; transition: transform .2s; }
+        .submenu { position: absolute; left: 100%; top: 0; background: #26292C; border: 2px solid #444; border-radius: 14px; box-shadow: 0 3px 16px rgba(0,0,0,.45); padding: 8px; min-width: 220px; font-size: 15px; font-family: 'Segoe UI Variable','Segoe UI',sans-serif; z-index: 1001; visibility: hidden; opacity: 0; transform: scale(.8); transition: all .2s ease; margin-left: 5px; }
+        .menu-section.open .submenu { visibility: visible; opacity: 1; transform: scale(1); }
         
-        /* Sous-menu séparé */
-        .submenu {
-            position: absolute;
-            left: 100%;
-            top: 0;
-            background: #26292C;
-            border: 2px solid #444;
-            border-radius: 14px;
-            box-shadow: 0 3px 16px rgba(0, 0, 0, 0.45);
-            padding: 8px;
-            min-width: 200px;
-            font-size: 15px;
-            font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
-            z-index: 1001;
-            visibility: hidden;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.2s ease;
-            margin-left: 5px;
-        }
-        .menu-section.open .submenu {
-            visibility: visible;
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Séparateurs */
-        .menu-separator {
-            height: 1px;
-            background: #444;
-            margin: 4px 8px;
-        }
-
         /* Boutons d'aide */
         .help-button {
             width: 28px;
@@ -216,159 +139,117 @@
             flex: 1;
         }
 
-        /* Poignée de redimensionnement (adaptations pour cette démo) */
+        /* Séparateurs */
+        .menu-separator {
+            height: 1px;
+            background: #444;
+            margin: 4px 8px;
+        }
         .resize-handle {
-            /* Override de demo-elements.css pour cette démo */
             width: 12px;
             height: 12px;
-            left: 243px !important;
-            top: 133px !important;
+            left: 243px;
+            top: 133px;
             z-index: 5;
         }
-
-        /* Fenêtre de dialogue de position */
-        .position-dialog {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .dialog-border {
-            background: #ffffff;
-            border: 2px solid #c0c0c0;
-            border-radius: 25px;
-            padding: 8px;
-            width: 400px;
-            min-width: 400px;
-            max-width: 600px;
-            min-height: 275px;
-            max-height: 400px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .dialog-content {
-            margin: 12px;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            gap: 15px;
-            min-height: 235px;
-        }
-
-        .dialog-title {
-            text-align: center;
-            font-weight: bold;
-            color: #000000;
-            font-size: 24px;
-            margin: 20px 0;
-            font-family: 'Segoe UI Variable';
-        }
-
-        .dialog-inputs {
-            margin: 0 0 10px 0;
-        }
-
-        .dialog-inputs .input-row {
-            display: grid;
-            grid-template-columns: auto 1fr;
-            gap: 10px;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .dialog-inputs .input-label {
-            color: #000000;
-            font-size: 16px;
-            font-family: 'Segoe UI Variable';
-            margin: 10px 10px 10px 10px;
-            text-align: left;
-        }
-
-        .dialog-inputs .input-textbox {
-            height: 30px;
-            background: #f0f0f0;
-            border: 1px solid #c0c0c0;
-            color: #000000;
-            font-size: 16px;
-            font-family: 'Segoe UI Variable';
-            padding: 5px;
-            margin: 5px 10px;
-            border-radius: 0;
-            outline: none;
-        }
-
-        .dialog-inputs .input-textbox:focus {
-            border-color: #0078d4;
-            background: #ffffff;
-        }
-
-        .dialog-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .dialog-button {
-            width: 100px;
-            height: 30px;
-            background: #f0f0f0;
-            border: 1px solid #c0c0c0;
-            border-radius: 4px;
-            font-size: 12px;
-            color: #000000;
-            cursor: pointer;
-            font-family: 'Segoe UI Variable';
-        }
-
-        .dialog-button:hover {
-            background: #e0e0e0;
-        }
-
-        .dialog-button:active {
-            background: #d0d0d0;
-        }
-
-        .dialog-button.ok-button {
-            font-weight: bold;
-        }
-
-        /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
-            z-index: 1500 !important;
+            z-index: 2000;
         }
-
-        /* Position de la souris ajustée pour le canvas agrandi */
-        .mouse-zero-click,
-        .mouse-left-click,
+        .mouse-zero-click {
+            z-index: 2000;
+        }
         .mouse-right-click {
-            left: 550px !important;
-            top: 15px !important;
+            z-index: 2000;
         }
-
-        /* back-button styles removed to use global styles in demo-elements.css */
+        .mouse-left-click {
+            z-index: 2000;
+        }
+        .back-button {
+            background: var(--primary-color);
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all .3s ease;
+        }
+        .back-button:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        .speed-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: #2D2D30;
+            border: 1px solid #444;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #F0F0F0;
+        }
+        .speed-slider {
+            width: 200px;
+            height: 6px;
+            background: #444;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+        }
+        .speed-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #0078D4;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 2px 4px rgba(0,0,0,.3);
+            transition: all .2s ease;
+        }
+        #speedValue {
+            font-weight: bold;
+            color: #0078D4;
+            min-width: 30px;
+            text-align: center;
+        }
+        .pause-button {
+            background: #0078D4;
+            color: #FFFFFF;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 15px;
+            transition: all .3s ease;
+        }
+        .pause-button.paused {
+            background: #D13438;
+        }
     </style>
-</head>
+    </head>
 <body>
     <div class="demo-container">
         <div class="demo-header">
-            <h1 class="demo-title">Démonstration - Ajuster Position Étiquette</h1>
+            <h1 class="demo-title">Démonstration - Accéder aux paramètres du mode Note</h1>
             <p class="demo-description">
-                Cette démonstration montre comment accéder aux options de l'étiquette et ajuster précisément sa position via la fenêtre de dialogue. Effectuez un clic droit sur la poignée pour ouvrir le menu, sélectionnez "Options de l'étiquette" puis "Ajuster la position de l'étiquette".
+                • Cette démonstration montre comment accéder aux <strong>paramètres d'une bulle Note</strong> via le menu contextuel.<br>
+                • Faites un <strong>clic droit</strong> sur <strong>la poignée</strong> ou sur <strong>l'étiquette</strong> d'une bulle, puis ouvrez <strong>Notes</strong> pour afficher les options disponibles.<br>
+                • L'ensemble des options ne sont disponnible qu'une fois l'option <strong>Note</strong> activée.
             </p>
         </div>
         
-        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-            <button class="back-button" onclick="window.close()">Fermer</button>
+        <!-- Barre de progression -->
+        <div class="progress-section">
+            <h2 class="progress-title">Progression</h2>
             <div class="progress-container">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
@@ -382,7 +263,7 @@
 
                 <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
-                    <div class="label-text">Ajuster la position de l'étiquette</div>
+                    <div class="label-text">Accès aux paramètres du mode Note</div>
                 </div>
 
                 <!-- Curseur de souris -->
@@ -390,8 +271,6 @@
 
                 <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
-
-                <!-- Cercle d'animation de clic -->
 
                 <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
@@ -401,6 +280,14 @@
 
                 <!-- Souris avec bouton gauche coloré (pour les clics) -->
                 <div class="mouse-left-click"></div>
+
+                <!-- Surface de note (apparaît après activation) -->
+                <div class="note-surface">
+                    Cliquez ici pour éditer votre note...
+                </div>
+
+                <!-- Titre de la note (apparaît après activation) -->
+                <div class="note-title">Note</div>
 
                 <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
@@ -471,7 +358,7 @@
                                 <div class="menu-item-content">
                                     <svg class="menu-icon" viewBox="0 -960 960 960">
                                         <path d="M240-400h120v-80H240v80Zm200 0h280v-80H440v80ZM240-240h120v-80H240v80Zm200 0h280v-80H440v80ZM240-560h120v-80H240v80Zm200 0h280v-80H440v80ZM160-80q-33 0-56.5-23.5T80-160v-640q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v640q0 33-23.5 56.5T800-80H160Zm0-80h640v-640H160v640Z"/>
-                                    </svg>
+                        </svg>
                                     <span class="menu-text">Masquer l'étiquette</span>
                                 </div>
                                 <div class="help-button">?</div>
@@ -530,7 +417,7 @@
                                 <div class="menu-item-content">
                                     <svg class="menu-icon" viewBox="0 -960 960 960">
                                         <path d="M120-120L120-280 280-280 280-120 120-120z M120-320L120-480 280-480 280-320 120-320z M320-120L320-280 480-280 480-120 320-120z M320-320L320-480 480-480 480-320 320-320z M520-120L520-280 680-280 680-120 520-120z M520-320L520-480 680-480 680-320 520-320z M120-520L120-680 280-680 280-520 120-520z M320-520L320-680 480-680 480-520 320-520z M520-520L520-680 680-680 680-520 520-520z"/>
-                                    </svg>
+                        </svg>
                                     <span class="menu-text">Activer le mode tuile</span>
                                 </div>
                                 <div class="help-button">?</div>
@@ -558,53 +445,48 @@
                                 </div>
                                 <div class="help-button">?</div>
                             </button>
-                        </div>
-                    </div>
-
-                    <div class="menu-section">
-                        <div class="menu-section-header">
-                            <svg class="menu-icon" viewBox="0 -960 960 960">
-                                <path d="M582-298 L440-440 v-200 h80 v167 l118,118 -56,57 Z M440-720 v-80 h80 v80 h-80 Z M720-440 v-80 h80 v80 h-80 Z M440-160 v-80 h80 v80 h-80 Z M160-440 v-80 h80 v80 h-80 Z M480-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
-                            </svg>
-                            <span class="menu-text">Afficher l'horloge</span>
-                            <svg class="section-arrow" viewBox="0 0 24 24">
-                                <path d="M8.59 16.58L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.58Z"/>
-                            </svg>
-                        </div>
-                        <div class="submenu">
                             <button class="menu-item menu-item-with-help">
                                 <div class="menu-item-content">
                                     <svg class="menu-icon" viewBox="0 -960 960 960">
-                                        <path d="M582,-298 L440,-440 v-200 h80 v167 l118,118 -56,57 Z M440,-720 v-80 h80 v80 h-80 Z M720-440 v-80 h80 v80 h-80 Z M440-160 v-80 h80 v80 h-80 Z M160-440 v-80 h80 v80 h-80 Z M480,-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
+                                        <path d="M120-120L120-280 280-280 280-120 120-120z M120-320L120-480 280-480 280-320 120-320z M320-120L320-280 480-280 480-120 320-120z M320-320L320-480 480-480 480-320 320-320z M520-120L520-280 680-280 680-120 520-120z M520-320L520-480 680-480 680-320 520-320z M120-520L120-680 280-680 280-520 120-520z M320-520L320-680 480-680 480-520 320-520z M520-520L520-680 680-680 680-520 520-520z"/>
                                     </svg>
-                                    <span class="menu-text">Masquer l'horloge</span>
+                                    <span class="menu-text">Activer le mode tuile</span>
                                 </div>
                                 <div class="help-button">?</div>
                             </button>
                             <button class="menu-item menu-item-with-help">
                                 <div class="menu-item-content">
                                     <svg class="menu-icon" viewBox="0 -960 960 960">
-                                        <path d="M120-120 L120-360 L200-360 L200-256 L324-380 L380-324 L256-200 L360-200 L360-120 L120-120 Z M600-120 L600-200 L704-200 L580-324 L636-380 L760-256 L760-360 L840-360 L840-120 L600-120 Z M324-580 L200-704 L200-600 L120-600 L120-840 L360-840 L360-760 L256-760 L380-636 L324-580 Z M636-580 L580-636 L704-760 L600-760 L600-840 L840-840 L840-600 L760-600 L760-704 L636-580 Z"/>
+                                        <path d="M560-160L560-680 360-680 360-800 880-800 880-680 680-680 680-160 560-160z M200-160L200-480 80-480 80-600 440-600 440-480 320-480 320-160 200-160z"/>
                                     </svg>
-                                    <span class="menu-text">Taille de l'horloge</span>
+                                    <span class="menu-text">Taille de la police de la note</span>
                                 </div>
                                 <div class="help-button">?</div>
                             </button>
                             <button class="menu-item menu-item-with-help">
                                 <div class="menu-item-content">
                                     <svg class="menu-icon" viewBox="0 -960 960 960">
-                                        <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
+                                        <path d="M480-80Q398-80 325-111.5 252-143 197-197 143-251 111.5-324 80-397 80-480 80-563 112.5-636 145-709 200-763 256-817 330-848.5 404-880 488-880 568-880 639-852.5 710-825 763-776 816-727 847.5-660 879-593 880-518 880-403 810-341.5 740-280 640-280L566-280Q557-280 553.5-275 550-270 550-264 550-252 565-229.5 580-207 580-178 580-128 552.5-104 525-80 480-80z M260-440Q286-440 303-457 320-474 320-500 320-526 303-543 286-560 260-560 234-560 217-543 200-526 200-500 200-474 217-457 234-440 260-440z M380-600Q406-600 423-617 440-634 440-660 440-686 423-703 406-720 380-720 354-720 337-703 320-686 320-660 320-634 337-617 354-600 380-600z M580-600Q606-600 623-617 640-634 640-660 640-686 623-703 606-720 580-720 554-720 537-703 520-686 520-660 520-634 537-617 554-600 580-600z M700-440Q726-440 743-457 760-474 760-500 760-526 743-543 726-560 700-560 674-560 657-543 640-526 640-500 640-474 657-457 674-440 700-440z M480-160Q489-160 494.5-165 500-170 500-178 500-192 485-211 470-230 470-268 470-310 499-335 528-360 570-360L640-360Q706-360 753-398.5 800-437 800-518 800-639 707.5-719.5 615-800 488-800 352-800 256-707 160-614 160-480 160-347 253.5-253.5 347-160 480-160z"/>
                                     </svg>
-                                    <span class="menu-text">Personnaliser l'horloge</span>
+                                    <span class="menu-text">Couleur du texte de la note</span>
                                 </div>
                                 <div class="help-button">?</div>
                             </button>
                             <button class="menu-item menu-item-with-help">
                                 <div class="menu-item-content">
                                     <svg class="menu-icon" viewBox="0 -960 960 960">
-                                        <path d="M240,-80 q-33,0 -56.5,-23.5 T160,-160 v-400 q0,-33 23.5,-56.5 T240,-640 h40 v-80 q0,-83 58.5,-141.5 T480,-920 q83,0 141.5,58.5 T680,-720 v80 h40 q33,0 56.5,23.5 T800,-560 v400 q0,33 -23.5,56.5 T720,-80 H240 Z m0,-80 h480 v-400 H240 v400 Z m240,-120 q33,0 56.5,-23.5 T560,-360 q0,-33 -23.5,-56.5 T480,-440 q-33,0 -56.5,23.5 T400,-360 q0,33 23.5,56.5 T480,-280 Z M360,-640 h240 v-80 q0,-50 -35,-85 t-85,-35 q-50,0 -85,35 t-35,85 v80 Z m-120,480 v-400 400 Z"/>
+                                        <path d="M338-241Q354-241 361-251.5 368-262 370-276 372-286 373.5-296 375-306 377-318 379-329 381.5-342 384-355 387-372 410-377 432-380.5 454-384 475-386 498-389 520.5-390.5 543-392 564-394 569-370 574.5-351 580-332 586-315 594-292 603.5-277 613-262 627-251 641-240 657.5-239 674-238 686-248 695-255 695-269 695-283 687-304 682-315 678.5-326.5 675-338 670-350 665-364 661-375.5 657-387 654-398 667-399 677.5-402.5 688-406 695-412 702-418 705.5-426.5 709-435 709-445 709-456 704.5-463.5 700-471 691-476 682-481 668.5-482.5 655-484 638-482 636-500 634-517.5 632-535 629-553 626-570 623.5-588 621-606 616-623 610-649 599-667.5 588-686 574-698 561-709 545.5-714.5 530-720 511-720 489-720 469-711 449-702 429-684 418-673 407-660.5 396-648 386-631 378-637 371.5-639 365-641 357-641 346-641 338.5-635 331-629 331-615 331-597 329-579 327-561 323-543 318-517 312-491.5 306-466 301-440 290-438 281.5-434.5 273-431 267-427 259-422 255.5-414.5 252-407 252-399 252-392 254-386 256-380 261-375 266-370 273-367.5 280-365 289-364 288-352 287.5-341.5 287-331 287-321 287-300 290-285 293-270 299-260 305-250 314.5-245.5 324-241 338-241z M409-464Q415-487 423-508.5 431-530 441-553 457-590 475-612 493-634 507-634 518-634 526-617 534-600 539-566 542-546 544-523 546-500 548-480 531-479 513-477.5 495-476 478-474 461-472 443.5-469.5 426-467 409-464z"/>
                                     </svg>
-                                    <span class="menu-text">Verrouiller l'horloge</span>
+                                    <span class="menu-text">Police de la note</span>
+                                </div>
+                                <div class="help-button">?</div>
+                            </button>
+                            <button class="menu-item menu-item-with-help">
+                                <div class="menu-item-content">
+                                    <svg class="menu-icon" viewBox="0 -960 960 960">
+                                        <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/>
+                                    </svg>
+                                    <span class="menu-text">Supprimer la note</span>
                                 </div>
                                 <div class="help-button">?</div>
                             </button>
@@ -640,58 +522,32 @@
                         <div class="help-button">?</div>
                     </button>
                 </div>
-
-                <!-- Fenêtre de dialogue de position -->
-                <div class="position-dialog" id="positionDialog">
-                    <div class="dialog-border">
-                        <div class="dialog-content">
-                            <div class="dialog-title">Position de l'étiquette</div>
-                            <div class="dialog-inputs">
-                                <div class="input-row">
-                                    <div class="input-label">Décalage horizontal :</div>
-                                    <div class="input-container">
-                                        <input id="dialogXInput" class="input-textbox" type="text" value="0" />
-                                    </div>
-                                </div>
-                                <div class="input-row">
-                                    <div class="input-label">Décalage vertical :</div>
-                                    <div class="input-container">
-                                        <input id="dialogYInput" class="input-textbox" type="text" value="0" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="dialog-actions">
-                                <button class="dialog-button">Annuler</button>
-                                <button id="dialogOkButton" class="dialog-button ok-button">OK</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
-        
+        <!-- Contrôle de vitesse -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+        </div>
+
+        <button class="back-button" onclick="window.close()">Fermer</button>
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        // Variables pour l'animation
         let animationPhase = 0;
         let animationTimer;
-        let animationSpeed = 1;
-        let isPaused = false;
-        
-        // Variables pour la progression
-        const progressBar = document.getElementById('progressBar');
-        const progressText = document.getElementById('progressText');
         
         // Standardisation de la vitesse du curseur (selon demo-elements.css)
         const CURSOR_SPEED_PX_PER_FRAME = 9;
-        let baseInterval = 50; // Intervalle de base pour cette démo
         
-        // Calculer le nombre total de frames de l'animation
-        const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 85; // Total jusqu'au redémarrage
+        // Variables pour le contrôle de vitesse
+        let animationSpeed = 1; // Vitesse par défaut (1x)
+        let isPaused = false;
+        let baseInterval = 80; // Intervalle de base en millisecondes
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -700,10 +556,68 @@
         const mouseLeftClick = document.querySelector('.mouse-left-click');
         const contextMenu = document.querySelector('.context-menu');
         const resizeHandle = document.querySelector('.resize-handle');
-        const positionDialog = document.querySelector('#positionDialog');
-        const menuItems = document.querySelectorAll('.menu-item');
+        const canvas = document.querySelector('.demo-canvas');
+        const labelBorder = document.querySelector('.label-border');
+        const noteSurface = document.querySelector('.note-surface');
+        const noteTitle = document.querySelector('.note-title');
         const menuSections = document.querySelectorAll('.menu-section');
         const submenus = document.querySelectorAll('.submenu');
+        let isNoteModeActive = false; // État du mode note : false = désactivé, true = activé
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        
+        // Calculer le nombre total de frames de l'animation
+        const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (404-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const blinkItemsStartIndex = 1; // Exclut la 1ère entrée (Activer le mode note)
+        const blinkItemsEndIndex = 4;   // Exclut la dernière entrée (Supprimer la note)
+        const blinkFramesPerToggle = 4; // Durée d'un état ON/OFF
+        const totalBlinkFrames = 25;    // ~2s avec baseInterval=80ms
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 25 + totalBlinkFrames + 20;
+
+        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
+        document.querySelectorAll('.help-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+
+        document.querySelectorAll('.menu-item:not(.disabled)').forEach(item => {
+            item.addEventListener('click', function() {
+                if (!this.classList.contains('disabled')) {
+                    const text = this.querySelector('.menu-text').textContent;
+                    console.log(`Action cliquée: ${text}`);
+                }
+            });
+        });
+
+        document.querySelectorAll('.menu-section-header').forEach(header => {
+            header.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const section = this.parentElement;
+                const submenu = section.querySelector('.submenu');
+                
+                if (submenu) {
+                    document.querySelectorAll('.menu-section').forEach(otherSection => {
+                        if (otherSection !== section) {
+                            otherSection.classList.remove('open');
+                        }
+                    });
+                    
+                    section.classList.toggle('open');
+                }
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.context-menu')) {
+                document.querySelectorAll('.menu-section').forEach(section => {
+                    section.classList.remove('open');
+                });
+            }
+        });
 
         function startAnimation() {
             function runAnimationFrame() {
@@ -768,29 +682,29 @@
                         }
                     }
                 }
-                // Phase 3: Menu apparaît
+                // Phase 3: Menu apparaît (sans fondu, immédiat)
                 else if (animationPhase <= moveToHandleFrames + 27) {
-                    const menuProgress = (animationPhase - (moveToHandleFrames + 23)) / 4;
                     contextMenu.style.visibility = 'visible';
-                    contextMenu.style.opacity = menuProgress;
-                    contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
-                }
-                // Phase 4: Menu visible
-                else if (animationPhase <= moveToHandleFrames + 33) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                 }
-                // Phase 5: Curseur se déplace vers "Options de l'étiquette" (vitesse standardisée)
+                // Phase 4: Menu visible (aucun effet supplémentaire)
+                else if (animationPhase <= moveToHandleFrames + 33) {
+                    contextMenu.style.visibility = 'visible';
+                    contextMenu.style.opacity = '1';
+                    contextMenu.style.transform = 'scale(1)';
+                }
+                // Phase 5: Curseur se déplace vers "Notes" (vitesse standardisée)
                 else {
-                    const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (302-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
+                    const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (404-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
                     if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames) {
                         const progress = (animationPhase - (moveToHandleFrames + 33)) / moveToMenuFrames;
                         const startX = 243, startY = 133;
-                        const endX = 429, endY = 320; // Centre exact de l'option "Options de l'étiquette" (4ème option)
+                        const endX = 429, endY = 404; // Centre exact de l'option "Notes" (5ème option)
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 6: Clic sur "Options de l'étiquette"
+                    // Phase 6: Clic sur "Notes"
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
                     
@@ -798,149 +712,106 @@
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
-                    } else {
-                    }
-
+                            } else {
+                            }
+                            
                     // Changement de souris au clic gauche (synchronisé)
-                    if (clickPhase >= 2) {
-                        mouseZeroClick.style.visibility = 'hidden';
-                        mouseLeftClick.style.visibility = 'visible';
-                    }
+                            if (clickPhase >= 2) {
+                                mouseZeroClick.style.visibility = 'hidden';
+                                mouseLeftClick.style.visibility = 'visible';
+                            }
                     
                     // Retour immédiat à la souris normale après le clic
                     if (clickPhase >= 4) {
-                        mouseZeroClick.style.visibility = 'visible';
-                        mouseLeftClick.style.visibility = 'hidden';
-                    }
-
-                    // Effet hover sur l'option "Options de l'étiquette" (4ème option - section)
+                                mouseZeroClick.style.visibility = 'visible';
+                                mouseLeftClick.style.visibility = 'hidden';
+                            }
+                            
+                    // Effet hover sur l'option "Notes" (4ème option - section)
                     if (clickPhase >= 1) {
-                        menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
+                        menuSections[3].querySelector('.menu-section-header').style.background = '#0078D4';
                     }
                     }
-                    // Phase 7: Sous-menu "Options de l'étiquette" s'ouvre
+                    // Phase 7: Sous-menu "Notes" s'ouvre (sans fondu, immédiat)
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 15) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 8)) / 7;
-                        if (submenus[1]) {
-                            submenus[1].style.visibility = 'visible';
-                            submenus[1].style.opacity = progress;
-                            submenus[1].style.transform = `scale(${0.8 + progress * 0.2})`;
+                        if (submenus[3]) {
+                            submenus[3].style.visibility = 'visible';
+                            submenus[3].style.opacity = '1';
+                            submenus[3].style.transform = 'scale(1)';
                         }
                     }
-                    // Phase 8: Sous-menu visible
+                    // Phase 8: Sous-menu visible (aucun effet supplémentaire)
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25) {
-                        if (submenus[1]) {
-                            submenus[1].style.visibility = 'visible';
-                            submenus[1].style.opacity = '1';
-                            submenus[1].style.transform = 'scale(1)';
+                        if (submenus[3]) {
+                            submenus[3].style.visibility = 'visible';
+                            submenus[3].style.opacity = '1';
+                            submenus[3].style.transform = 'scale(1)';
                         }
                     }
-                    // Phase 9: Curseur se déplace vers "Ajuster la position de l'étiquette"
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 35) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 25)) / 10;
-                        const startX = 429, startY = 320;
-                        const endX = 750, endY = 320; // Centre du sous-menu "Ajuster la position de l'étiquette"
-                        mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
-                        mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                    // Phase 9: Le curseur reste en position (pas de déplacement)
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25) {
+                        // Le curseur ne bouge plus, il reste à sa position actuelle
                     }
-                    // Phase 10: Clic sur "Ajuster la position de l'étiquette"
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 43) {
-                        const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 35);
-                    
-                    // Animation de clic
-                    if (clickPhase <= 2) {
-                    } else if (clickPhase <= 4) {
-                        const shrinkPhase = clickPhase - 2;
-                    } else {
+                     // Phase 10: Clignotement en groupe des 4 options (orange) pendant ~2s
+                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25 + totalBlinkFrames) {
+                         const base = moveToHandleFrames + 33 + moveToMenuFrames + 25;
+                         const blinkPhase = animationPhase - base;
+                         const submenu = submenus && submenus[3] ? submenus[3] : null;
+                         if (submenu) {
+                             const submenuItems = submenu.querySelectorAll('.menu-item');
+                             if (submenuItems && submenuItems.length > 2) {
+                                 const startIdx = blinkItemsStartIndex;
+                                 const endIdx = Math.max(startIdx, Math.min(blinkItemsEndIndex, submenuItems.length - 2));
+                                 // Nettoyer d'abord
+                                 submenuItems.forEach((it, idx) => {
+                                     if (idx >= startIdx && idx <= endIdx) {
+                                         it.style.background = 'transparent';
+                                     }
+                                 });
+                                 // Etat ON/OFF commun
+                                 const active = Math.floor(blinkPhase / blinkFramesPerToggle) % 2 === 0;
+                                 for (let i = startIdx; i <= endIdx; i++) {
+                                     const it = submenuItems[i];
+                                     if (it) it.style.background = active ? '#FF8C00' : 'transparent';
+                                 }
+                             }
+                         }
+                     }
+                   // Phase 11: Fermeture immédiate des menus (sans fondu)
+                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25 + totalBlinkFrames + 20) {
+                        contextMenu.style.visibility = 'hidden';
+                        contextMenu.style.opacity = '0';
+                        contextMenu.style.transform = 'scale(0.8)';
+                        submenus.forEach(submenu => {
+                            submenu.style.visibility = 'hidden';
+                            submenu.style.opacity = '0';
+                            submenu.style.transform = 'scale(0.8)';
+                        });
                     }
-
-                    // Changement de souris au clic gauche (synchronisé)
-                    if (clickPhase >= 2) {
-                        mouseZeroClick.style.visibility = 'hidden';
-                        mouseLeftClick.style.visibility = 'visible';
-                    }
-                    
-                    // Retour immédiat à la souris normale après le clic
-                    if (clickPhase >= 4) {
+                    // Phase 12: Reset
+                    else {
+                        animationPhase = 0;
+                        mouseCursor.style.left = '143px';
+                        mouseCursor.style.top = '92px';
+                        contextMenu.style.visibility = 'hidden';
+                        contextMenu.style.opacity = '0';
+                        contextMenu.style.transform = 'scale(0.8)';
+                        resizeHandle.style.transform = 'scale(1)';
+                        resizeHandle.style.background = '#ffffff';
+                        resizeHandle.style.border = '1px solid #000';
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
-                    }
-
-                    // Effet hover sur "Ajuster la position de l'étiquette"
-                    if (clickPhase >= 1) {
-                        const submenuItem = submenus[1].querySelector('.menu-item');
-                        if (submenuItem) {
-                            submenuItem.style.background = '#0078D4';
-                        }
-                    }
-                    }
-                    // Phase 11: Menu et sous-menu disparaissent, fenêtre de dialogue apparaît
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 55) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 43)) / 12;
-                        contextMenu.style.opacity = 1 - progress;
-                        contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
-                        if (submenus[1]) {
-                            submenus[1].style.opacity = 1 - progress;
-                            submenus[1].style.transform = `scale(${1 - progress * 0.2})`;
-                        }
-                        
-                        if (progress >= 0.5) {
-                            positionDialog.style.visibility = 'visible';
-                            positionDialog.style.opacity = (progress - 0.5) * 2;
-                            positionDialog.style.transform = `translate(-50%, -50%) scale(${0.8 + (progress - 0.5) * 0.4})`;
-                        }
-                    }
-                    // Phase 12: Fenêtre de dialogue visible
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 75) {
-                        positionDialog.style.visibility = 'visible';
-                        positionDialog.style.opacity = '1';
-                        positionDialog.style.transform = 'translate(-50%, -50%) scale(1)';
-                    }
-                    // Phase 13: Fenêtre de dialogue se ferme
-                    else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 85) {
-                        const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 75)) / 10;
-                        positionDialog.style.opacity = 1 - progress;
-                        positionDialog.style.transform = `translate(-50%, -50%) scale(${1 - progress * 0.2})`;
-                        if (progress >= 0.8) {
-                            positionDialog.style.visibility = 'hidden';
-                        }
-                    }
-                    // Reset immédiat après fermeture de la fenêtre
-                    else {
-                    animationPhase = 0;
-                    mouseCursor.style.left = '143px';
-                    mouseCursor.style.top = '92px';
-                    contextMenu.style.visibility = 'hidden';
-                    contextMenu.style.opacity = '0';
-                    contextMenu.style.transform = 'scale(0.8)';
-                    positionDialog.style.opacity = '0';
-                    positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                    resizeHandle.style.transform = 'scale(1)';
-                    resizeHandle.style.background = '#ffffff';
-                    resizeHandle.style.border = '1px solid #000';
-                    mouseZeroClick.style.visibility = 'visible';
-                    mouseLeftClick.style.visibility = 'hidden';
-                    menuSections[1].querySelector('.menu-section-header').style.background = 'transparent';
-                    positionDialog.style.visibility = 'hidden';
-                    positionDialog.style.opacity = '0';
-                    positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                    
-                    // Reset des sous-menus
-                    submenus.forEach(submenu => {
-                        submenu.style.visibility = 'hidden';
-                        submenu.style.opacity = '0';
-                        submenu.style.transform = 'scale(0.8)';
-                    });
-                    
-                    // Reset des éléments de sous-menu
-                    submenus.forEach(submenu => {
-                        const submenuItems = submenu.querySelectorAll('.menu-item');
-                        submenuItems.forEach(item => {
-                            item.style.background = 'transparent';
+                        menuSections[3].querySelector('.menu-section-header').style.background = 'transparent';
+                        submenus.forEach(submenu => {
+                            submenu.style.visibility = 'hidden';
+                            submenu.style.opacity = '0';
+                            submenu.style.transform = 'scale(0.8)';
+                            const submenuItems = submenu.querySelectorAll('.menu-item');
+                            submenuItems.forEach(item => { item.style.background = 'transparent'; });
                         });
-                    });
                     }
                 }
+                
                 // Mettre à jour la progression
                 updateProgress(animationPhase, totalAnimationFrames);
                 
@@ -954,150 +825,6 @@
             
             // Démarrer la première frame
             runAnimationFrame();
-        }
-
-        function restartAnimationWithNewSpeed() {
-            if (animationTimer) {
-                clearTimeout(animationTimer);
-            }
-            startAnimation();
-        }
-
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
-        function changeAnimationSpeed(newSpeed) {
-            animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
-        }
-        
-        // Fonction pour mettre à jour la progression
-        function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
-            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
-            progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur les phases réelles de l'animation
-            const phase1End = moveToHandleFrames; // Fin du déplacement vers poignée
-            const phase2End = moveToHandleFrames + 23; // Fin du clic droit
-            const phase3End = moveToHandleFrames + 27; // Fin de l'apparition du menu
-            const phase4End = moveToHandleFrames + 33; // Fin de la phase menu visible
-            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; // Fin du déplacement vers "Options de l'étiquette"
-            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; // Fin du clic sur "Options de l'étiquette"
-            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; // Fin de l'apparition du sous-menu
-            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 25; // Fin du déplacement vers "Ajuster la position"
-            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 35; // Fin du clic sur "Ajuster la position"
-            const phase10End = moveToHandleFrames + 33 + moveToMenuFrames + 43; // Fin de la disparition du menu
-            const phase11End = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Fin de l'apparition de la fenêtre
-            const phase12End = moveToHandleFrames + 33 + moveToMenuFrames + 75; // Fin de l'affichage de la fenêtre
-            const phase13End = moveToHandleFrames + 33 + moveToMenuFrames + 85; // Fin de la disparition de la fenêtre
-            
-            // Mettre à jour le texte de progression
-            if (phase <= phase1End) {
-                progressText.textContent = 'Déplacement vers la poignée...';
-            } else if (phase <= phase2End) {
-                progressText.textContent = 'Clic droit sur la poignée...';
-            } else if (phase <= phase3End) {
-                progressText.textContent = 'Ouverture du menu contextuel...';
-            } else if (phase <= phase4End) {
-                progressText.textContent = 'Menu contextuel affiché...';
-            } else if (phase <= phase5End) {
-                progressText.textContent = 'Déplacement vers "Options de l\'étiquette"...';
-            } else if (phase <= phase6End) {
-                progressText.textContent = 'Clic sur "Options de l\'étiquette"...';
-            } else if (phase <= phase7End) {
-                progressText.textContent = 'Ouverture du sous-menu...';
-            } else if (phase <= phase8End) {
-                progressText.textContent = 'Déplacement vers "Ajuster la position"...';
-            } else if (phase <= phase9End) {
-                progressText.textContent = 'Clic sur "Ajuster la position"...';
-            } else if (phase <= phase10End) {
-                progressText.textContent = 'Fermeture du menu...';
-            } else if (phase <= phase11End) {
-                progressText.textContent = 'Ouverture de la fenêtre de dialogue...';
-            } else if (phase <= phase12End) {
-                progressText.textContent = 'Fenêtre de dialogue affichée...';
-            } else if (phase <= phase13End) {
-                progressText.textContent = 'Fermeture de la fenêtre...';
-            } else {
-                progressText.textContent = 'Préparation du redémarrage...';
-            }
-        }
-
-        // Fonctions pour la fenêtre de dialogue de position
-        function onDialogInputChange() {
-            const xInput = document.getElementById('dialogXInput');
-            const yInput = document.getElementById('dialogYInput');
-            
-            if (xInput && yInput) {
-                const x = parseInt(xInput.value) || 0;
-                const y = parseInt(yInput.value) || 0;
-                console.log(`Position mise à jour: X=${x}, Y=${y}`);
-            }
-        }
-
-        function onDialogOkClick() {
-            const xInput = document.getElementById('dialogXInput');
-            const yInput = document.getElementById('dialogYInput');
-            
-            if (xInput && yInput) {
-                const x = parseInt(xInput.value) || 0;
-                const y = parseInt(yInput.value) || 0;
-                console.log(`Position appliquée: X=${x}, Y=${y}`);
-            }
-        }
-
-        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
-        document.querySelectorAll('.help-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
-        });
-
-        document.querySelectorAll('.menu-item:not(.disabled)').forEach(item => {
-            item.addEventListener('click', function() {
-                if (!this.classList.contains('disabled')) {
-                    const text = this.querySelector('.menu-text').textContent;
-                    console.log(`Action cliquée: ${text}`);
-                }
-            });
-        });
-
-        document.querySelectorAll('.menu-section-header').forEach(header => {
-            header.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const section = this.parentElement;
-                const submenu = section.querySelector('.submenu');
-                
-                if (submenu) {
-                    document.querySelectorAll('.menu-section').forEach(otherSection => {
-                        if (otherSection !== section) {
-                            otherSection.classList.remove('open');
-                        }
-                    });
-                    
-                    section.classList.toggle('open');
-                }
-            });
-        });
-
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.context-menu')) {
-                document.querySelectorAll('.menu-section').forEach(section => {
-                    section.classList.remove('open');
-                });
-            }
-        });
-
-        function togglePause() {
-            isPaused = !isPaused;
-            const pauseButton = document.getElementById('pauseButton');
-            
-            if (isPaused) {
-                pauseButton.textContent = 'Reprendre';
-                pauseButton.classList.add('paused');
-            } else {
-                pauseButton.textContent = 'Pause';
-                pauseButton.classList.remove('paused');
-            }
         }
 
         // Démarrer l'animation au chargement de la page
@@ -1121,29 +848,118 @@
             if (pauseButton) {
                 pauseButton.addEventListener('click', togglePause);
             } else {
-                console.warn('Bouton pause non trouvé dans demo-Label-Position-Dialog');
+                console.warn('Bouton pause non trouvé dans demo-enable-note-mode');
             }
-
-            // Configurer les événements de la fenêtre de dialogue
-            const dialogXInput = document.getElementById('dialogXInput');
-            const dialogYInput = document.getElementById('dialogYInput');
-            const dialogOkButton = document.getElementById('dialogOkButton');
             
-            if (dialogXInput) {
-                dialogXInput.addEventListener('input', onDialogInputChange);
-            }
-            if (dialogYInput) {
-                dialogYInput.addEventListener('input', onDialogInputChange);
-            }
-            if (dialogOkButton) {
-                dialogOkButton.addEventListener('click', onDialogOkClick);
-            }
+            // Initialiser l'état de la note (déjà activée)
+            noteSurface.style.visibility = 'visible';
+            noteSurface.style.opacity = '1';
             
             // Démarrer l'animation
             setTimeout(() => {
                 setTimeout(startAnimation, 500);
             }, 100);
         });
+
+        function restartAnimationWithNewSpeed() {
+            if (animationTimer) {
+                clearTimeout(animationTimer);
+            }
+            // Reset complet de l'état avant de redémarrer
+            animationPhase = 0;
+            
+            // Reset de la position du curseur (position par défaut)
+            mouseCursor.style.left = '143px';
+            mouseCursor.style.top = '92px';
+            mouseCursor.style.visibility = 'visible';
+            
+            // Reset de la note
+            noteSurface.style.visibility = 'hidden';
+            noteSurface.style.opacity = '0';
+            
+            // Reset du menu
+            contextMenu.style.visibility = 'hidden';
+            contextMenu.style.opacity = '0';
+            contextMenu.style.transform = 'scale(0.8)';
+            
+            // Reset des sous-menus
+            submenus.forEach(submenu => {
+                submenu.style.visibility = 'hidden';
+                submenu.style.opacity = '0';
+                submenu.style.transform = 'scale(0.8)';
+            });
+            
+            // Reset des effets de survol
+            menuSections[3].querySelector('.menu-section-header').style.background = 'transparent';
+            submenus.forEach(submenu => {
+                const submenuItems = submenu.querySelectorAll('.menu-item');
+                submenuItems.forEach(item => {
+                    item.style.background = 'transparent';
+                });
+            });
+            
+            // Reset de la souris selon demo-elements.css
+            mouseZeroClick.style.visibility = 'visible';
+            mouseRightClick.style.visibility = 'hidden';
+            mouseLeftClick.style.visibility = 'hidden';
+            
+            // Reset de l'état
+            isNoteModeActive = false;
+            
+            setTimeout(startAnimation, 100);
+        }
+
+        // Fonction pour changer la vitesse sans restart (réactivité maximale)
+        function changeAnimationSpeed(newSpeed) {
+            animationSpeed = newSpeed;
+            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur le nombre total de frames
+            const step1 = Math.floor(totalFrames * 0.15); // 15% - Déplacement vers poignée
+            const step2 = Math.floor(totalFrames * 0.25); // 25% - Clic droit
+            const step3 = Math.floor(totalFrames * 0.40); // 40% - Menu contextuel
+            const step4 = Math.floor(totalFrames * 0.60); // 60% - Sélection Notes
+            const step5 = Math.floor(totalFrames * 0.75); // 75% - Ouverture sous-menu
+            const step6 = Math.floor(totalFrames * 0.90); // 90% - Clignotement options
+            
+            // Mettre à jour le texte de progression
+            if (phase <= step1) {
+                progressText.textContent = 'Déplacement vers la poignée...';
+            } else if (phase <= step2) {
+                progressText.textContent = 'Clic droit sur la poignée...';
+            } else if (phase <= step3) {
+                progressText.textContent = 'Ouverture du menu contextuel...';
+            } else if (phase <= step4) {
+                progressText.textContent = 'Sélection de l\'option "Notes"...';
+            } else if (phase <= step5) {
+                progressText.textContent = 'Ouverture du sous-menu "Notes"...';
+            } else if (phase <= step6) {
+                progressText.textContent = 'Mise en surbrillance des paramètres...';
+            } else {
+                progressText.textContent = 'Fermeture des menus...';
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseButton = document.getElementById('pauseButton');
+            
+            if (isPaused) {
+                pauseButton.textContent = 'Reprendre';
+                pauseButton.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause';
+                pauseButton.classList.remove('paused');
+            }
+        }
+
     </script>
 </body>
 </html>

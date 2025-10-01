@@ -274,27 +274,11 @@
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
-            left: 555px !important;
-            top: 25px !important;
+            left: 550px !important;
+            top: 15px !important;
         }
 
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
+        /* back-button styles removed to use global styles in demo-elements.css */
     </style>
 </head>
 <body>
@@ -305,6 +289,18 @@
                 Cette démonstration montre comment afficher ou masquer l'horloge d'une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu, sélectionnez "Afficher l'horloge" puis "Masquer l'horloge".
         
             </p>
+        </div>
+        
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
         </div>
         
         <div class="demo-canvas-container">
@@ -582,15 +578,6 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
     </div>
 
     <script>
@@ -599,8 +586,17 @@
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
         let baseInterval = 50; // Intervalle de base pour cette démo
         const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
+        
+        // Calculer le nombre total de frames de l'animation
+        const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 195; // Total jusqu'au redémarrage
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -1054,10 +1050,16 @@
                     }
                 }
                 
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -1118,6 +1120,38 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur le nombre total de frames
+            const step1 = Math.floor(totalFrames * 0.15); // 15% - Déplacement vers poignée
+            const step2 = Math.floor(totalFrames * 0.25); // 25% - Clic droit
+            const step3 = Math.floor(totalFrames * 0.40); // 40% - Menu contextuel
+            const step4 = Math.floor(totalFrames * 0.60); // 60% - Sélection "Afficher l'horloge"
+            const step5 = Math.floor(totalFrames * 0.80); // 80% - Horloge affichée
+            const step6 = Math.floor(totalFrames * 0.95); // 95% - Sélection "Masquer l'horloge"
+            
+            // Mettre à jour le texte de progression
+            if (phase <= step1) {
+                progressText.textContent = 'Déplacement vers la poignée...';
+            } else if (phase <= step2) {
+                progressText.textContent = 'Clic droit sur la poignée...';
+            } else if (phase <= step3) {
+                progressText.textContent = 'Ouverture du menu contextuel...';
+            } else if (phase <= step4) {
+                progressText.textContent = 'Sélection de "Afficher l\'horloge"...';
+            } else if (phase <= step5) {
+                progressText.textContent = 'Horloge affichée !';
+            } else if (phase <= step6) {
+                progressText.textContent = 'Sélection de "Masquer l\'horloge"...';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
         }
 
         // Logique du menu contextuel (copiée du Reference-ContextMenu.html)

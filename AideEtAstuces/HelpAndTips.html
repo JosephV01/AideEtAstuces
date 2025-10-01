@@ -5,6 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aide et astuces - MyCustomDesk</title>
     <link rel="stylesheet" href="HelpAndTips.css">
+    <style>
+        /* Mise en valeur des sections "À savoir" */
+        .collapsible-section.a-savoir {
+            background: rgba(255, 213, 79, 0.08);
+            border-left: 4px solid #FFD54F;
+            border-radius: 6px;
+        }
+        .collapsible-section.a-savoir .section-header {
+            background: rgba(255, 213, 79, 0.12);
+        }
+        .collapsible-section.a-savoir .section-header .section-icon { /* Masquer l'icône existante (ex: ?) */
+            display: none;
+        }
+        .collapsible-section.a-savoir .section-title::before {
+            content: "💡";
+            margin-right: 8px;
+        }
+        /* Désactiver toute transition/animation sur les sections */
+        .collapsible-section, .collapsible-section * {
+            transition: none !important;
+            animation: none !important;
+        }
+        /* Assurer que l'indicateur de navigation n'intercepte pas les clics */
+        .nav-indicator {
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -37,7 +64,7 @@
                         <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                     </svg>
                 </button>
-                <button class="clear-button" onclick="clearSearch()" title="Effacer la recherche">
+                <button class="clear-button" onclick="clearGlobalSearch()" title="Effacer la recherche">
                     <svg class="clear-icon" viewBox="0 0 24 24">
                         <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
                     </svg>
@@ -112,16 +139,14 @@
                     <svg class="section-icon" viewBox="0 0 24 24">
                         <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M17,13H13V17H11V13H7V11H11V7H13V11H17V13Z" />
                     </svg>
-                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Bouton + (Ajouter une bulle)</h2>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Ajouter une bulle - Bouton (<strong>✙</strong>)</h2>
                 </div>
                     <svg class="collapse-icon" viewBox="0 0 24 24">
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Le <strong>bouton +</strong> du <strong>widget</strong> permet de créer une nouvelle <strong>bulle</strong> sur votre <strong>bureau</strong>.</p>
-                    <p>• <strong>Cliquez</strong> avec le <strong>bouton gauche</strong> de la souris sur le <strong>bouton +</strong> pour ajouter une <strong>bulle</strong>.</p>
-                    <p>• Une nouvelle <strong>bulle</strong> apparaît immédiatement.</p>
+                    <p>• Créez instantanément votre première bulle personnalisée. Un simple <strong>clic</strong> avec le <strong>bouton gauche</strong> de la souris sur le <strong>bouton (+)</strong> et votre nouvel espace de travail apparaît, prêt à accueillir vos raccourcis et fichiers favoris.</p>
                     <button class="demo-button" onclick="openDemo('add-bubble-widget')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -137,16 +162,14 @@
                     <svg class="section-icon" viewBox="0 0 24 24">
                         <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
                     </svg>
-                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Bouton P (Paramètres)</h2>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Paramètres - Bouton (<strong>P</strong>)</h2>
                 </div>
                     <svg class="collapse-icon" viewBox="0 0 24 24">
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Le <strong>bouton P</strong> du <strong>widget</strong> ouvre la <strong>fenêtre des paramètres</strong> du programme.</p>
-                    <p>• <strong>Cliquez</strong> avec le <strong>bouton gauche</strong> de la souris sur le <strong>bouton P</strong> pour accéder aux <strong>paramètres</strong>.</p>
-                    <p>• La <strong>fenêtre des paramètres</strong> vous permet de configurer toutes les <strong>options</strong> de l'application.</p>
+                    <p>• Accédez en un clic à la fenêtre des paramètres de l'application. <strong>Cliquez</strong> avec le <strong>bouton gauche</strong> de la souris sur le <strong>bouton (P)</strong> pour ouvrir la <strong>fenêtre des paramètres</strong> et configurer toutes les <strong>options</strong> de l'application selon vos préférences.</p>
                     <button class="demo-button" onclick="openDemo('open-settings')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -169,9 +192,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Vous pouvez <strong>déplacer le widget</strong> en maintenant le <strong>clic droit</strong> sur le <strong>widget</strong> tout en déplaçant le <strong>curseur</strong>.</p>
-                    <p>• <strong>Relâchez le clic droit</strong> pour positionner le <strong>widget</strong> à son <strong>nouvel emplacement</strong>.</p>
-                    <p>• Le <strong>widget</strong> peut être déplacé <strong>n'importe où</strong> sur votre <strong>écran</strong>.</p>
+                    <p>• Positionnez votre widget exactement où vous en avez besoin. <strong>Maintenez le clic droit</strong> sur le <strong>widget</strong> tout en déplaçant le <strong>curseur</strong> pour le repositionner n'importe où sur votre <strong>écran</strong>. <strong>Relâchez le clic droit</strong> pour le fixer à son nouvel emplacement.</p>
                     <button class="demo-button" onclick="openDemo('move-widget')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -184,25 +205,19 @@
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
                     <div class="section-header-content">
-                    <svg class="section-icon" viewBox="0 0 24 24">
-                        <path d="M17,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3M19,19H5V5H16.17L19,7.83V19M12,12A3,3 0 0,0 9,15A3,3 0 0,0 12,18A3,3 0 0,0 15,15A3,3 0 0,0 12,12M6,6H15V10H6V6Z" />
+                    <svg class="section-icon" viewBox="0 -960 960 960">
+                        <path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
                     </svg>
-                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Persistance des positions</h2>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">À savoir</h2>
                 </div>
                     <svg class="collapse-icon" viewBox="0 0 24 24">
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
-                <div class="section-content collapsed">
-                    <p>• La <strong>position du widget</strong> ainsi que celles des <strong>bulles</strong> sont <strong>enregistrées automatiquement</strong>.</p>
-                    <p>• Toutes les <strong>positions</strong> <strong>persistent entre chaque session</strong> de l'application.</p>
-                    <p>• Lorsque vous <strong>redémarrez</strong> l'application les <strong>paramètres enregistrés</strong> sont <strong>chargés automatiquement</strong>.</p>
-                    <button class="demo-button" onclick="openDemo('position-persistence')">
-                        <svg class="demo-icon" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        Voir la démonstration
-                    </button>
+                <div class="section-content expanded">
+                    <p>• Gardez toujours vos réglages à portée de main. L'application mémorise automatiquement vos <strong>préférences</strong> : <strong>position du widget</strong>, <strong>dimensions</strong>, <strong>couleurs</strong> et <strong>personnalisation des bulles</strong>… tout est <strong>sauvegardé sans effort</strong>.</p>
+                    <p>• À chaque ouverture, retrouvez instantanément votre <strong>environnement</strong> tel que vous l'avez laissé, prêt à l'emploi. Plus besoin de tout reconfigurer : vos <strong>paramètres</strong> vous suivent partout.</p>
+                    <p>• Et pour aller plus loin, <strong>exportez</strong> vos réglages en un clic pour les <strong>sauvegarder</strong>, les <strong>partager</strong> ou les <strong>importer</strong> sur une nouvelle installation. Une <strong>continuité parfaite</strong>, une expérience toujours <strong>fluide</strong>.</p>
                 </div>
             </div>
         </div>
@@ -222,7 +237,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Cliquez sur le <strong>bouton +</strong> du <strong>widget de bureau</strong> pour créer une nouvelle <strong>Bulle</strong>.</p>
+                    <p>• Créez instantanément votre première bulle personnalisée. Un simple <strong>clic sur le bouton +</strong> du widget et votre nouvel espace de travail apparaît, prêt à accueillir vos raccourcis et fichiers favoris.</p>
                     <button class="demo-button" onclick="openDemo('add-bubble')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -245,8 +260,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Vous pouvez redimensionner une <strong>Bulle</strong> à l'aide de sa <strong>poignée</strong>.</p>
-                    <p>• <strong>Cliquez</strong> et maintenez le <strong>clic gauche</strong> sur la <strong>poignée</strong> et déplacez le <strong>curseur</strong> pour augmenter ou réduire la <strong>taille de la bulle</strong>.</p>
+                    <p>• Adaptez chaque bulle à vos besoins réels. <strong>Cliquez et maintenez le clic gauche</strong> sur la <strong>poignée</strong> et déplacez le <strong>curseur</strong> pour agrandir ou réduire l'espace selon le nombre d'éléments que vous souhaitez y placer. Une flexibilité totale pour un bureau parfaitement organisé.</p>
                     <button class="demo-button" onclick="openDemo('resize-bubble')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -269,7 +283,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Vous pouvez repositionner une <strong>bulle</strong> en maintenant le <strong>clic gauche</strong> sur son <strong>étiquette</strong> tout en déplaçant la souris sur votre écran.</p>
+                    <p>• Organisez votre bureau comme vous l'entendez. <strong>Maintenez le clic gauche</strong> sur l'<strong>étiquette</strong> et déplacez la souris pour repositionner chaque bulle à l'endroit qui vous convient le mieux pour un accès rapide et une organisation optimale.</p>
                     <button class="demo-button" onclick="openDemo('move-bubble')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -292,8 +306,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Pour afficher le <strong>menu contextuel</strong> d'une <strong>bulle</strong>, faites un <strong>clic droit</strong> sur son <strong>étiquette ou sur sa poignée</strong>.</p>
-                    <p>• Le <strong>menu contextuel</strong> vous donne accès à toutes les <strong>options associées</strong> à la <strong>Bulle</strong>.</p>
+                    <p>• Découvrez toutes les possibilités de personnalisation. Un <strong>clic droit</strong> sur l'<strong>étiquette</strong> ou la <strong>poignée</strong> de votre bulle révèle un menu complet d'options pour la transformer selon vos envies et besoins.</p>
                     <button class="demo-button" onclick="openDemo('show-options-menu')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -316,7 +329,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur la <strong>poignée</strong> d'une <strong>bulle</strong> ou de son <strong>étiquette</strong> pour accéder à la <strong>fenêtre de personnalisation</strong> de la <strong>Bulle</strong> via le <strong>menu contextuel</strong>.</p>
+                    <p>• Donnez vie à vos bulles avec une personnalisation complète. <strong>Clic droit</strong> sur la <strong>poignée</strong> ou l'<strong>étiquette</strong> pour accéder à la fenêtre de personnalisation. Couleurs, transparence, bordures, effets visuels... transformez chaque bulle en un espace unique qui reflète votre style.</p>
                     <button class="demo-button" onclick="openDemo('customize-bubble')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -339,7 +352,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Utilisez l'option <strong>Supprimer toutes les bulles</strong> dans les <strong>paramètres</strong>, ou supprimez individuellement chaque <strong>bulle</strong> via son <strong>menu contextuel</strong>. Le contenu des bulles ayant l'option de <strong>glisser/déposer</strong> activée est automatiquement restauré sur le <strong>bureau</strong>.</p>
+                    <p>• Nettoyage intelligent et sécurisé. Utilisez l'option <strong>"Supprimer toutes les bulles"</strong> dans les <strong>paramètres</strong>, ou supprimez individuellement chaque bulle via son <strong>menu contextuel</strong>. Vos fichiers sont automatiquement restaurés sur le bureau, sans perte de données.</p>
                     <button class="demo-button" onclick="openDemo('delete-bubble')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -362,8 +375,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur la <strong>poignée</strong> d'une <strong>bulle</strong> ou de son <strong>étiquette</strong> pour accéder au <strong>menu contextuel</strong> de la <strong>Bulle</strong>.</p>
-                    <p>• Cliquez sur l'option <strong>"Dupliquer la Bulle"</strong> dans le <strong>menu contextuel</strong> pour créer une copie identique.</p>
+                    <p>• Multipliez vos espaces de travail en un clic. <strong>Clic droit</strong> sur la <strong>poignée</strong> ou l'<strong>étiquette</strong> pour accéder au <strong>menu contextuel</strong>, puis cliquez sur <strong>"Dupliquer la Bulle"</strong> pour créer une copie identique sans refaire toute la personnalisation.</p>
                     <button class="demo-button" onclick="openDemo('duplicate-bubble')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -385,8 +397,8 @@
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
-                <div class="section-content collapsed">
-                    <p>• Tous les changements sont automatiquement <strong>enregistrés</strong> et persistent entre les <strong>sessions</strong>.</p>
+                <div class="section-content expanded">
+                    <p>• Chaque détail compte. Tous vos changements sont automatiquement <strong>sauvegardés</strong> et restent <strong>intacts d'une session à l'autre</strong>. Vous retrouvez ainsi votre <strong>espace personnalisé</strong> exactement comme vous l'avez laissé, sans jamais perdre de temps à tout reparamétrer.</p>
                 </div>
             </div>
         </div>
@@ -406,7 +418,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Ouvrez le <strong>menu des paramètres</strong> et cliquez sur le bouton <strong>Couleur de fond d'écran</strong>.</p>
+                    <p>• Personnalisez votre bureau avec vos couleurs préférées. Ouvrez le <strong>menu des paramètres</strong> et cliquez sur le <strong>bouton Couleur de fond d'écran</strong> pour sélectionner la teinte parfaite qui s'harmonise avec votre style et améliore votre expérience visuelle.</p>
                     <button class="demo-button" onclick="openDemo('choose-color')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -429,8 +441,10 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Dans le <strong>menu paramètres</strong>, cliquez sur <strong>Importer une image</strong> pour importer un fichier à partir de votre ordinateur.</p>
-                    <p>• L'application dispose d'une <strong>bibliothèque d'images intégrée</strong> avec plusieurs catégories (<strong>3D</strong>, <strong>Abstract</strong>, <strong>Nature</strong>, etc.). Vous pouvez également importer vos propres images.</p>
+                    <p>• Transformez votre bureau avec vos images personnelles.</p>
+                    <p>• Dans le <strong>menu paramètres</strong>, cliquez sur <strong>"Importer une image"</strong> pour importer un fichier à partir de votre ordinateur.</p>
+                    <p>• Une <strong>bibliothèque d'images intégrée</strong> propose plusieurs catégories (<strong>3D</strong>, <strong>Abstract</strong>, <strong>Nature</strong>, etc.).</p>
+                    <p>• Vous pouvez également <strong>importer vos propres images</strong> personnelles.</p>
                     <p>• La <strong>bibliothèque</strong> permet d'appliquer directement une image comme <strong>fond d'écran</strong> ou comme <strong>fond de bulle personnalisée</strong>.</p>
                     <p>• <strong>Formats acceptés</strong> : <strong>JPG</strong>, <strong>PNG</strong> ou <strong>BMP</strong> (taille max. : <strong>10 Mo</strong>).</p>
                     <button class="demo-button" onclick="openDemo('import-image')">
@@ -455,7 +469,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Activez l'option <strong>Changement aléatoire</strong> pour alterner automatiquement les images. Le système utilise le <strong>dossier de l'image importée manuellement</strong>, ou la <strong>bibliothèque intégrée</strong> par défaut.</p>
+                    <p>• Créez un bureau dynamique qui évolue selon vos préférences. Activez l'option <strong>"Changement aléatoire"</strong> pour alterner automatiquement les images selon l'<strong>intervalle défini</strong>. Le système utilise le <strong>dossier de l'image importée manuellement</strong>, ou la <strong>bibliothèque intégrée</strong> par défaut. Désactivée, cette option maintient votre fond d'écran sur l'image actuellement sélectionnée.</p>
                     <button class="demo-button" onclick="openDemo('random-wallpaper')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -478,13 +492,33 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Définissez l'<strong>intervalle de changement</strong> des images en <strong>secondes</strong> via l'option <strong>Définir l'intervalle</strong> dans les <strong>paramètres</strong>.</p>
+                    <p>• Contrôlez le rythme de votre bureau dynamique. Définissez l'<strong>intervalle de changement</strong> des images en <strong>secondes</strong> via l'option <strong>"Définir l'intervalle"</strong> dans les <strong>paramètres</strong> pour personnaliser la fréquence de rotation selon vos préférences et votre rythme de travail.</p>
                     <button class="demo-button" onclick="openDemo('set-interval')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                         </svg>
                         Voir la démonstration
                     </button>
+                </div>
+            </div>
+
+            <div class="collapsible-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-content">
+                    <svg class="section-icon" viewBox="0 -960 960 960">
+                        <path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                    </svg>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">À savoir</h2>
+                </div>
+                    <svg class="collapse-icon" viewBox="0 0 24 24">
+                        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                </div>
+                <div class="section-content expanded">
+                    <p>• Vos <strong>fond d'écran personnalisés</strong> sont automatiquement <strong>sauvegardés</strong> et <strong>mémorisés</strong> pour une utilisation future. Plus besoin de réimporter vos images favorites à chaque session.</p>
+                    <p>• L'application <strong>optimise automatiquement</strong> vos images pour garantir des <strong>performances optimales</strong> tout en préservant la <strong>qualité visuelle</strong> de vos fonds d'écran.</p>
+                    <p>• Le <strong>changement aléatoire</strong> respecte vos <strong>préférences</strong> : il utilise uniquement les images de votre <strong>dossier sélectionné</strong> ou de la <strong>bibliothèque intégrée</strong> selon votre choix.</p>
+                    <p>• Pour une <strong>expérience fluide</strong>, l'application gère intelligemment la <strong>transition</strong> entre les images, évitant les saccades et offrant un <strong>changement visuel harmonieux</strong>.</p>
                 </div>
             </div>
         </div>
@@ -504,8 +538,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• La <strong>bibliothèque d'images intégrée</strong> contient plus de <strong>5000 images</strong> organisées en <strong>catégories</strong>.</p>
-                    <p>• Accédez-y via le <strong>menu de personnalisation des bulles</strong> en cliquant sur le bouton <strong>"Bibliothèque"</strong>.</p>
+                    <p>• Découvrez une <strong>collection exceptionnelle</strong> de plus de <strong>5000 images</strong> soigneusement organisées et prêtes à l'emploi. Accédez-y via le <strong>menu de personnalisation des bulles</strong> en cliquant sur le bouton <strong>"Bibliothèque"</strong> pour transformer instantanément votre espace de travail.</p>
                     <button class="demo-button" onclick="openDemo('access-image-library')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -528,11 +561,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>3D, Abstract, Bricks, Floral, Forest, Fruity</strong> : Textures et motifs variés</p>
-                    <p>• <strong>Landscape, Nature, Sea, Village</strong> : Paysages et scènes naturelles</p>
-                    <p>• <strong>Marble, Stone, Wood</strong> : Matériaux et textures réalistes</p>
-                    <p>• <strong>Night, Patterns, sci-fi, Simple</strong> : Styles et ambiances spéciales</p>
-                    <p>• <strong>Various textures</strong> : Collection de textures diverses</p>
+                    <p>• Explorez une <strong>diversité visuelle</strong> extraordinaire avec des catégories spécialisées : <strong>textures et motifs</strong> (3D, Abstract, Bricks, Floral, Forest, Fruity), <strong>paysages naturels</strong> (Landscape, Nature, Sea, Village), <strong>matériaux réalistes</strong> (Marble, Stone, Wood), et <strong>ambiances spéciales</strong> (Night, Patterns, sci-fi, Simple). Chaque catégorie offre des <strong>possibilités créatives</strong> infinies pour personnaliser votre bureau.</p>
                     <button class="demo-button" onclick="openDemo('browse-categories')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -555,10 +584,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Sélectionnez</strong> une <strong>catégorie</strong> dans la <strong>liste de gauche</strong> de la <strong>bibliothèque</strong>.</p>
-                    <p>• <strong>Cliquez</strong> sur l'<strong>image souhaitée</strong> pour la <strong>prévisualiser</strong>.</p>
-                    <p>• <strong>Cliquez</strong> sur <strong>"Sélectionner"</strong> pour l'appliquer comme <strong>fond de votre bulle</strong>.</p>
-                    <p>• L'<strong>image</strong> sera <strong>automatiquement redimensionnée</strong> et <strong>adaptée</strong> à votre <strong>bulle</strong>.</p>
+                    <p>• Personnalisez vos bulles avec <strong>précision et style</strong>. <strong>Sélectionnez</strong> une <strong>catégorie</strong> dans la <strong>liste de gauche</strong>, <strong>cliquez</strong> sur l'<strong>image souhaitée</strong> pour la <strong>prévisualiser</strong>, puis <strong>"Sélectionner"</strong> pour l'appliquer. L'<strong>image</strong> sera <strong>automatiquement redimensionnée</strong> et <strong>adaptée</strong> parfaitement à votre <strong>bulle</strong> pour un résultat <strong>professionnel</strong> et <strong>harmonieux</strong>.</p>
                     <button class="demo-button" onclick="openDemo('use-as-bubble-background')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -581,10 +607,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Sélectionnez</strong> une <strong>image</strong> dans la <strong>bibliothèque d'images</strong>.</p>
-                    <p>• <strong>Cliquez</strong> sur <strong>"Appliquer comme fond d'écran"</strong> pour l'utiliser directement.</p>
-                    <p>• L'<strong>image</strong> sera <strong>appliquée</strong> comme <strong>fond d'écran</strong> de votre <strong>bureau personnalisé</strong>.</p>
-                    <p>• Cette <strong>fonction</strong> est <strong>idéale</strong> pour <strong>tester rapidement</strong> différentes <strong>images</strong>.</p>
+                    <p>• Transformez votre bureau en un <strong>espace visuel unique</strong>. <strong>Sélectionnez</strong> une <strong>image</strong> dans la <strong>bibliothèque</strong>, <strong>cliquez</strong> sur <strong>"Appliquer comme fond d'écran"</strong> pour l'utiliser directement. Cette <strong>fonction</strong> est <strong>idéale</strong> pour <strong>tester rapidement</strong> différentes <strong>ambiances</strong> et créer un <strong>bureau personnalisé</strong> qui reflète votre <strong>personnalité</strong>.</p>
                     <button class="demo-button" onclick="openDemo('use-as-wallpaper')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -606,11 +629,9 @@
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
-                <div class="section-content collapsed">
-                    <p>• Toutes les <strong>images</strong> sont <strong>optimisées</strong> et <strong>prêtes à l'emploi</strong>.</p>
-                    <p>• <strong>Formats supportés</strong> : <strong>JPG</strong>, <strong>PNG</strong>, <strong>BMP</strong>.</p>
-                    <p>• Les <strong>images</strong> sont <strong>organisées par thèmes</strong> pour <strong>faciliter la recherche</strong>.</p>
-                    <p>• Vous pouvez <strong>combiner</strong> <strong>images de bibliothèque</strong> et <strong>images personnelles</strong>.</p>
+                <div class="section-content expanded">
+                    <p>• La <strong>bibliothèque intègre</strong> toutes vos images déjà <strong>prêtes à l'emploi</strong>, <strong>optimisées</strong> pour une utilisation immédiate. Les <strong>formats les plus courants</strong> sont pris en charge (<strong>JPG</strong>, <strong>PNG</strong>, <strong>BMP</strong>) afin de garantir une <strong>compatibilité maximale</strong>.</p>
+                    <p>• Pour vous <strong>simplifier la vie</strong>, les images sont <strong>classées par thèmes</strong>, ce qui rend la recherche <strong>rapide et intuitive</strong>. Et parce que la <strong>créativité</strong> ne doit pas avoir de limites, vous pouvez librement <strong>mélanger</strong> les visuels de la <strong>bibliothèque</strong> avec vos propres <strong>images personnelles</strong>.</p>
                 </div>
             </div>
         </div>
@@ -630,7 +651,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur l'<strong>étiquette</strong> de la <strong>bulle</strong> puis dans le <strong>menu contextuel</strong> cliquer sur <strong>Renommer Étiquette</strong>.</p>
+                    <p>• Personnalisez l'<strong>identité</strong> de vos bulles en un clic. Faites un <strong>clic droit</strong> sur l'<strong>étiquette</strong> de la <strong>bulle</strong> puis dans le <strong>menu contextuel</strong> cliquez sur <strong>"Renommer Étiquette"</strong> pour donner un <strong>nom personnalisé</strong> qui reflète le contenu et l'usage de chaque espace de travail.</p>
                     <button class="demo-button" onclick="openDemo('rename-label')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -653,10 +674,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur l'<strong>étiquette</strong> et sélectionnez <strong>"Ajuster Position Étiquette"</strong> dans le <strong>menu contextuel</strong>.</p>
-                    <p>• Une <strong>fenêtre</strong> s'ouvre avec deux <strong>champs numériques</strong> : <strong>Décalage X</strong> et <strong>Décalage Y</strong>.</p>
-                    <p>• Entrez les <strong>valeurs de décalage</strong> souhaitées (en <strong>pixels</strong>) pour positionner précisément l'<strong>étiquette</strong>.</p>
-                    <p>• Cliquez sur <strong>"OK"</strong> pour appliquer les modifications.</p>
+                    <p>• Contrôlez <strong>précisément</strong> l'emplacement de vos étiquettes pour une <strong>organisation parfaite</strong>. Faites un <strong>clic droit</strong> sur l'<strong>étiquette</strong> et sélectionnez <strong>"Ajuster Position Étiquette"</strong> dans le <strong>menu contextuel</strong>. Une <strong>fenêtre</strong> s'ouvre avec deux <strong>champs numériques</strong> (<strong>Décalage X</strong> et <strong>Décalage Y</strong>) pour positionner l'<strong>étiquette</strong> avec une <strong>précision au pixel près</strong>. Cliquez sur <strong>"OK"</strong> pour appliquer vos <strong>modifications personnalisées</strong>.</p>
                     <button class="demo-button" onclick="openDemo('adjust-label-position')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -679,13 +697,32 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Permet d'<strong>afficher</strong>/<strong>Masquer</strong> l'<strong>étiquette</strong> d'une <strong>bulle</strong>.</p>
+                    <p>• Adaptez la <strong>visibilité</strong> de vos étiquettes selon vos <strong>besoins visuels</strong>. Cette fonction permet d'<strong>afficher</strong> ou <strong>masquer</strong> l'<strong>étiquette</strong> d'une <strong>bulle</strong> pour créer un <strong>bureau épuré</strong> ou conserver l'<strong>identification</strong> de vos espaces de travail selon vos <strong>préférences d'organisation</strong>.</p>
                     <button class="demo-button" onclick="openDemo('hide-label')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                         </svg>
                         Voir la démonstration
                     </button>
+                </div>
+            </div>
+
+            <div class="collapsible-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-content">
+                    <svg class="section-icon" viewBox="0 -960 960 960">
+                        <path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                    </svg>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">À savoir</h2>
+                </div>
+                    <svg class="collapse-icon" viewBox="0 0 24 24">
+                        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                </div>
+                <div class="section-content expanded">
+                    <p>• Vos <strong>étiquettes personnalisées</strong> sont <strong>automatiquement sauvegardées</strong> et <strong>mémorisées</strong> pour chaque bulle, garantissant une <strong>continuité parfaite</strong> entre vos sessions de travail.</p>
+                    <p>• Le <strong>positionnement précis</strong> des étiquettes vous permet de créer une <strong>organisation visuelle</strong> optimale, adaptée à votre <strong>style de travail</strong> et à vos <strong>préférences d'ergonomie</strong>.</p>
+                    <p>• La <strong>flexibilité</strong> entre affichage et masquage des étiquettes vous offre un <strong>contrôle total</strong> sur l'<strong>esthétique</strong> de votre bureau, que vous préfériez un <strong>design minimaliste</strong> ou une <strong>identification claire</strong> de vos espaces.</p>
                 </div>
             </div>
         </div>
@@ -705,8 +742,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Affichez l'<strong>horloge</strong> via l'option <strong>Afficher l'Horloge</strong> du <strong>menu contextuel</strong> d'une <strong>Bulle</strong>.</p>
-                    <p>• L'<strong>horloge</strong> affiche l'<strong>heure en temps réel</strong> (<strong>HH:mm:ss</strong>) et la <strong>date complète</strong>.</p>
+                    <p>• Affichez une <strong>horloge digitale</strong> directement sur votre bureau. Affichez l'<strong>horloge</strong> via l'option <strong>"Afficher l'Horloge"</strong> du <strong>menu contextuel</strong> d'une <strong>Bulle</strong>. L'<strong>horloge</strong> affiche l'<strong>heure en temps réel</strong> (<strong>HH:mm:ss</strong>) et la <strong>date complète</strong> pour un <strong>suivi temporel</strong> précis et <strong>permanent</strong> sur votre bureau.</p>
                     <button class="demo-button" onclick="openDemo('show-clock')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -729,7 +765,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Cliquez gauche</strong> et maintenez le clic sur l'<strong>horloge</strong>, puis déplacez-la à l'endroit souhaité sur votre <strong>écran</strong>.</p>
+                    <p>• Positionnez votre <strong>horloge</strong> exactement où vous en avez besoin. <strong>Cliquez gauche</strong> et <strong>maintenez le clic</strong> sur l'<strong>horloge</strong>, puis <strong>déplacez-la</strong> à l'endroit souhaité sur votre <strong>écran</strong> pour une <strong>accessibilité optimale</strong> et une <strong>organisation</strong> de votre espace de travail selon vos <strong>préférences</strong>.</p>
                     <button class="demo-button" onclick="openDemo('move-clock')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -752,10 +788,31 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur l'<strong>horloge</strong> pour accéder aux <strong>options de personnalisation</strong>.</p>
-                    <p>• Vous pouvez modifier : la <strong>taille</strong>, la <strong>couleur du texte</strong>, la <strong>couleur d'arrière-plan</strong>, la <strong>couleur de bordure</strong>, l'<strong>épaisseur de bordure</strong> et la <strong>police</strong>.</p>
-                    <p>• Tous les <strong>paramètres de personnalisation</strong> sont <strong>sauvegardés automatiquement</strong>.</p>
+                    <p>• Créez une <strong>horloge unique</strong> qui reflète votre <strong>style personnel</strong>. Faites un <strong>clic droit</strong> sur l'<strong>horloge</strong> pour accéder aux <strong>options de personnalisation</strong> complètes. Vous pouvez modifier : la <strong>taille</strong>, la <strong>couleur du texte</strong>, la <strong>couleur d'arrière-plan</strong>, la <strong>couleur de bordure</strong>, l'<strong>épaisseur de bordure</strong> et la <strong>police</strong>. Tous les <strong>paramètres</strong> sont <strong>sauvegardés automatiquement</strong> pour une <strong>expérience personnalisée</strong> durable.</p>
                     <button class="demo-button" onclick="openDemo('customize-clock')">
+                        <svg class="demo-icon" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        Voir la démonstration
+                    </button>
+                </div>
+            </div>
+
+            <div class="collapsible-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-content">
+                    <svg class="section-icon" viewBox="0 0 24 24">
+                        <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                    </svg>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Verrouiller l'affichage</h2>
+                </div>
+                    <svg class="collapse-icon" viewBox="0 0 24 24">
+                        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                </div>
+                <div class="section-content collapsed">
+                    <p>• Garantissez une <strong>visibilité permanente</strong> de votre horloge. Cette fonction permet de <strong>verrouiller l'affichage</strong> de l'horloge <strong>au-dessus des autres fenêtres</strong>, empêchant ainsi qu'elle soit <strong>masquée</strong> par d'autres applications pour un <strong>accès constant</strong> à l'information temporelle.</p>
+                    <button class="demo-button" onclick="openDemo('lock-clock')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                         </svg>
@@ -776,8 +833,10 @@
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
-                <div class="section-content collapsed">
-                    <p>• L'<strong>horloge</strong> se met à jour <strong>automatiquement</strong> chaque <strong>seconde</strong>.</p>
+                <div class="section-content expanded">
+                    <p>• Gardez toujours un <strong>œil sur le temps</strong> qui passe. La <strong>bulle horloge</strong> s'appuie sur l'<strong>heure de votre système Windows</strong> pour afficher une <strong>date et une heure toujours exactes</strong>. Son <strong>rafraîchissement automatique</strong> chaque seconde vous assure une <strong>précision absolue</strong>, sans jamais avoir à intervenir.</p>
+                    <p>• L'<strong>horloge</strong> s'<strong>intègre parfaitement</strong> à votre <strong>environnement de travail</strong>, offrant une <strong>visibilité optimale</strong> tout en conservant l'<strong>esthétique</strong> de votre bureau personnalisé.</p>
+                    <p>• Pour une <strong>expérience encore plus fluide</strong>, vous pouvez <strong>verrouiller</strong> l'affichage pour garantir que l'<strong>information temporelle</strong> reste <strong>toujours accessible</strong>, même lors de l'utilisation intensive d'autres applications.</p>
                 </div>
             </div>
         </div>
@@ -797,8 +856,8 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur une <strong>bulle</strong> et sélectionnez <strong>"Afficher mode Note"</strong>.</p>
-                    <p>• La <strong>bulle</strong> se transforme en <strong>bloc-notes éditable</strong> avec un <strong>texte par défaut</strong>.</p>
+                    <p>• Transformez n'importe quelle <strong>bulle</strong> en <strong>bloc-notes personnel</strong> en un clic.</p>
+                    <p>• Faites un <strong>clic droit</strong> sur une <strong>bulle</strong> et sélectionnez <strong>"Activer mode Note"</strong> pour la transformer en <strong>bloc-notes éditable</strong>.</p>
                     <button class="demo-button" onclick="openDemo('enable-note-mode')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -821,9 +880,9 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Cliquez</strong> dans la <strong>bulle</strong> pour commencer à écrire votre <strong>note</strong>.</p>
-                    <p>• Le <strong>texte</strong> se <strong>sauvegarde automatiquement</strong> à chaque modification.</p>
-                    <p>• Vous pouvez utiliser le <strong>retour à la ligne</strong> pour organiser votre <strong>texte</strong>.</p>
+                    <p>• Créez et <strong>organisez</strong> vos <strong>notes</strong> avec une <strong>simplicité parfaite</strong>. <strong>Cliquez</strong> dans la <strong>bulle</strong> pour commencer à écrire votre <strong>note personnalisée</strong>.</p>
+                    <p>• Le <strong>texte</strong> se <strong>sauvegarde automatiquement</strong> à chaque modification pour une <strong>tranquillité d'esprit totale</strong>.</p>
+                    <p>• Utilisez le <strong>retour à la ligne</strong> pour <strong>organiser</strong> votre contenu selon vos <strong>préférences d'écriture</strong>.</p>
                     <button class="demo-button" onclick="openDemo('edit-note')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -839,15 +898,14 @@
                     <svg class="section-icon" viewBox="0 -960 960 960">
                         <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 32.5-156t88-127Q256-817 330-848.5T488-880q80 0 151 27.5t124.5 76q53.5 48.5 85 115T880-518q0 115-70 176.5T640-280h-74q-9 0-12.5 5t-3.5 11q0 12 15 34.5t15 51.5q0 50-27.5 74T480-80Zm0-400Zm-220 40q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120-160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm200 0q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120 160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17ZM480-160q9 0 14.5-5t5.5-13q0-14-15-33t-15-57q0-42 29-67t71-25h70q66 0 113-38.5T800-518q0-121-92.5-201.5T488-800q-136 0-232 93t-96 227q0 133 93.5 226.5T480-160Z" />
                     </svg>
-                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Personnaliser l'apparence</h2>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Personnaliser la bulle Note</h2>
                 </div>
                     <svg class="collapse-icon" viewBox="0 0 24 24">
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Utilisez le <strong>menu contextuel</strong> (<strong>clic droit</strong>) pour modifier la <strong>taille de police</strong>, la <strong>couleur du texte</strong> et la <strong>police</strong>.</p>
-                    <p>• Les <strong>modifications</strong> s'appliquent <strong>immédiatement</strong> à votre <strong>note</strong>.</p>
+                    <p>• Adaptez l'<strong>apparence</strong> de votre <strong>bloc-notes</strong> à votre <strong>style personnel</strong>. Faites un <strong>clic droit</strong> sur la <strong>poignée</strong> d'une <strong>bulle</strong> ou de son <strong>étiquette</strong> pour accéder à la <strong>fenêtre de personnalisation</strong> complète via le <strong>menu contextuel</strong>, et créez un <strong>environnement d'écriture</strong> parfaitement adapté à vos <strong>besoins</strong>.</p>
                     <button class="demo-button" onclick="openDemo('customize-note')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -861,18 +919,17 @@
                 <div class="section-header" onclick="toggleSection(this)">
                     <div class="section-header-content">
                     <svg class="section-icon" viewBox="0 -960 960 960">
-                        <path d="m840-234-80-80v-446h-80v120H434L234-840h133q11-35 43-57.5t70-22.5q40 0 71.5 22.5T594-840h166q33 0 56.5 23.5T840-760v526ZM480-760q17 0 28.5-11.5T520-800q0-17-11.5-28.5T480-840q-17 0-28.5 11.5T440-800q0 17 11.5 28.5T480-760Zm166 560L200-646v446h446Zm-446 80q-33 0-56.5-23.5T120-200v-526l-65-65 57-57 736 736-57 57-65-65H200Z" />
+                        <path d="M480-80q-82 0-155-31.5t-127.5-86Q143-252 111.5-325T80-480q0-83 32.5-156t88-127Q256-817 330-848.5T488-880q80 0 151 27.5t124.5 76q53.5 48.5 85 115T880-518q0 115-70 176.5T640-280h-74q-9 0-12.5 5t-3.5 11q0 12 15 34.5t15 51.5q0 50-27.5 74T480-80Zm0-400Zm-220 40q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120-160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm200 0q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Zm120 160q26 0 43-17t17-43q0-26-17-43t-43-17q-26 0-43 17t-17 43q0 26 17 43t43 17Z" />
                     </svg>
-                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Désactiver le mode note</h2>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Accéder aux paramètres du mode <strong>Note</strong></h2>
                 </div>
                     <svg class="collapse-icon" viewBox="0 0 24 24">
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• Faites un <strong>clic droit</strong> sur la <strong>bulle</strong> et sélectionnez <strong>"Désactiver mode Note"</strong>.</p>
-                    <p>• La <strong>bulle</strong> retrouve son <strong>apparence normale</strong>, mais le <strong>contenu de la note</strong> est <strong>conservé</strong>.</p>
-                    <button class="demo-button" onclick="openDemo('disable-note-mode')">
+                    <p>• <strong>Accédez facilement</strong> aux <strong>paramètres d'édition de texte</strong>. Faites un <strong>clic droit</strong> sur la <strong>poignée</strong> d'une <strong>bulle</strong> ou de son <strong>étiquette</strong>, puis utilisez les <strong>options de note</strong> dans le <strong>menu contextuel</strong> pour <strong>modifier</strong> la <strong>couleur</strong>, la <strong>taille de police</strong> et la <strong>police utilisée</strong>.</p>
+                    <button class="demo-button" onclick="openDemo('customize-note')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
                         </svg>
@@ -884,24 +941,19 @@
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
                     <div class="section-header-content">
-                    <svg class="section-icon" viewBox="0 0 24 24">
-                        <path d="M12,17A2,2 0 0,0 14,15C14,13.89 13.1,13 12,13A2,2 0 0,0 10,15A2,2 0 0,0 12,17M18,8A2,2 0 0,1 20,10V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V10C4,8.89 4.9,8 6,8H7V6A5,5 0 0,1 12,1A5,5 0 0,1 17,6V8H18M12,3A3,3 0 0,0 9,6V8H15V6A3,3 0 0,0 12,3Z" />
+                    <svg class="section-icon" viewBox="0 -960 960 960">
+                        <path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
                     </svg>
-                    <h2 class="section-title" style="cursor: pointer; user-select: none;">Verrouiller l'affichage</h2>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">À savoir</h2>
                 </div>
                     <svg class="collapse-icon" viewBox="0 0 24 24">
                         <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
                     </svg>
                 </div>
-                <div class="section-content collapsed">
-                    <p>• Activez ou désactivez le verrouillage de l'affichage de l'horloge via le menu contextuel.</p>
-                    <p>• Permet de verrouiller l'affichage de l'horloge au-dessus des autres fenêtres, empêchant ainsi qu'elle soit masquée ou déplacée accidentellement.</p>
-                    <button class="demo-button" onclick="openDemo('lock-display')">
-                        <svg class="demo-icon" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        Voir la démonstration
-                    </button>
+                <div class="section-content expanded">
+                    <p>• Vos <strong>notes personnalisées</strong> sont <strong>automatiquement sauvegardées</strong> et <strong>mémorisées</strong> pour chaque bulle, garantissant que vos <strong>idées</strong> et <strong>informations importantes</strong> ne sont jamais perdues.</p>
+                    <p>• Le <strong>mode Note</strong> s'<strong>intègre parfaitement</strong> à votre <strong>environnement de travail</strong>, offrant une <strong>écriture fluide</strong> et <strong>intuitive</strong> sans perturber votre <strong>organisation</strong> existante.</p>
+                    <p>• La <strong>flexibilité</strong> du système vous permet de <strong>basculer facilement</strong> entre le <strong>mode normal</strong> et le <strong>mode Note</strong> selon vos <strong>besoins du moment</strong>, créant un <strong>espace de travail adaptatif</strong>.</p>
                 </div>
             </div>
         </div>
@@ -921,11 +973,11 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Cliquez droit</strong> sur une <strong>bulle</strong> → <strong>"Activer Glisser/Déposer"</strong> pour activer cette <strong>fonctionnalité</strong>.</p>
+                    <p>• Transformez vos <strong>bulles</strong> en <strong>zones de dépôt intelligentes</strong> en un clic.</p>
+                    <p>• <strong>Cliquez droit</strong> sur une <strong>bulle</strong> → <strong>"Activer Glisser/Déposer"</strong> pour activer cette <strong>fonctionnalité révolutionnaire</strong>.</p>
                     <p>• Un <strong>dossier "CustomDesk"</strong> sera créé dans <strong>"Mes Documents"</strong> pour <strong>stocker</strong> les <strong>éléments glissés</strong>.</p>
-                    <p>• Le <strong>dossier</strong> est <strong>automatiquement ajouté</strong> aux <strong>favoris de l'Explorateur Windows</strong> pour un <strong>accès rapide</strong>.</p>
-                    <p>• Un <strong>raccourci "Ouvrir le dossier CustomDesk"</strong> est ajouté au <strong>menu contextuel de chaque bulle</strong> et au <strong>menu de la barre des tâches</strong>.</p>
-                    <p>• Vous pouvez <strong>désactiver</strong> cette <strong>fonction</strong> à tout moment via le <strong>menu contextuel</strong>.</p>
+                    <p>• <strong>Accès rapide</strong> via les <strong>favoris de l'Explorateur</strong> et <strong>raccourcis</strong> dans les <strong>menus contextuels</strong>.</p>
+                    <p>• Vous pouvez <strong>désactiver</strong> cette <strong>fonction</strong> à tout moment selon vos <strong>besoins</strong>.</p>
                     <button class="demo-button" onclick="openDemo('enable-drag-drop')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -948,9 +1000,11 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
+                    <p>• <strong>Simplifiez</strong> votre <strong>gestion de fichiers</strong> avec une <strong>productivité maximale</strong>.</p>
                     <p>• <strong>Glissez</strong> des <strong>fichiers</strong> ou <strong>dossiers</strong> depuis l'<strong>Explorateur Windows</strong> directement dans une <strong>bulle activée</strong>.</p>
                     <p>• Les <strong>fichiers</strong> sont <strong>automatiquement copiés</strong> dans le <strong>dossier "CustomDesk"</strong> et des <strong>raccourcis</strong> sont <strong>créés</strong> dans la <strong>bulle</strong>.</p>
-                    <p>• Vous pouvez <strong>glisser plusieurs fichiers</strong> en même temps.</p>
+                    <p>• <strong>Accès instantané</strong> à tous vos <strong>éléments glissés</strong>.</p>
+                    <p>• Vous pouvez <strong>glisser plusieurs fichiers</strong> en même temps pour une <strong>efficacité optimale</strong>.</p>
                     <button class="demo-button" onclick="openDemo('drag-files')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -973,9 +1027,11 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
+                    <p>• <strong>Organisez</strong> vos <strong>raccourcis</strong> avec une <strong>flexibilité totale</strong>.</p>
                     <p>• <strong>Glissez</strong> des <strong>raccourcis</strong> d'une <strong>bulle</strong> vers une <strong>autre bulle</strong> pour les <strong>déplacer</strong>.</p>
                     <p>• Les <strong>fichiers</strong> restent dans le <strong>dossier "CustomDesk"</strong> mais les <strong>raccourcis</strong> changent de <strong>bulle</strong>.</p>
                     <p>• Cette <strong>opération</strong> <strong>déplace réellement</strong> les <strong>raccourcis</strong> (pas de <strong>duplication</strong>).</p>
+                    <p>• <strong>Gestion propre</strong> de vos <strong>espaces de travail</strong> selon vos <strong>besoins d'organisation</strong>.</p>
                     <button class="demo-button" onclick="openDemo('move-between-bubbles')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -998,9 +1054,10 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Via le menu contextuel des bulles</strong> : <strong>Clic droit</strong> sur une <strong>bulle</strong> → <strong>"Ouvrir le dossier CustomDesk"</strong></p>
-                    <p>• <strong>Via le menu de la barre des tâches</strong> : <strong>Clic droit</strong> sur l'<strong>icône de la barre des tâches</strong> → <strong>"Ouvrir le dossier CustomDesk"</strong></p>
-                    <p>• <strong>Via les favoris de l'Explorateur</strong> : Le <strong>dossier "CustomDesk"</strong> apparaît <strong>automatiquement</strong> dans la section <strong>"Accès rapide"</strong> de l'<strong>Explorateur Windows</strong></p>
+                    <p>• <strong>Accédez instantanément</strong> à votre <strong>dossier de stockage</strong> via <strong>trois méthodes</strong> :</p>
+                    <p>• <strong>Menu contextuel des bulles</strong> : <strong>Clic droit</strong> sur une <strong>bulle</strong> → <strong>"Ouvrir le dossier CustomDesk"</strong></p>
+                    <p>• <strong>Menu de la barre des tâches</strong> : <strong>Clic droit</strong> sur l'<strong>icône de la barre des tâches</strong> → <strong>"Ouvrir le dossier CustomDesk"</strong></p>
+                    <p>• <strong>Favoris de l'Explorateur</strong> : Le <strong>dossier "CustomDesk"</strong> apparaît <strong>automatiquement</strong> dans la section <strong>"Accès rapide"</strong></p>
                     <p>• Ce <strong>dossier</strong> contient tous les <strong>fichiers glissés/déposés</strong> dans vos <strong>bulles</strong>.</p>
                     <p>• Vous pouvez y <strong>organiser</strong> vos <strong>fichiers</strong> directement si nécessaire.</p>
                     <button class="demo-button" onclick="openDemo('open-customdesk-folder')">
@@ -1025,6 +1082,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
+                    <p>• <strong>Localisez instantanément</strong> vos <strong>raccourcis</strong> avec une <strong>recherche intelligente</strong>.</p>
                     <p>• La <strong>recherche avancée</strong> permet de <strong>localiser rapidement</strong> des <strong>raccourcis</strong> dans vos <strong>bulles</strong> avec des <strong>critères précis</strong>.</p>
                     <p>• <strong>Options disponibles</strong> : <strong>Recherche sensible à la casse</strong>, <strong>mot entier</strong>, <strong>type de recherche</strong> (contient, commence par, finit par, expression régulière).</p>
                     <p>• <strong>Zones de recherche</strong> : <strong>Nom de fichier</strong> et/ou <strong>texte d'affichage</strong> des raccourcis.</p>
@@ -1052,6 +1110,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
+                    <p>• <strong>Organisez automatiquement</strong> vos <strong>raccourcis</strong> selon vos <strong>préférences</strong>.</p>
                     <p>• La <strong>fonction de tri</strong> permet d'<strong>organiser automatiquement</strong> les <strong>raccourcis</strong> dans vos <strong>bulles</strong> selon différents <strong>critères</strong>.</p>
                     <p>• <strong>Modes de tri disponibles</strong> : <strong>Date d'ajout</strong> (ordre d'insertion), <strong>Alphabétique</strong> (nom de fichier), <strong>Type de fichier</strong> (extension puis nom).</p>
                     <p>• <strong>Accès</strong> : <strong>Bouton de tri</strong> qui apparaît dans les <strong>bulles activées</strong> lors du <strong>survol</strong>.</p>
@@ -1079,6 +1138,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
+                    <p>• <strong>Contrôlez</strong> la <strong>visibilité</strong> de vos <strong>bulles</strong> selon vos <strong>besoins</strong>.</p>
                     <p>• La <strong>fonction de masquage</strong> permet de <strong>rendre invisible</strong> une <strong>bulle</strong> et son <strong>contenu</strong> tout en <strong>conservant</strong> sa <strong>configuration</strong>.</p>
                     <p>• <strong>Masquage de l'étiquette</strong> : <strong>Cache uniquement l'étiquette</strong> de la bulle, la <strong>bulle reste visible</strong>.</p>
                     <p>• <strong>Masquage complet</strong> : <strong>Cache entièrement la bulle</strong> et tous ses <strong>éléments</strong> (étiquette, boutons, contenu).</p>
@@ -1090,6 +1150,25 @@
                         </svg>
                         Voir la démonstration
                     </button>
+                </div>
+            </div>
+
+            <div class="collapsible-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-content">
+                    <svg class="section-icon" viewBox="0 -960 960 960">
+                        <path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                    </svg>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">À savoir</h2>
+                </div>
+                    <svg class="collapse-icon" viewBox="0 0 24 24">
+                        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                </div>
+                <div class="section-content expanded">
+                    <p>• Le <strong>système de glisser/déposer</strong> <strong>sauvegarde automatiquement</strong> tous vos <strong>fichiers</strong> dans un <strong>dossier sécurisé</strong>, garantissant qu'<strong>aucune donnée</strong> ne soit <strong>perdue</strong> même en cas de <strong>redémarrage</strong> ou de <strong>fermeture</strong> de l'application.</p>
+                    <p>• La <strong>flexibilité</strong> du système vous permet de <strong>basculer facilement</strong> entre <strong>modes d'organisation</strong> : <strong>tri automatique</strong>, <strong>recherche avancée</strong>, et <strong>masquage sélectif</strong> selon vos <strong>besoins du moment</strong>.</p>
+                    <p>• Toutes vos <strong>préférences</strong> et <strong>configurations</strong> sont <strong>mémorisées</strong> pour chaque <strong>bulle</strong>, créant un <strong>environnement de travail</strong> <strong>personnalisé</strong> et <strong>adaptatif</strong> qui s'<strong>améliore</strong> avec l'<strong>utilisation</strong>.</p>
                 </div>
             </div>
         </div>
@@ -1109,7 +1188,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Activez</strong> ou <strong>désactivez</strong> la <strong>grille</strong> dans les <strong>paramètres</strong> pour <strong>aligner</strong> les <strong>bulles</strong> sur une <strong>grille de 5x5 pixels</strong>.</p>
+                    <p>• <strong>Activez</strong> la <strong>grille</strong> dans les <strong>paramètres</strong> pour <strong>aligner précisément</strong> vos <strong>bulles</strong> sur une <strong>grille de 5×5 pixels</strong>, puis <strong>désactivez</strong>-la à tout moment pour plus de <strong>liberté</strong>. Un bureau plus <strong>net</strong>, plus <strong>structuré</strong>.</p>
                     <button class="demo-button" onclick="openDemo('grid-alignment')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1132,7 +1211,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Choisissez</strong> une <strong>police</strong>, une <strong>taille</strong>, et <strong>activez le gras</strong> pour les <strong>étiquettes des bulles</strong> dans les <strong>paramètres</strong>.</p>
+                    <p>• Personnalisez la <strong>police du titre</strong> des <strong>étiquettes</strong> en choisissant la <strong>police</strong>, la <strong>taille</strong> et l'<strong>option gras</strong> dans les <strong>paramètres</strong> pour une <strong>lisibilité optimale</strong> et un style qui vous ressemble.</p>
                     <button class="demo-button" onclick="openDemo('font-settings')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1155,7 +1234,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Sauvegardez</strong> ou <strong>restaurez</strong> vos <strong>paramètres</strong> via les options <strong>Exporter les paramètres</strong> et <strong>Importer les paramètres</strong>.</p>
+                    <p>• <strong>Exportez</strong> vos <strong>paramètres</strong> pour les <strong>sauvegarder</strong> ou les <strong>partager</strong>, et <strong>importez</strong>-les en un clic pour <strong>restaurer</strong> votre <strong>configuration</strong> à l'identique sur une nouvelle installation.</p>
                     <button class="demo-button" onclick="openDemo('export-import')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1178,7 +1257,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Modifiez</strong> la <strong>langue de l'interface</strong> dans <strong>Paramètres > Langue de l'application</strong>, puis <strong>cliquez</strong> sur <strong>Appliquer</strong>.</p>
+                    <p>• Changez la <strong>langue de l'interface</strong> via <strong>Paramètres &gt; Langue de l'application</strong>, puis <strong>cliquez</strong> sur <strong>Appliquer</strong> pour adapter l'expérience à votre <strong>préférence</strong>.</p>
                     <button class="demo-button" onclick="openDemo('language-settings')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1201,7 +1280,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Activez</strong> ou <strong>désactivez</strong> les <strong>sons de l'application</strong> dans <strong>Paramètres > Son</strong>.</p>
+                    <p>• Ajustez les <strong>sons de l'application</strong> dans <strong>Paramètres &gt; Son</strong> pour un <strong>confort d'utilisation</strong> adapté à votre environnement : <strong>activez</strong> ou <strong>désactivez</strong> les alertes en un instant.</p>
                     <button class="demo-button" onclick="openDemo('sound-settings')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1224,7 +1303,7 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Activez</strong> le <strong>lancement automatique</strong> au <strong>démarrage de Windows</strong> dans <strong>Paramètres > Démarrer avec Windows</strong>.</p>
+                    <p>• Lancez automatiquement l'application au <strong>démarrage de Windows</strong> via <strong>Paramètres &gt; Démarrer avec Windows</strong> pour retrouver instantanément votre <strong>bureau personnalisé</strong> prêt à l'emploi.</p>
                     <button class="demo-button" onclick="openDemo('startup-settings')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1247,9 +1326,8 @@
                     </svg>
                 </div>
                 <div class="section-content collapsed">
-                    <p>• <strong>Supprime</strong> toutes les <strong>bulles</strong> de votre <strong>bureau personnalisé</strong> en une seule action.</p>
-                    <p>• Tous les <strong>éléments contenus</strong> dans les <strong>bulles</strong> seront <strong>automatiquement restaurés</strong> sur votre <strong>bureau Windows</strong>.</p>
-                    <p>• Cette <strong>fonction</strong> est accessible via les <strong>paramètres généraux</strong> de l'application.</p>
+                    <p>• Supprimez <strong>toutes les bulles</strong> de votre <strong>bureau personnalisé</strong> en une seule action. Les <strong>éléments contenus</strong> sont <strong>automatiquement restaurés</strong> sur votre <strong>bureau Windows</strong> pour éviter toute perte.</p>
+                    <p>• Cette <strong>fonction</strong> est disponible dans les <strong>paramètres généraux</strong> et permet un <strong>grand nettoyage</strong> en toute <strong>sécurité</strong>.</p>
                     <button class="demo-button" onclick="openDemo('delete-all-bubbles')">
                         <svg class="demo-icon" viewBox="0 0 24 24">
                             <path d="M8 5v14l11-7z" />
@@ -1276,12 +1354,25 @@
                     <p>• <strong>Automatique</strong> : Suit le <strong>thème système de Windows</strong></p>
                     <p>• <strong>Sombre</strong> : <strong>Interface sombre</strong> en permanence</p>
                     <p>• <strong>Clair</strong> : <strong>Interface claire</strong> en permanence</p>
-                    <button class="demo-button" onclick="openDemo('theme-settings')">
-                        <svg class="demo-icon" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        Voir la démonstration
-                    </button>
+                    
+                </div>
+            </div>
+            <div class="collapsible-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-header-content">
+                    <svg class="section-icon" viewBox="0 -960 960 960">
+                        <path d="M478-240q21 0 35.5-14.5T528-290q0-21-14.5-35.5T478-340q-21 0-35.5 14.5T428-290q0 21 14.5 35.5T478-240Zm-36-154h74q0-33 7.5-52t42.5-52q26-26 41-49.5t15-56.5q0-56-41-86t-97-30q-57 0-92.5 30T342-618l66 26q5-18 22.5-39t53.5-21q32 0 48 17.5t16 38.5q0 20-12 37.5T506-526q-44 39-54 59t-10 73Zm38 314q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z" />
+                    </svg>
+                    <h2 class="section-title" style="cursor: pointer; user-select: none;">À savoir</h2>
+                </div>
+                    <svg class="collapse-icon" viewBox="0 0 24 24">
+                        <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                </div>
+                <div class="section-content expanded">
+                    <p>• Vos <strong>paramètres</strong> sont <strong>automatiquement sauvegardés</strong> et <strong>mémorisés</strong> entre les sessions : <strong>grille</strong>, <strong>polices</strong>, <strong>langue</strong>, <strong>thème</strong>, <strong>sons</strong>, etc.</p>
+                    <p>• Utilisez l'<strong>export/import</strong> pour <strong>sécuriser</strong> vos réglages, les <strong>partager</strong> ou les <strong>restaurer</strong> en un clic lors d'une nouvelle installation.</p>
+                    <p>• Les choix d'<strong>accessibilité</strong> (taille des polices, thèmes) et de <strong>confort</strong> (sons, démarrage automatique) sont pensés pour une <strong>expérience fluide</strong> et <strong>personnalisée</strong>.</p>
                 </div>
             </div>
         </div>
@@ -1331,8 +1422,7 @@
             // Mettre à jour l'onglet actuel
             currentTab = tabName;
 
-            // Réinitialiser les animations
-            resetAnimations();
+            // Désactivation des animations: ne rien faire ici
         }
 
         // Fonction pour mettre à jour l'indicateur de navigation
@@ -1483,7 +1573,7 @@
             // Ctrl + F pour la recherche
             if (event.ctrlKey && event.key === 'f') {
                 event.preventDefault();
-                const searchInput = document.getElementById('search-input');
+                const searchInput = document.getElementById('global-search');
                 if (searchInput) {
                     searchInput.focus();
                 }
@@ -1505,45 +1595,7 @@
         });
 
         // Animation d'entrée pour les sections
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observer toutes les sections
-        document.querySelectorAll('.section').forEach(section => {
-            section.style.opacity = '0';
-            section.style.transform = 'translateY(20px)';
-            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-
-            // S'assurer que le contenu est visible
-            const content = section.querySelector('.section-content');
-            if (content) {
-                content.style.opacity = '1';
-                content.style.visibility = 'visible';
-                content.style.color = 'white';
-            }
-
-            // S'assurer que tous les paragraphes sont visibles
-            const paragraphs = section.querySelectorAll('p');
-            paragraphs.forEach(p => {
-                p.style.opacity = '1';
-                p.style.visibility = 'visible';
-                p.style.color = 'white';
-                p.style.display = 'block';
-            });
-
-            observer.observe(section);
-        });
+        // Suppression des animations d'entrée et de l'observer
 
         // Fonction pour basculer l'état d'une section pliable
         function toggleSection(headerElement) {
@@ -1599,19 +1651,27 @@
                 'show-clock': 'demo-Show-Clock.html',
                 'move-clock': 'demo-move-clock.html',
                 'customize-clock': 'demo-customize-clock.html',
+                'lock-clock': 'demo-lock-clock.html',
 
                 // Onglet Bulle-Note
-                'enable-note-mode': null,
-                'edit-note': null,
-                'customize-note': null,
-                'disable-note-mode': null,
-                'lock-display': null,
+                'enable-note-mode': 'demo-enable-note-mode.html',
+                'edit-note': 'demo-edit-note.html',
+                'customize-note': 'demo-customize-note.html',
 
                 // Onglet Bibliothèque d'images
                 'access-image-library': 'OpenBorderCustomizationToAccessLibrary.html',
                 'browse-categories': 'demo-AvailableCategories.html',
                 'use-as-bubble-background': 'demo-AvailableCategories.html',
                 'use-as-wallpaper': 'demo-AvailableCategories.html',
+
+                // Onglet Fonction de glisser/déposer
+                'enable-drag-drop': 'demo-enable-drag&drop-mode.html',
+                'drag-files': 'demo-drag-files.html',
+                'move-between-bubbles': 'demo-move-between-bubbles.html',
+                'open-customdesk-folder': 'demo-acces-customdesk-folder.html',
+                'advanced-search': 'demo-advanced-search.html',
+                'sort-function': 'demo-sorting-fonction.html',
+                'hide-bubble': 'demo-Hides-Bubble-fonction.html',
 
         // Onglet Paramètres généraux
         'grid-alignment': 'AlignmentGrid.html',
@@ -1652,7 +1712,7 @@
                     'enable-note-mode': 'Démonstration : Activer le mode note (à venir)',
                     'edit-note': 'Démonstration : Éditer votre note (à venir)',
                     'customize-note': 'Démonstration : Personnaliser l\'apparence (à venir)',
-                    'disable-note-mode': 'Démonstration : Désactiver le mode note (à venir)',
+                    
                     'lock-display': 'Démonstration : Verrouiller l\'affichage (à venir)',
                     'access-image-library': 'Démonstration : Accéder à la bibliothèque d\'images (à venir)',
                     'browse-categories': 'Démonstration : Parcourir les catégories (à venir)',
@@ -1710,26 +1770,23 @@
             // Forcer la visibilité immédiatement
             forceTextVisibility();
             
-            // Initialiser les animations
-            resetAnimations();
+            // Désactivation des animations: ne rien faire ici
 
             // S'assurer que tout le contenu est visible
             setTimeout(() => {
                 forceTextVisibility();
             }, 100);
 
-            // Forcer la visibilité toutes les 500ms pendant 3 secondes
-            let attempts = 0;
-            const interval = setInterval(() => {
-                forceTextVisibility();
-                attempts++;
-                if (attempts >= 6) {
-                    clearInterval(interval);
-                }
-            }, 500);
+            // Désactivation des répétitions de visibilité
 
             // Initialiser la navigation moderne
             initializeModernNav();
+
+            // Marquer visuellement toutes les sections "À savoir"
+            markASavoirSections();
+
+            // Replier toutes les sections par défaut au chargement
+            collapseAllSections();
         });
 
         // Initialisation de la navigation moderne
@@ -1765,7 +1822,41 @@
 
                 // Initialiser la recherche globale
                 initializeGlobalSearch();
+
+                // Marquer visuellement toutes les sections "À savoir" au cas où du contenu se charge tardivement
+                markASavoirSections();
             }, 100);
+        }
+
+        // Marquer toutes les sections "À savoir" pour un style distinct
+        function markASavoirSections() {
+            document.querySelectorAll('.collapsible-section').forEach(section => {
+                const title = section.querySelector('.section-title');
+                if (!title) return;
+                const text = title.textContent.trim().toLowerCase();
+                if (text === 'à savoir' || text === 'a savoir') {
+                    section.classList.add('a-savoir');
+
+                    // Forcer l'état collapsed par défaut
+                    const content = section.querySelector('.section-content');
+                    if (content) {
+                        content.classList.remove('expanded');
+                        content.classList.add('collapsed');
+                    }
+                    section.classList.remove('expanded');
+                }
+            });
+        }
+
+        // Replier toutes les sections (utilisé lors des résultats de recherche)
+        function collapseAllSections() {
+            document.querySelectorAll('.collapsible-section .section-content').forEach(content => {
+                content.classList.remove('expanded');
+                content.classList.add('collapsed');
+            });
+            document.querySelectorAll('.collapsible-section').forEach(section => {
+                section.classList.remove('expanded');
+            });
         }
 
         // Initialisation de la recherche globale
@@ -1873,6 +1964,9 @@
                 tab.style.display = 'none';
             });
 
+            // Replier toutes les sections (y compris "À savoir") pendant l'affichage des résultats
+            collapseAllSections();
+
             if (Object.keys(results).length === 0) {
                 // Aucun résultat
                 resultsContent.innerHTML = `
@@ -1976,8 +2070,8 @@
             }
         }
 
-        // Vider le champ de recherche
-        function clearSearch() {
+        // Vider le champ de recherche globale (éviter la collision de nom)
+        function clearGlobalSearch() {
             const searchInput = document.getElementById('global-search');
             if (searchInput) {
                 searchInput.value = '';

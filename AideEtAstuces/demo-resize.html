@@ -32,6 +32,8 @@
             border: 2px solid #555555;
             border-radius: 15px;
             padding: 20px;
+            height: 250px;
+            width: 450px;
             margin: 20px 0;
             display: inline-block;
         }
@@ -58,23 +60,18 @@
             transition: none; /* Pas de transition CSS pour un contrôle JavaScript précis */
         }
 
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
+        /* Positionnement direct des éléments de souris pour cette démo */
+        .mouse-zero-click {
+            left: 310px !important;
+            top: 5px !important;
         }
 
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
+        .mouse-left-click {
+            left: 310px !important;
+            top: 5px !important;
         }
+
+        /* back-button styles removed to use global styles in demo-elements.css */
     </style>
 </head>
 <body>
@@ -85,6 +82,19 @@
                 Cette démonstration montre comment redimensionner une Bulle à l'aide de sa poignée. Maintenez le clic gauche de votre souris sur la poignée en bas à droite. Relâchez le clic une fois la Bulle correctement dimensionnée.
         
             </p>
+        </div>
+
+        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
         </div>
 
         <div class="demo-canvas-container">
@@ -110,15 +120,7 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
+        
     </div>
 
     <script>
@@ -127,6 +129,13 @@
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        
+        // Calculer le nombre total de frames de l'animation
+        const totalAnimationFrames = 260; // Total jusqu'au redémarrage
         let baseInterval = 30; // Intervalle de base pour cette démo
         const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
 
@@ -222,10 +231,16 @@
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
                 }
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -242,6 +257,32 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur les phases réelles de l'animation
+            const phase1End = 60; // Fin du déplacement vers la poignée
+            const phase2End = 100; // Fin du clignotement de la poignée
+            const phase3End = 200; // Fin du redimensionnement
+            const phase4End = 260; // Fin du retour à la position initiale
+            
+            // Mettre à jour le texte de progression
+            if (phase <= phase1End) {
+                progressText.textContent = 'Déplacement vers la poignée...';
+            } else if (phase <= phase2End) {
+                progressText.textContent = 'Poignée en surbrillance...';
+            } else if (phase <= phase3End) {
+                progressText.textContent = 'Redimensionnement en cours...';
+            } else if (phase <= phase4End) {
+                progressText.textContent = 'Retour à la position initiale...';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
         }
 
         function togglePause() {

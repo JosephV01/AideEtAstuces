@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Déplacer entre bulles - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 90vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            display: inline-block;
+            height: 350px;
+            width: 650px;
+        }
+
+        /* Canvas étendu pour deux bulles - utilise la classe large de demo-elements.css */
+        .demo-canvas.large {
+            width: 460px;
+            height: 310px;
+        }
+
+        /* Première bulle (source) - position personnalisée */
+        .bubble-source {
+            left: 20px !important;
+            top: 100px !important;
+            width: 180px !important;
+        }
+
+        /* Deuxième bulle (destination) - position personnalisée */
+        .bubble-destination {
+            left: 260px !important;
+            top: 100px !important;
+            width: 180px !important;
+        }
+
+        /* Étiquettes des bulles - positions personnalisées */
+        .label-source {
+            left: 110px !important;
+            top: 75px !important;
+        }
+
+        .label-destination {
+            left: 350px !important;
+            top: 75px !important;
+        }
+
+        /* Poignées de redimensionnement - positions personnalisées */
+        .resize-handle-source {
+            left: auto !important;
+            top: auto !important;
+            right: -5px !important;
+            bottom: -5px !important;
+        }
+
+        .resize-handle-destination {
+            left: auto !important;
+            top: auto !important;
+            right: -5px !important;
+            bottom: -5px !important;
+        }
+
+         /* Raccourci dans la bulle source */
+         .shortcut-item {
+             position: absolute;
+             width: 48px;
+             height: 42px;
+             left: 10px; /* marge de 10px depuis le bord gauche de la bulle */
+             top: 20px; /* marge de 20px depuis le bord supérieur de la bulle */
+             background: #1f1f1f;
+             border: 1px solid #ffffff;
+             border-radius: 6px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             flex-direction: column;
+             color: #ffffff;
+             font-size: 8px;
+             font-weight: 700;
+             box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+             z-index: 1000;
+         }
+
+         /* Raccourci sélectionné (bleuté) */
+         .shortcut-item.selected {
+             background: #1a3a5c !important;
+             border-color: #4a9eff !important;
+             box-shadow: 0 0 8px rgba(74, 158, 255, 0.6) !important;
+         }
+
+        .shortcut-item .file-glyph {
+            width: 14px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .file-name {
+            color: #e0e0e0;
+            font-size: 7px;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+         /* Raccourci en cours de déplacement */
+         .shortcut-dragging {
+             position: absolute;
+             width: 48px;
+             height: 42px;
+             background: #1f1f1f;
+             border: 1px solid #ffffff;
+             border-radius: 6px;
+             display: none;
+             align-items: center;
+             justify-content: center;
+             flex-direction: column;
+             color: #ffffff;
+             font-size: 8px;
+             font-weight: 700;
+             box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+             z-index: 1001;
+         }
+
+         /* Raccourci en cours de déplacement sélectionné (bleuté) */
+         .shortcut-dragging.selected {
+             background: #1a3a5c !important;
+             border-color: #4a9eff !important;
+             box-shadow: 0 0 8px rgba(74, 158, 255, 0.6) !important;
+         }
+
+         /* Flash de sélection plus brillant (une seule fois) */
+         @keyframes selection-flash {
+             0% { filter: brightness(1); box-shadow: 0 0 8px rgba(74, 158, 255, 0.6); }
+             30% { filter: brightness(1.35); box-shadow: 0 0 16px rgba(74, 158, 255, 0.95); }
+             60% { filter: brightness(1.15); box-shadow: 0 0 12px rgba(74, 158, 255, 0.8); }
+             100% { filter: brightness(1); box-shadow: 0 0 8px rgba(74, 158, 255, 0.6); }
+         }
+         .flash-once {
+             animation: selection-flash 0.6s ease-in-out 1;
+         }
+
+        /* Raccourci déposé dans la bulle destination */
+        .shortcut-dropped {
+            position: absolute;
+            width: 48px;
+            height: 42px;
+            left: 10px; /* marge de 10px depuis le bord gauche de la bulle */
+            top: 20px; /* marge de 20px depuis le bord supérieur de la bulle */
+            background: #1f1f1f;
+            border: 1px solid #ffffff;
+            border-radius: 6px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            z-index: 1000;
+        }
+
+        /* Curseur au-dessus de tout - utilise les z-index de demo-elements.css */
+        .mouse-cursor {
+            z-index: 2000 !important;            
+        }
+        
+        .mouse-zero-click {
+            z-index: 900 !important;
+            left: 480px !important;
+            top: 5px !important;
+        }
+        
+        .mouse-left-click {
+            z-index: 900 !important;
+            left: 480px !important;
+            top: 5px !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Déplacer entre bulles</h1>
+            <p class="demo-description">
+                • Cette démonstration montre comment déplacer un raccourci d'une bulle vers une autre.<br>
+                • Le curseur sélectionne le raccourci, le glisse vers la bulle de destination et le dépose.
+            </p>
+        </div>
+        
+        <!-- Contrôle de vitesse standardisé -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
+        </div>
+        
+        <div class="demo-canvas-container">
+            <div class="demo-canvas large">
+                <!-- Première bulle (source) avec raccourci - utilise dynamic-border de demo-elements.css -->
+                <div class="dynamic-border bubble-source">
+                    <div class="resize-handle resize-handle-source"></div>
+                    <div class="shortcut-item" id="source-shortcut">
+                        <div class="file-glyph">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="12" height="12" fill="#e3e3e3">
+                                <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/>
+                            </svg>
+                        </div>
+                        <div class="file-name">Mon dossier</div>
+                    </div>
+                </div>
+
+                <!-- Deuxième bulle (destination) - utilise dynamic-border de demo-elements.css -->
+                <div class="dynamic-border bubble-destination">
+                    <div class="resize-handle resize-handle-destination"></div>
+                </div>
+
+                <!-- Étiquettes - utilise label-border de demo-elements.css -->
+                <div class="label-border label-source">
+                    <div class="label-text">Bulle Source</div>
+                </div>
+
+                <div class="label-border label-destination">
+                    <div class="label-text">Bulle Destination</div>
+                </div>
+
+                <!-- Curseur de souris - utilise mouse-cursor de demo-elements.css -->
+                <div class="mouse-cursor"></div>
+
+                <!-- Souris avec boutons - utilise les classes de demo-elements.css -->
+                <div class="mouse-zero-click"></div>
+                <div class="mouse-left-click"></div>
+
+                <!-- Raccourci en cours de déplacement -->
+                <div class="shortcut-dragging" id="dragging-shortcut">
+                    <div class="file-glyph">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="12" height="12" fill="#e3e3e3">
+                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/>
+                        </svg>
+                    </div>
+                    <div class="file-name">Mon dossier</div>
+                </div>
+
+                <!-- Raccourci déposé dans la bulle destination -->
+                <div class="shortcut-dropped" id="dropped-shortcut">
+                    <div class="file-glyph">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" width="12" height="12" fill="#e3e3e3">
+                            <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z"/>
+                        </svg>
+                    </div>
+                    <div class="file-name">Mon dossier</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables pour l'animation
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let isPaused = false;
+        let baseInterval = 80;
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
+
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const canvas = document.querySelector('.demo-canvas');
+        const sourceShortcut = document.getElementById('source-shortcut');
+        const draggingShortcut = document.getElementById('dragging-shortcut');
+        const droppedShortcut = document.getElementById('dropped-shortcut');
+
+        let canvasCenterX = 230; // 460 / 2
+        let canvasCenterY = 155; // 310 / 2
+        let defaultCursorX = 230; // Centre du canvas
+        let defaultCursorY = 155; // Centre du canvas
+        let sourceShortcutCenterX = 54; // 20 + 10 + 24 (bulle + marge + centre du raccourci)
+        let sourceShortcutCenterY = 141; // 100 + 20 + 21 (bulle + marge + centre du raccourci)
+        let destinationCenterX = 350; // 260 + 90 (centre de la bulle destination)
+        let destinationCenterY = 140; // 100 + 40 (centre de la bulle destination)
+         let moveToShortcutFrames = 0;
+         let clickSelectFrames = 8; // Clic bref pour sélectionner
+         let pauseAfterSelectFrames = 10; // Micro-pause après sélection
+         let dragToDestinationFrames = 0;
+         let pauseAfterDropFrames = 20;
+         let cursorReturnFrames = 0;
+         let totalAnimationFrames = 0;
+
+        function startAnimation() {
+            function runAnimationFrame() {
+                if (isPaused) {
+                    animationTimer = setTimeout(runAnimationFrame, 100);
+                    return;
+                }
+
+                animationPhase++;
+                // S'assurer que le curseur reste toujours visible et au-dessus
+                mouseCursor.style.opacity = '1';
+                mouseCursor.style.visibility = 'visible';
+                mouseCursor.style.zIndex = '2000';
+
+                // 1) Déplacement vers le raccourci dans la bulle source
+                if (animationPhase <= moveToShortcutFrames) {
+                    const p = animationPhase / moveToShortcutFrames;
+                    const sx = canvasCenterX, sy = canvasCenterY; // Départ du centre du canvas
+                    const ex = sourceShortcutCenterX, ey = sourceShortcutCenterY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                }
+                 // 2) Clic bref pour sélectionner le raccourci
+                 else if (animationPhase <= moveToShortcutFrames + clickSelectFrames) {
+                     const clickPhase = animationPhase - moveToShortcutFrames;
+                     if (clickPhase >= 2) {
+                         mouseZeroClick.style.visibility = 'hidden';
+                         mouseLeftClick.style.visibility = 'visible';
+                         // Déclencher le flash au moment exact du clic
+                         sourceShortcut.classList.add('selected');
+                         sourceShortcut.classList.add('flash-once');
+                     }
+                     if (clickPhase >= 6) {
+                         // Relâcher le clic
+                         mouseZeroClick.style.visibility = 'visible';
+                         mouseLeftClick.style.visibility = 'hidden';
+                        // Retirer la classe de flash pour éviter de rejouer indéfiniment
+                        sourceShortcut.classList.remove('flash-once');
+                     }
+                 }
+                 // 3) Micro-pause après sélection (élément reste bleuit)
+                 else if (animationPhase <= moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames) {
+                     // L'élément reste sélectionné (bleuit) pendant cette pause
+                 }
+                 // 4) Clic maintenu pour commencer le glisser-déposer
+                 else if (animationPhase <= moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6) {
+                     const holdPhase = animationPhase - (moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames);
+                     if (holdPhase >= 2) {
+                         mouseZeroClick.style.visibility = 'hidden';
+                         mouseLeftClick.style.visibility = 'visible';
+                     }
+                 }
+                 // 5) Glisser le raccourci vers la bulle destination (maintenir clic)
+                 else if (animationPhase <= moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames) {
+                    const p = (animationPhase - (moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6)) / dragToDestinationFrames;
+                    const sx = sourceShortcutCenterX, sy = sourceShortcutCenterY;
+                    const ex = destinationCenterX, ey = destinationCenterY;
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                    
+                     // Afficher le raccourci en cours de déplacement
+                     draggingShortcut.style.display = 'flex';
+                     // Positionner l'élément centré sur le curseur
+                     const cursorX = sx + (ex - sx) * p;
+                     const cursorY = sy + (ey - sy) * p;
+                     draggingShortcut.style.left = (cursorX - 24) + 'px'; // 24 = demi-largeur du raccourci
+                     draggingShortcut.style.top = (cursorY - 21) + 'px';  // 21 = demi-hauteur du raccourci
+                     
+                     // Maintenir la sélection (bleuissement) pendant le glissement
+                     draggingShortcut.classList.add('selected');
+                     
+                     // Masquer le raccourci original
+                     sourceShortcut.style.display = 'none';
+                }
+                 // 6) Déposer dans la bulle destination
+                 else if (animationPhase <= moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames + 6) {
+                     const dropPhase = animationPhase - (moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames);
+                    if (dropPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'visible';
+                        mouseLeftClick.style.visibility = 'hidden';
+                        
+                         // Masquer le raccourci en cours de déplacement
+                         draggingShortcut.style.display = 'none';
+                         
+                         // Enlever la sélection (bleu) de l'élément en cours de déplacement
+                         draggingShortcut.classList.remove('selected');
+                         
+                         // Afficher le raccourci déposé dans la bulle destination
+                         droppedShortcut.style.display = 'flex';
+                         
+                         // Enlever la sélection (bleu) de l'élément déposé
+                         droppedShortcut.classList.remove('selected');
+                         
+                         // S'assurer que le raccourci déposé soit dans la bulle destination
+                         if (droppedShortcut.parentElement !== document.querySelector('.bubble-destination')) {
+                             document.querySelector('.bubble-destination').appendChild(droppedShortcut);
+                         }
+                    }
+                }
+                // 7) Pause pour voir le résultat
+                else if (animationPhase <= moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames + 6 + pauseAfterDropFrames) {
+                }
+                // 8) Retour du curseur vers le centre du canvas
+                else if (animationPhase <= moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames + 6 + pauseAfterDropFrames + cursorReturnFrames) {
+                    const p = (animationPhase - (moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames + 6 + pauseAfterDropFrames)) / cursorReturnFrames;
+                    const sx = destinationCenterX, sy = destinationCenterY;
+                    const ex = canvasCenterX, ey = canvasCenterY; // Retour au centre du canvas
+                    mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
+                    mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
+                }
+                else {
+                    // Reset
+                    animationPhase = 0;
+                    mouseCursor.style.left = canvasCenterX + 'px'; // Reset au centre du canvas
+                    mouseCursor.style.top = canvasCenterY + 'px'; // Reset au centre du canvas
+                     mouseZeroClick.style.visibility = 'visible';
+                     mouseLeftClick.style.visibility = 'hidden';
+                     sourceShortcut.style.display = 'flex';
+                     sourceShortcut.classList.remove('selected'); // Enlever la sélection
+                     draggingShortcut.style.display = 'none';
+                     draggingShortcut.classList.remove('selected'); // Enlever la sélection de l'élément en déplacement
+                     droppedShortcut.style.display = 'none';
+                }
+
+                updateProgress(animationPhase, totalAnimationFrames);
+                const currentInterval = Math.round(baseInterval / animationSpeed);
+                animationTimer = setTimeout(runAnimationFrame, currentInterval);
+            }
+
+            updateProgress(0, totalAnimationFrames);
+            runAnimationFrame();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvasRect = canvas.getBoundingClientRect();
+            canvasCenterX = Math.round(canvasRect.width / 2);
+            canvasCenterY = Math.round(canvasRect.height / 2);
+
+            // Position par défaut du curseur: position d'arrivée sur l'élément + 50px vers le bas
+            defaultCursorX = sourceShortcutCenterX;
+            defaultCursorY = sourceShortcutCenterY + 50;
+
+            // Calculer les frames selon la standardisation
+            moveToShortcutFrames = Math.max(8, Math.ceil(Math.hypot(sourceShortcutCenterX - canvasCenterX, sourceShortcutCenterY - canvasCenterY) / CURSOR_SPEED_PX_PER_FRAME));
+            dragToDestinationFrames = Math.max(10, Math.ceil(Math.hypot(destinationCenterX - sourceShortcutCenterX, destinationCenterY - sourceShortcutCenterY) / CURSOR_SPEED_PX_PER_FRAME));
+            cursorReturnFrames = Math.max(8, Math.ceil(Math.hypot(canvasCenterX - destinationCenterX, canvasCenterY - destinationCenterY) / CURSOR_SPEED_PX_PER_FRAME));
+
+             totalAnimationFrames = moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames + 6 + pauseAfterDropFrames + cursorReturnFrames;
+
+            mouseCursor.style.left = canvasCenterX + 'px';
+            mouseCursor.style.top = canvasCenterY + 'px';
+
+            setTimeout(startAnimation, 800);
+        });
+
+         function updateProgress(phase, totalFrames) {
+             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+             progressBar.style.width = percentage + '%';
+
+             const step1 = moveToShortcutFrames; // vers raccourci
+             const step2 = moveToShortcutFrames + clickSelectFrames; // sélectionné
+             const step3 = moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames; // pause après sélection
+             const step4 = moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + Math.floor(dragToDestinationFrames * 0.6); // en cours de glisser
+             const step5 = moveToShortcutFrames + clickSelectFrames + pauseAfterSelectFrames + 6 + dragToDestinationFrames + 6; // déposé
+             const step6 = step5 + pauseAfterDropFrames; // pause
+             const step7 = step6 + cursorReturnFrames; // retour curseur
+
+             if (phase <= step1) progressText.textContent = 'Aller vers le raccourci...';
+             else if (phase <= step2) progressText.textContent = 'Sélectionner le raccourci...';
+             else if (phase <= step3) progressText.textContent = 'Préparation du glisser-déposer...';
+             else if (phase <= step4) progressText.textContent = 'Glisser vers la bulle destination...';
+             else if (phase <= step5) progressText.textContent = 'Raccourci déposé dans la bulle destination';
+             else if (phase <= step6) progressText.textContent = 'Déplacement terminé';
+             else if (phase <= step7) progressText.textContent = 'Retour du curseur...';
+             else progressText.textContent = 'Préparation du redémarrage...';
+         }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseButton = document.getElementById('pauseButton');
+            if (isPaused) {
+                pauseButton.textContent = 'Reprendre';
+                pauseButton.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause';
+                pauseButton.classList.remove('paused');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            const pauseButton = document.getElementById('pauseButton');
+
+            if (speedSlider && speedValue) {
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    animationSpeed = newSpeed;
+                });
+                speedValue.textContent = animationSpeed + 'x';
+            }
+
+            if (pauseButton) {
+                pauseButton.addEventListener('click', togglePause);
+            }
+        });
+    </script>
+</body>
+</html>

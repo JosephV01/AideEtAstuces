@@ -79,23 +79,7 @@
             z-index: 1000;
         }
 
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
+        /* back-button styles removed to use global styles in demo-elements.css */
     </style>
 </head>
 <body>
@@ -108,6 +92,19 @@
             </p>
         </div>
         
+        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
+        </div>
+
         <div class="demo-canvas-container">
             <div class="demo-canvas">
                 <!-- Widget à déplacer -->
@@ -132,15 +129,7 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
+        
     </div>
 
     <script>
@@ -152,6 +141,10 @@
         let animationSpeed = 1;
         let isPaused = false;
         let baseInterval = 30; // Intervalle de base pour cette démo (30ms)
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
         
         // Standardisation de la vitesse du curseur (selon demo-elements.css)
         const CURSOR_SPEED_PX_PER_FRAME = 9;
@@ -165,6 +158,7 @@
         
         // Calculer les frames de déplacement selon la standardisation
         let movementFrames = 40; // Sera calculé dynamiquement
+        let totalAnimationFrames = 0; // Sera calculé dynamiquement
 
         function startAnimation() {
             function runAnimationFrame() {
@@ -188,23 +182,17 @@
                 else if (animationPhase <= movementFrames + 20) {
                     const clickPhase = animationPhase - movementFrames;
                     
-                    // L'effet de clic apparaît directement
-                    
                     // Changement de souris pour indiquer le clic
                     if (clickPhase >= 5) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
+                        
+                        // Widget devient surligné seulement quand on clique
+                        widgetButtons.forEach(button => {
+                            button.style.background = 'rgba(0,255,255,0.2)';
+                            button.style.color = 'cyan';
+                        });
                     }
-                }
-                // 3 - Widget devient hover (pas de déplacement)
-                else if (animationPhase <= movementFrames + 40) {
-                    const hoverPhase = animationPhase - (movementFrames + 20);
-                    
-                    // Widget devient hover
-                    widgetButtons.forEach(button => {
-                        button.style.background = 'rgba(0,255,255,0.2)';
-                        button.style.color = 'cyan';
-                    });
                     
                     // Widget reste à sa position initiale
                     movableWidget.style.left = '50px';
@@ -213,12 +201,10 @@
                     // Curseur reste centré sur le widget
                     mouseCursor.style.left = '75px';
                     mouseCursor.style.top = '110px';
-                    
-                    // Effet de clic persiste pendant le hover
                 }
-                // 4 - Déplacement complet avec effets
-                else if (animationPhase <= movementFrames + 80) {
-                    const moveProgress = (animationPhase - (movementFrames + 40)) / 40;
+                // 3 - Déplacement complet avec effets (clic maintenu)
+                else if (animationPhase <= movementFrames + 60) {
+                    const moveProgress = (animationPhase - (movementFrames + 20)) / 40;
                     const startX = 50, startY = 60;
                     const endX = 200, endY = 60;
                     movableWidget.style.left = (startX + (endX - startX) * moveProgress) + 'px';
@@ -230,16 +216,14 @@
                     mouseCursor.style.left = (widgetCenterX - 8) + 'px'; // -8 pour centrer le curseur
                     mouseCursor.style.top = (widgetCenterY - 8) + 'px'; // -8 pour centrer le curseur
                     
-                    // Effet hover maintenu
+                    // Effet de surbrillance maintenu pendant le déplacement (clic maintenu)
                     widgetButtons.forEach(button => {
                         button.style.background = 'rgba(0,255,255,0.2)';
                         button.style.color = 'cyan';
                     });
-                    
-                    // Effet de clic persiste pendant le déplacement
                 }
-                // 5 - Arrêt et disparition des effets
-                else if (animationPhase <= movementFrames + 90) {
+                // 4 - Arrêt et disparition des effets
+                else if (animationPhase <= movementFrames + 70) {
                     // Widget à destination, effets disparaissent
                     widgetButtons.forEach(button => {
                         button.style.background = 'transparent';
@@ -248,20 +232,14 @@
                     
                     // Effet de clic disparaît aussi
                 }
-                // 6 - Delay avec effet de clic persistant
-                else if (animationPhase <= movementFrames + 100) {
-                    // L'effet de clic reste visible pendant le délai
+                // 5 - Relâchement du clic (retour à l'état normal de la souris)
+                else if (animationPhase <= movementFrames + 80) {
+                    // Retour à l'état normal de la souris (relâchement du clic)
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseRightClick.style.visibility = 'hidden';
                 }
-                // 7 - Widget devient hover à destination
-                else if (animationPhase <= movementFrames + 120) {
-                    const hoverPhase = animationPhase - (movementFrames + 100);
-                    
-                    // Widget devient hover
-                    widgetButtons.forEach(button => {
-                        button.style.background = 'rgba(0,255,255,0.2)';
-                        button.style.color = 'cyan';
-                    });
-                    
+                // 6 - Widget à destination (sans clic, sans surbrillance)
+                else if (animationPhase <= movementFrames + 100) {
                     // Widget reste à sa position de destination
                     movableWidget.style.left = '200px';
                     movableWidget.style.top = '60px';
@@ -270,11 +248,27 @@
                     mouseCursor.style.left = '225px';
                     mouseCursor.style.top = '110px';
                     
-                    // Effet de clic persiste pendant le hover
+                    // Souris en état normal (pas de clic, pas de surbrillance)
                 }
-                // 8 - Déplacement retour complet avec effets
-                else if (animationPhase <= movementFrames + 140) {
-                    const moveProgress = (animationPhase - (movementFrames + 120)) / 20;
+                // 7 - Nouveau clic pour le déplacement retour
+                else if (animationPhase <= movementFrames + 105) {
+                    const clickPhase = animationPhase - (movementFrames + 100);
+                    
+                    // Nouveau clic pour le déplacement retour
+                    if (clickPhase >= 2) {
+                        mouseZeroClick.style.visibility = 'hidden';
+                        mouseRightClick.style.visibility = 'visible';
+                        
+                        // Widget devient surligné seulement quand on clique
+                        widgetButtons.forEach(button => {
+                            button.style.background = 'rgba(0,255,255,0.2)';
+                            button.style.color = 'cyan';
+                        });
+                    }
+                }
+                // 8 - Déplacement retour complet avec effets (clic maintenu)
+                else if (animationPhase <= movementFrames + 125) {
+                    const moveProgress = (animationPhase - (movementFrames + 105)) / 20;
                     const startX = 200, startY = 60;
                     const endX = 50, endY = 60;
                     movableWidget.style.left = (startX + (endX - startX) * moveProgress) + 'px';
@@ -286,16 +280,14 @@
                     mouseCursor.style.left = (widgetCenterX - 8) + 'px'; // -8 pour centrer le curseur
                     mouseCursor.style.top = (widgetCenterY - 8) + 'px'; // -8 pour centrer le curseur
                     
-                    // Effet hover maintenu
+                    // Effet de surbrillance maintenu pendant le déplacement (clic maintenu)
                     widgetButtons.forEach(button => {
                         button.style.background = 'rgba(0,255,255,0.2)';
                         button.style.color = 'cyan';
                     });
-                    
-                    // Effet de clic persiste pendant le déplacement retour
                 }
                 // 9 - Arrêt et disparition des effets
-                else if (animationPhase <= movementFrames + 150) {
+                else if (animationPhase <= movementFrames + 135) {
                     // Widget à destination, effets disparaissent
                     widgetButtons.forEach(button => {
                         button.style.background = 'transparent';
@@ -305,11 +297,11 @@
                     // Effet de clic disparaît aussi
                 }
                 // 10 - Curseur disparaît
-                else if (animationPhase <= movementFrames + 160) {
+                else if (animationPhase <= movementFrames + 145) {
                     mouseCursor.style.opacity = '0';
                 }
                 // 11 - Delay
-                else if (animationPhase <= movementFrames + 168) {
+                else if (animationPhase <= movementFrames + 153) {
                     // Rien ne change, juste un délai
                 }
                 // Reset
@@ -334,10 +326,16 @@
                     mouseRightClick.style.visibility = 'hidden';
                 }
                 
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -355,6 +353,33 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+
+            if (phase <= 0) { 
+                progressText.textContent = 'Préparation de la démonstration...'; 
+                return; 
+            }
+
+            const describe = (p) => {
+                if (p <= movementFrames) return 'Déplacement vers le widget';
+                if (p <= movementFrames + 20) return 'Clic sur le widget';
+                if (p <= movementFrames + 60) return 'Déplacement du widget (1ère phase)';
+                if (p <= movementFrames + 70) return 'Arrêt et relâchement du clic';
+                if (p <= movementFrames + 80) return 'Relâchement du clic';
+                if (p <= movementFrames + 100) return 'Widget à destination';
+                if (p <= movementFrames + 105) return 'Nouveau clic pour le retour';
+                if (p <= movementFrames + 125) return 'Déplacement retour du widget';
+                if (p <= movementFrames + 135) return 'Arrêt final';
+                if (p <= movementFrames + 145) return 'Fin de la démonstration';
+                return 'Préparation du redémarrage...';
+            };
+
+            progressText.textContent = describe(phase);
         }
 
         function togglePause() {
@@ -378,7 +403,10 @@
             const distance = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
             movementFrames = Math.ceil(distance / CURSOR_SPEED_PX_PER_FRAME);
             
-            console.log(`Distance: ${Math.round(distance)}px, Frames: ${movementFrames}, Vitesse: ${CURSOR_SPEED_PX_PER_FRAME}px/frame`);
+            // Calculer le nombre total de frames de l'animation
+            totalAnimationFrames = movementFrames + 20 + 40 + 10 + 10 + 20 + 5 + 20 + 10 + 10 + 8; // 153 frames total
+            
+            console.log(`Distance: ${Math.round(distance)}px, Frames: ${movementFrames}, Vitesse: ${CURSOR_SPEED_PX_PER_FRAME}px/frame, Total: ${totalAnimationFrames}`);
             
             // Initialiser le contrôle de vitesse
             const speedSlider = document.getElementById('speedSlider');

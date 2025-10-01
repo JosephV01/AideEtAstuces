@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démonstration - Recherche avancée - MyCustomDesk</title>
+    <link rel="stylesheet" href="HelpAndTips.css">
+    <link rel="stylesheet" href="demo-elements.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 15px;
+            background: var(--background-white);
+            font-family: 'Segoe UI Variable', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .demo-container {
+            background: var(--background-white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            text-align: center;
+            height: 950px;
+            width: 1000px;
+        }
+
+        .demo-canvas-container {
+            background: #2D2D2D;
+            border: 2px solid #555555;
+            border-radius: 15px;
+            display: inline-block;
+            height: 550px;
+            width: 950px;
+        }
+        /* Bulle dimension */
+        .demo-canvas .dynamic-border {
+            width: 350px;
+            height: 160px;
+            left: 20px;
+            top: 100px;
+            border-radius: 12px;
+        }
+        .demo-canvas .label-border {
+            left: 200px; /* centre de la bulle (20 + 260/2) */
+            top: 75px;
+        }
+
+        /* Bouton recherche positionné à droite de l'étiquette */
+        .search-trigger {
+            position: absolute;
+            left: 252px;
+            top: 74px;
+            width: 22px;
+            height: 22px;
+            background: #505050;
+            border: 1px solid #FFFFFF;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            cursor: pointer;
+            z-index: 1200;
+            transition: all 0.2s ease;
+        }
+        .search-trigger:hover { background: #005EA2; }
+        .search-trigger:active { background: #003C74; }
+        .search-trigger svg { width: 16px; height: 16px; fill: currentColor; }
+
+        /* Fenêtre de recherche avancée (simulée) */
+        .search-dialog {
+            position: absolute;
+            left: 50px;
+            top: 200px;
+            width: 500px;
+            height: 300px;
+            background: #ffffff;
+            border: 2px solid #0078d4;
+            border-radius: 12px;
+            padding: 20px;
+            color: #000000;
+            font-size: 13px;
+            visibility: hidden;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            z-index: 1500;
+        }
+        .search-dialog.visible { 
+            visibility: visible; 
+            opacity: 1; 
+            transform: scale(1);
+        }
+        .search-dialog h3 {
+            margin: 0 0 15px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+        }
+        .search-section {
+            margin-bottom: 15px;
+        }
+        .search-section h4 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: #000000;
+        }
+        .search-input {
+            width: 100%;
+            height: 30px;
+            border: 1px solid #c0c0c0;
+            border-radius: 4px;
+            padding: 0 8px;
+            font-size: 13px;
+            background: #f0f0f0;
+            color: #000000;
+        }
+        .search-options {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .search-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .search-option input[type="checkbox"] {
+            margin: 0;
+        }
+        .search-option label {
+            font-size: 12px;
+            color: #000000;
+        }
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        .search-button {
+            width: 80px;
+            height: 30px;
+            border: 1px solid #c0c0c0;
+            border-radius: 4px;
+            background: #f0f0f0;
+            color: #000000;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Panneau d'options simulé pour le menu déroulant */
+        .sort-options-panel {
+            position: absolute;
+            left: 0px; /* sera positionné dynamiquement */
+            top: 0px;  /* sera positionné dynamiquement */
+            width: 200px; /* sera redimensionné dynamiquement */
+            background: #1f1f1f;
+            border: 1px solid #555;
+            border-radius: 6px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+            padding: 6px 0;
+            color: #eaeaea;
+            font-size: 12px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+            z-index: 1300;
+        }
+        .sort-options-panel.visible { visibility: visible; opacity: 1; }
+        .sort-option-item {
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+        .sort-option-item:hover { background: #303030; }
+        .sort-option-item.active { background: #2a4a6a; }
+
+        /* Icônes simulées (raccourcis) dans la bulle */
+        .shortcuts-area {
+            position: absolute;
+            left: 30px;
+            top: 130px;
+            width: 330px;
+            height: 120px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px 6px;
+            padding: 2px;
+        }
+        .shortcut {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+        .shortcut-icon {
+            width: 30px;
+            height: 30px;
+            background: #3a3a3a;
+            border: 2px solid #777;
+            border-radius: 8px;
+        }
+        .shortcut-text {
+            font-size: 9px;
+            color: #eaeaea;
+            white-space: nowrap;
+            max-width: 90px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .search-no-match {
+            opacity: 0.3;
+            filter: grayscale(100%);
+        }
+        .search-match {
+            opacity: 1;
+            filter: none;
+        }
+        .search-match .shortcut-icon {
+            border-color: #FF8C00;
+            box-shadow: 0 0 6px rgba(255,140,0,0.9);
+            animation: blink-orange 0.8s linear infinite;
+        }
+        @keyframes blink-orange {
+            0% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
+            50% { box-shadow: 0 0 10px rgba(255,140,0,1); border-color: #FFA733; }
+            100% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
+        }
+
+        /* Curseur au-dessus de tout */
+        .mouse-cursor { z-index: 2000 !important; }
+        .mouse-zero-click { z-index: 900 !important;
+            left: 600px;
+            top: 15px; }
+        .mouse-left-click { z-index: 900 !important;
+            left: 600px;
+            top: 15px; }
+        .resize-handle { left: 363px; top: 253px; }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">Démonstration - Recherche avancée</h1>
+            <p class="demo-description">
+                • Cette démonstration montre comment utiliser la recherche avancée via l'icône de recherche située à droite de l'étiquette de chaque bulle.<br>
+                • Cliquez sur l'icône de recherche pour ouvrir la fenêtre de recherche avancée et filtrer les raccourcis.
+            </p>
+        </div>
+
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
+        </div>
+
+        <div class="demo-canvas-container">
+            <div class="demo-canvas large">
+                <!-- Bulle -->
+                <div class="dynamic-border"></div>
+                <!-- Étiquette -->
+                <div class="label-border">
+                    <div class="label-text">Bulle - Raccourcis</div>
+                </div>
+
+                <button id="searchTrigger" class="search-trigger" title="Rechercher">
+                    <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                </button>
+
+                <!-- Curseur -->
+                <div class="mouse-cursor"></div>
+
+                <!-- Souris avec états -->
+                <div class="mouse-zero-click"></div>
+                <div class="mouse-left-click"></div>
+
+                <!-- Poignée (non utilisée ici, conservée pour cohérence visuelle) -->
+                <div class="resize-handle"></div>
+
+                <!-- Zone des raccourcis -->
+                <div class="shortcuts-area" id="shortcutsArea">
+                    <div class="shortcut" data-name="rapport_2024.pdf" data-display="Rapport 2024">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Rapport 2024</div>
+                    </div>
+                    <div class="shortcut" data-name="notes_projet.txt" data-display="Notes Projet">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Notes Projet</div>
+                    </div>
+                    <div class="shortcut" data-name="image_01.png" data-display="Image 01">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Image 01</div>
+                    </div>
+                    <div class="shortcut" data-name="presentation-final.pptx" data-display="Présentation Finale">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Présentation Finale</div>
+                    </div>
+                    <div class="shortcut" data-name="todo.md" data-display="TODO">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">TODO</div>
+                    </div>
+                    <div class="shortcut" data-name="readme.md" data-display="Readme">
+                        <div class="shortcut-icon"></div>
+                        <div class="shortcut-text">Readme</div>
+                    </div>
+                </div>
+
+                <!-- Fenêtre de recherche avancée simulée -->
+                <div class="search-dialog" id="searchDialog">
+                    <h3>Recherche avancée</h3>
+                    
+                    <div class="search-section">
+                        <h4>Terme de recherche</h4>
+                        <input type="text" id="searchInput" class="search-input" placeholder="Tapez votre recherche ici..." />
+                    </div>
+                    
+                    <div class="search-section">
+                        <h4>Options de recherche</h4>
+                        <div class="search-options">
+                            <div class="search-option">
+                                <input type="checkbox" id="caseSensitive" />
+                                <label for="caseSensitive">Sensible à la casse</label>
+                            </div>
+                            <div class="search-option">
+                                <input type="checkbox" id="wholeWord" />
+                                <label for="wholeWord">Mot entier</label>
+                            </div>
+                        </div>
+                        <div class="search-options">
+                            <div class="search-option">
+                                <input type="checkbox" id="searchFileName" checked />
+                                <label for="searchFileName">Nom de fichier</label>
+                            </div>
+                            <div class="search-option">
+                                <input type="checkbox" id="searchDisplayText" checked />
+                                <label for="searchDisplayText">Texte d'affichage</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="search-buttons">
+                        <button class="search-button" id="searchButton">Rechercher</button>
+                        <button class="search-button" id="cancelButton">Annuler</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation state
+        let animationPhase = 0;
+        let animationTimer;
+        let animationSpeed = 1;
+        let isPaused = false;
+        let baseInterval = 80;
+
+        // Standard cursor speed
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
+
+        // Progress
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        let totalAnimationFrames = 0;
+
+        // DOM
+        const canvas = document.querySelector('.demo-canvas');
+        const mouseCursor = document.querySelector('.mouse-cursor');
+        const mouseZeroClick = document.querySelector('.mouse-zero-click');
+        const mouseLeftClick = document.querySelector('.mouse-left-click');
+        const searchDialog = document.getElementById('searchDialog');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const shortcuts = Array.from(document.querySelectorAll('.shortcut'));
+
+        // Geometry helpers
+        let canvasCenterX = 0;
+        let canvasCenterY = 0;
+        let toTriggerFrames = 25;
+        let toDialogFrames = 40;
+        let typingFrames = 30;
+        let searchFrames = 20;
+        let toResetFrames = 30;
+        let dialogPauseFrames = 10;
+        let searchPauseFrames = 15;
+
+        function getCenter(el) {
+            const crect = canvas.getBoundingClientRect();
+            const r = el.getBoundingClientRect();
+            return {
+                x: Math.round(r.left - crect.left + r.width / 2),
+                y: Math.round(r.top - crect.top + r.height / 2)
+            };
+        }
+
+        function applySearchFilter(searchTerm) {
+            shortcuts.forEach(shortcut => {
+                const text = shortcut.querySelector('.shortcut-text').textContent.toLowerCase();
+                const name = shortcut.getAttribute('data-name').toLowerCase();
+                
+                if (text.includes(searchTerm.toLowerCase()) || name.includes(searchTerm.toLowerCase())) {
+                    shortcut.classList.remove('search-no-match');
+                    shortcut.classList.add('search-match');
+                } else {
+                    shortcut.classList.remove('search-match');
+                    shortcut.classList.add('search-no-match');
+                }
+            });
+        }
+
+        function resetSearchFilter() {
+            shortcuts.forEach(shortcut => {
+                shortcut.classList.remove('search-match', 'search-no-match');
+            });
+        }
+
+        const initialOrder = new Map();
+
+        function getExt(n) {
+            const i = n.lastIndexOf('.');
+            return i >= 0 ? n.substring(i + 1).toLowerCase() : '';
+        }
+
+        function applySort(mode, doBlink = false) {
+            const area = document.getElementById('shortcutsArea');
+            const list = Array.from(area.children);
+            list.forEach(s => {
+                s.classList.remove('hidden-match');
+                s.classList.remove('highlight-match');
+            });
+            let sorted;
+            if (mode === 'alpha') {
+                sorted = list.slice().sort((a, b) => {
+                    const an = (a.getAttribute('data-name') || '').toLowerCase();
+                    const bn = (b.getAttribute('data-name') || '').toLowerCase();
+                    const ac = an.replace(/(\d+)/g, m => m.padStart(10, '0'));
+                    const bc = bn.replace(/(\d+)/g, m => m.padStart(10, '0'));
+                    return ac.localeCompare(bc, 'fr');
+                });
+            } else if (mode === 'type') {
+                sorted = list.slice().sort((a, b) => {
+                    const ae = getExt(a.getAttribute('data-name') || '');
+                    const be = getExt(b.getAttribute('data-name') || '');
+                    if (ae !== be) return ae.localeCompare(be, 'fr');
+                    const an = (a.getAttribute('data-name') || '').toLowerCase();
+                    const bn = (b.getAttribute('data-name') || '').toLowerCase();
+                    const ac = an.replace(/(\d+)/g, m => m.padStart(10, '0'));
+                    const bc = bn.replace(/(\d+)/g, m => m.padStart(10, '0'));
+                    return ac.localeCompare(bc, 'fr');
+                });
+            } else {
+                sorted = list.slice().sort((a, b) => initialOrder.get(a) - initialOrder.get(b));
+            }
+            while (area.firstChild) area.removeChild(area.firstChild);
+            sorted.forEach((el) => {
+                el.classList.remove('highlight-match');
+                area.appendChild(el);
+            });
+            // Clignotement bref uniquement quand demandé
+            if (doBlink) {
+                const children = Array.from(area.children);
+                children.forEach(el => el.classList.add('highlight-match'));
+                setTimeout(() => { children.forEach(el => el.classList.remove('highlight-match')); }, 900);
+            }
+        }
+
+        function updateProgress(phase, totalFrames) {
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+
+            const step1 = Math.floor(totalFrames * 0.20);
+            const step2 = Math.floor(totalFrames * 0.40);
+            const step3 = Math.floor(totalFrames * 0.60);
+            const step4 = Math.floor(totalFrames * 0.85);
+
+            if (phase <= step1) {
+                progressText.textContent = 'Déplacement vers l\'icône de recherche...';
+            } else if (phase <= step2) {
+                progressText.textContent = 'Ouverture de la fenêtre de recherche...';
+            } else if (phase <= step3) {
+                progressText.textContent = 'Saisie du terme de recherche...';
+            } else if (phase <= step4) {
+                progressText.textContent = 'Filtrage des résultats...';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
+        }
+
+        function runAnimationFrame() {
+            if (isPaused) {
+                animationTimer = setTimeout(runAnimationFrame, 100);
+                return;
+            }
+
+            animationPhase++;
+
+            // Découpage des phases pour la recherche avancée
+            const phaseAEnd = toTriggerFrames; // déplacer vers icône recherche
+            const phaseBEnd = phaseAEnd + 6; // clic pour ouvrir dialog
+            const phaseCEnd = phaseBEnd + toDialogFrames; // déplacement vers input
+            const phaseDEnd = phaseCEnd + typingFrames; // saisie du terme
+            const phaseEEnd = phaseDEnd + searchFrames; // déplacement vers bouton
+            const phaseFEnd = phaseEEnd + 8; // clic bouton recherche
+            const phaseGEnd = phaseFEnd + searchPauseFrames; // pause pour voir résultats
+            const phaseHEnd = phaseGEnd + toResetFrames; // retour centre
+            const phaseIEnd = phaseHEnd + 10; // micro pause
+
+            if (animationPhase <= phaseAEnd) {
+                const startX = canvasCenterX, startY = canvasCenterY;
+                const trg = getCenter(document.getElementById('searchTrigger'));
+                mouseCursor.style.left = (startX + (trg.x - startX) * (animationPhase / toTriggerFrames)) + 'px';
+                mouseCursor.style.top = (startY + (trg.y - startY) * (animationPhase / toTriggerFrames)) + 'px';
+            }
+            else if (animationPhase <= phaseBEnd) {
+                const clickPhase = animationPhase - phaseAEnd;
+                if (clickPhase >= 2) {
+                    mouseZeroClick.style.visibility = 'hidden';
+                    mouseLeftClick.style.visibility = 'visible';
+                }
+                if (clickPhase >= 4) {
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                    if (!searchDialog.classList.contains('visible')) {
+                        searchDialog.classList.add('visible');
+                    }
+                }
+            }
+            else if (animationPhase <= phaseCEnd) {
+                const progress = (animationPhase - phaseBEnd) / toDialogFrames;
+                const trg = getCenter(document.getElementById('searchTrigger'));
+                const target = getCenter(searchInput);
+                mouseCursor.style.left = (trg.x + (target.x - trg.x) * progress) + 'px';
+                mouseCursor.style.top = (trg.y + (target.y - trg.y) * progress) + 'px';
+            }
+            else if (animationPhase <= phaseDEnd) {
+                const typingPhase = animationPhase - phaseCEnd;
+                const oc = getCenter(searchInput);
+                mouseCursor.style.left = oc.x + 'px';
+                mouseCursor.style.top = oc.y + 'px';
+                
+                // Simulation de la saisie
+                if (typingPhase === 5) {
+                    searchInput.value = 'R';
+                } else if (typingPhase === 10) {
+                    searchInput.value = 'Ra';
+                } else if (typingPhase === 15) {
+                    searchInput.value = 'Rap';
+                } else if (typingPhase === 20) {
+                    searchInput.value = 'Rapp';
+                } else if (typingPhase === 25) {
+                    searchInput.value = 'Rappo';
+                } else if (typingPhase === 30) {
+                    searchInput.value = 'Rapport';
+                }
+            }
+            else if (animationPhase <= phaseEEnd) {
+                const progress = (animationPhase - phaseDEnd) / searchFrames;
+                const fromCenter = getCenter(searchInput);
+                const btnCenter = getCenter(searchButton);
+                mouseCursor.style.left = (fromCenter.x + (btnCenter.x - fromCenter.x) * progress) + 'px';
+                mouseCursor.style.top = (fromCenter.y + (btnCenter.y - fromCenter.y) * progress) + 'px';
+            }
+            else if (animationPhase <= phaseFEnd) {
+                const clickPhase = animationPhase - phaseEEnd;
+                if (clickPhase >= 2) {
+                    mouseZeroClick.style.visibility = 'hidden';
+                    mouseLeftClick.style.visibility = 'visible';
+                }
+                if (clickPhase >= 4) {
+                    mouseZeroClick.style.visibility = 'visible';
+                    mouseLeftClick.style.visibility = 'hidden';
+                }
+                if (clickPhase === 5) {
+                    applySearchFilter('Rapport');
+                }
+            }
+            else if (animationPhase <= phaseGEnd) {
+                // Pause pour voir les résultats filtrés
+                const btnCenter = getCenter(searchButton);
+                mouseCursor.style.left = btnCenter.x + 'px';
+                mouseCursor.style.top = btnCenter.y + 'px';
+            }
+            else if (animationPhase <= phaseHEnd) {
+                const movePhase = animationPhase - phaseGEnd;
+                const p = movePhase / toResetFrames;
+                const btnCenter = getCenter(searchButton);
+                mouseCursor.style.left = (btnCenter.x + (canvasCenterX - btnCenter.x) * p) + 'px';
+                mouseCursor.style.top = (btnCenter.y + (canvasCenterY - btnCenter.y) * p) + 'px';
+                if (movePhase === toResetFrames) {
+                    searchDialog.classList.remove('visible');
+                    resetSearchFilter();
+                    searchInput.value = '';
+                }
+            }
+            else if (animationPhase <= phaseIEnd) {
+                mouseCursor.style.left = canvasCenterX + 'px';
+                mouseCursor.style.top = canvasCenterY + 'px';
+            }
+            else {
+                animationPhase = 0;
+            }
+
+            updateProgress(animationPhase, totalAnimationFrames);
+            const currentInterval = Math.round(baseInterval / animationSpeed);
+            animationTimer = setTimeout(runAnimationFrame, currentInterval);
+        }
+
+        function startAnimation() {
+            updateProgress(0, totalAnimationFrames);
+            runAnimationFrame();
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const pauseButton = document.getElementById('pauseButton');
+            if (isPaused) {
+                pauseButton.textContent = 'Reprendre';
+                pauseButton.classList.add('paused');
+            } else {
+                pauseButton.textContent = 'Pause';
+                pauseButton.classList.remove('paused');
+            }
+        }
+
+        function changeAnimationSpeed(newSpeed) {
+            animationSpeed = newSpeed;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const crect = canvas.getBoundingClientRect();
+            canvasCenterX = Math.round(crect.width / 2);
+            canvasCenterY = Math.round(crect.height / 2);
+
+            shortcuts.forEach((s, idx) => initialOrder.set(s, idx));
+
+            const triggerCenter = getCenter(document.getElementById('searchTrigger'));
+            const inputCenter = getCenter(searchInput);
+            const btnCenter = getCenter(searchButton);
+            
+            const toInputDistance = Math.hypot(inputCenter.x - triggerCenter.x, inputCenter.y - triggerCenter.y);
+            toDialogFrames = Math.ceil(toInputDistance / CURSOR_SPEED_PX_PER_FRAME);
+            
+            const toButtonDistance = Math.hypot(btnCenter.x - inputCenter.x, btnCenter.y - inputCenter.y);
+            searchFrames = Math.ceil(toButtonDistance / CURSOR_SPEED_PX_PER_FRAME);
+            
+            toResetFrames = Math.ceil(Math.hypot(canvasCenterX - btnCenter.x, canvasCenterY - btnCenter.y) / CURSOR_SPEED_PX_PER_FRAME);
+
+            totalAnimationFrames = toTriggerFrames + 6 + toDialogFrames + typingFrames + searchFrames + 8 + searchPauseFrames + toResetFrames + 20;
+
+            mouseCursor.style.left = canvasCenterX + 'px';
+            mouseCursor.style.top = canvasCenterY + 'px';
+
+            // UI wiring
+            const speedSlider = document.getElementById('speedSlider');
+            const speedValue = document.getElementById('speedValue');
+            const pauseButton = document.getElementById('pauseButton');
+            if (speedSlider && speedValue) {
+                speedSlider.addEventListener('input', function() {
+                    const newSpeed = parseFloat(this.value);
+                    speedValue.textContent = newSpeed + 'x';
+                    changeAnimationSpeed(newSpeed);
+                });
+                speedValue.textContent = animationSpeed + 'x';
+            }
+            if (pauseButton) {
+                pauseButton.addEventListener('click', togglePause);
+            }
+
+            setTimeout(startAnimation, 800);
+        });
+    </script>
+</body>
+</html>
+
+

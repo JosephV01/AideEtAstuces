@@ -268,27 +268,10 @@
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
-            left: 555px !important;
-            top: 25px !important;
+            left: 550px !important;
+            top: 15px !important;
         }
 
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
     </style>
 </head>
 <body>
@@ -298,6 +281,18 @@
             <p class="demo-description">
                 Cette démonstration montre comment masquer ou afficher l'étiquette d'une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu, sélectionnez "Options de l'étiquette" puis "Masquer l'étiquette".
             </p>
+        </div>
+        
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
         </div>
         
         <div class="demo-canvas-container">
@@ -569,15 +564,7 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
+        
     </div>
 
     <script>
@@ -586,8 +573,17 @@
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        
+        // Standardisation de la vitesse du curseur (selon demo-elements.css)
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
         let baseInterval = 50; // Intervalle de base pour cette démo
-        const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
+        
+        // Calculer le nombre total de frames de l'animation (basé sur les phases fixes)
+        const totalAnimationFrames = 220; // Total jusqu'au redémarrage
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -1236,10 +1232,16 @@
                     isLabelVisible = true;
                     updateLabelOptionState();
                 }
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -1256,6 +1258,56 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur les phases réelles de l'animation
+            const phase1End = 30; // Fin du déplacement vers l'étiquette
+            const phase2End = 50; // Fin du clic sur l'étiquette
+            const phase3End = 70; // Fin du déplacement vers "Options de l'étiquette"
+            const phase4End = 90; // Fin du clic sur "Options de l'étiquette"
+            const phase5End = 105; // Fin du déplacement vers "Masquer l'étiquette"
+            const phase6End = 125; // Fin du clic sur "Masquer l'étiquette"
+            const phase7End = 140; // Fin de la disparition du menu
+            const phase8End = 160; // Fin de l'animation de masquage
+            const phase9End = 175; // Fin du déplacement vers "Afficher l'étiquette"
+            const phase10End = 190; // Fin du clic sur "Afficher l'étiquette"
+            const phase11End = 205; // Fin de la disparition du menu
+            const phase12End = 220; // Fin de l'animation d'affichage
+            
+            // Mettre à jour le texte de progression
+            if (phase <= phase1End) {
+                progressText.textContent = 'Déplacement vers l\'étiquette...';
+            } else if (phase <= phase2End) {
+                progressText.textContent = 'Clic sur l\'étiquette...';
+            } else if (phase <= phase3End) {
+                progressText.textContent = 'Déplacement vers "Options de l\'étiquette"...';
+            } else if (phase <= phase4End) {
+                progressText.textContent = 'Clic sur "Options de l\'étiquette"...';
+            } else if (phase <= phase5End) {
+                progressText.textContent = 'Déplacement vers "Masquer l\'étiquette"...';
+            } else if (phase <= phase6End) {
+                progressText.textContent = 'Clic sur "Masquer l\'étiquette"...';
+            } else if (phase <= phase7End) {
+                progressText.textContent = 'Fermeture du menu...';
+            } else if (phase <= phase8End) {
+                progressText.textContent = 'Masquage de l\'étiquette...';
+            } else if (phase <= phase9End) {
+                progressText.textContent = 'Déplacement vers "Afficher l\'étiquette"...';
+            } else if (phase <= phase10End) {
+                progressText.textContent = 'Clic sur "Afficher l\'étiquette"...';
+            } else if (phase <= phase11End) {
+                progressText.textContent = 'Fermeture du menu...';
+            } else if (phase <= phase12End) {
+                progressText.textContent = 'Affichage de l\'étiquette...';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
         }
 
         // Logique du menu contextuel (copiée du Reference-ContextMenu.html)

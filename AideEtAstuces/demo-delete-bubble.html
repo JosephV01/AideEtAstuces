@@ -271,27 +271,11 @@
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
-            left: 555px !important;
-            top: 25px !important;
+            left: 550px !important;
+            top: 15px !important;
         }
 
-        .back-button {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            background: var(--secondary-color);
-            transform: translateY(-2px);
-        }
+        /* back-button styles removed to use global styles in demo-elements.css */
     </style>
 </head>
 <body>
@@ -301,6 +285,19 @@
             <p class="demo-description">
                 Cette démonstration montre comment supprimer une Bulle via le menu contextuel. Effectuez un clic droit sur la poignée pour ouvrir le menu et sélectionnez "Supprimer".
             </p>
+        </div>
+        
+        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+        <div class="speed-control">
+            <label for="speedSlider">Vitesse de l'animation :</label>
+            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
+            <span id="speedValue">1x</span>
+            <button id="pauseButton" class="pause-button">Pause</button>
+            <button class="back-button" onclick="window.close()">Fermer</button>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-text" id="progressText">Préparation de la démonstration...</div>
         </div>
         
         <div class="demo-canvas-container">
@@ -572,15 +569,7 @@
             </div>
         </div>
 
-        <!-- Contrôle de vitesse standardisé -->
-        <div class="speed-control">
-            <label for="speedSlider">Vitesse de l'animation :</label>
-            <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
-            <span id="speedValue">1x</span>
-            <button id="pauseButton" class="pause-button">Pause</button>
-        </div>
-
-        <button class="back-button" onclick="window.close()">Fermer</button>
+        
     </div>
 
     <script>
@@ -591,6 +580,15 @@
         let isPaused = false;
         let baseInterval = 50; // Intervalle de base pour cette démo
         const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
+        
+        // Variables pour la progression
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        
+        // Calculer le nombre total de frames de l'animation
+        const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (589-133)**2) / CURSOR_SPEED_PX_PER_FRAME); // Y=589 pour "Supprimer"
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 23; // Total jusqu'au redémarrage
 
         // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
@@ -758,10 +756,16 @@
                     handle.classList.remove('deleting');
                     }
                 }
+                // Mettre à jour la progression
+                updateProgress(animationPhase, totalAnimationFrames);
+                
                 // Calculer l'intervalle juste avant de programmer la prochaine frame
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
+            
+            // Initialiser la progression
+            updateProgress(0, totalAnimationFrames);
             
             // Démarrer la première frame
             runAnimationFrame();
@@ -778,6 +782,44 @@
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+        }
+        
+        // Fonction pour mettre à jour la progression
+        function updateProgress(phase, totalFrames) {
+            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
+            progressBar.style.width = percentage + '%';
+            
+            // Calculer les seuils basés sur les phases réelles de l'animation
+            const phase1End = moveToHandleFrames; // Fin du déplacement vers poignée
+            const phase2End = moveToHandleFrames + 23; // Fin du clic droit
+            const phase3End = moveToHandleFrames + 27; // Fin de l'apparition du menu
+            const phase4End = moveToHandleFrames + 33; // Fin de la phase menu visible
+            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; // Fin du déplacement vers "Supprimer"
+            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; // Fin du clic sur "Supprimer"
+            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; // Fin de la disparition du menu
+            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 23; // Fin de la suppression
+            
+            // Mettre à jour le texte de progression
+            if (phase <= phase1End) {
+                progressText.textContent = 'Déplacement vers la poignée...';
+            } else if (phase <= phase2End) {
+                progressText.textContent = 'Clic droit sur la poignée...';
+            } else if (phase <= phase3End) {
+                progressText.textContent = 'Ouverture du menu contextuel...';
+            } else if (phase <= phase4End) {
+                progressText.textContent = 'Menu contextuel affiché...';
+            } else if (phase <= phase5End) {
+                progressText.textContent = 'Déplacement vers "Supprimer"...';
+            } else if (phase <= phase6End) {
+                progressText.textContent = 'Clic sur "Supprimer"...';
+            } else if (phase <= phase7End) {
+                progressText.textContent = 'Suppression en cours...';
+            } else if (phase <= phase8End) {
+                progressText.textContent = 'Bulle supprimée !';
+            } else {
+                progressText.textContent = 'Préparation du redémarrage...';
+            }
         }
 
         // Logique du menu contextuel (copiée du Reference-ContextMenu.html)

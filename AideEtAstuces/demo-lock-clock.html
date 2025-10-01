@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Démonstration - Personnaliser la Bulle Horloge - MyCustomDesk</title>
+    <title>Démonstration - Verrouiller/Déverrouiller l'affichage de l'horloge - MyCustomDesk</title>
     <link rel="stylesheet" href="HelpAndTips.css">
     <link rel="stylesheet" href="demo-elements.css">
     <style>
@@ -48,18 +48,39 @@
             z-index: 1000;
             visibility: visible;
             opacity: 1;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%) scale(2);
             transition: none;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
         .clock-time { color: white; font-size: 14px; font-weight: bold; font-family: 'Segoe UI', monospace; text-align: center; margin-bottom: 2px; }
         .clock-date { color: #cccccc; font-size: 10px; font-family: 'Segoe UI', sans-serif; text-align: center; }
 
+        /* Masque visuel au-dessus de l'horloge (par défaut au-dessus) */
+        .mask-over-clock {
+            position: absolute;
+            left: 200px;
+            top: 185px;
+            width: 200px;
+            height: 35px;
+            background: #1E1E1E;
+            border: 2px solid #FFFFFF;
+            border-radius: 4px;
+            transform: translate(-50%, -10%) scale(2);
+            z-index: 1500;
+            opacity: 1.0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 8px,
+                rgba(255, 255, 255, 0.3) 8px,
+                rgba(255, 255, 255, 0.3) 16px
+            );
+        }
+
         /* Curseur toujours au-dessus */
         .mouse-cursor { z-index: 3000 !important; }
-
-        /* back-button styles removed to use global styles in demo-elements.css */
-
+        
          /* Fenêtre de personnalisation (référence) - affichée strictement comme dans Reference-ClockCustomization.html */
          .clock-customize-overlay {
              position: absolute;
@@ -74,38 +95,7 @@
              background: rgba(0, 0, 0, 0.3);
          }
          .clock-customize-overlay.visible { visibility: visible; opacity: 1; }
-
-        /* Styles de la fenêtre de personnalisation - thème sombre */
-        .ref-main-container { width: 650px; height: 450px; background: transparent; position: relative; }
-        .ref-main-border { border: 2px solid #555555; border-radius: 20px; padding: 6px; background: #2D2D2D; box-shadow: 0 4px 12px rgba(0,0,0,0.6); height: 100%; display: flex; flex-direction: column; }
-        .ref-content-grid { flex: 1; display: grid; grid-template-rows: auto 1fr auto; gap: 0; margin: 8px; min-height: 0; }
-        .ref-preview-section { margin: 10px 160px 15px 160px; background: #1E1E1E; border-radius: 10px; padding: 15px; border: 2px solid #FFFFFF; display: flex; justify-content: center; align-items: center; }
-        .ref-preview-container { max-height: 80px; display: flex; align-items: center; justify-content: center; }
-        .ref-preview-clock { width: 240px; height: 120px; background: transparent; display: flex; align-items: center; justify-content: center; }
-        .ref-preview-border { width: auto; height: auto; border: 2px solid #8A8A8A; border-radius: 8px; background: #ffffff; padding: 8px 12px; position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .ref-preview-time { text-align: center; font-family: 'Segoe UI', monospace; font-weight: bold; color: #000000; font-size: 14px; line-height: 1; margin-bottom: 2px; }
-        .ref-preview-date { text-align: center; font-family: 'Segoe UI', sans-serif; font-weight: normal; color: #000000; opacity: 0.8; font-size: 10px; line-height: 1; }
-        .ref-customization-section { margin: 5px; display: flex; flex-direction: column; align-items: center; }
-        .ref-preview-title { font-weight: bold; font-size: 14px; font-family: 'Segoe UI Variable'; text-align: center; margin-bottom: 10px; color: #F0F0F0; }
-        .ref-customization-title { font-weight: bold; font-size: 18px; font-family: 'Segoe UI Variable'; text-align: center; margin-bottom: 10px; color: #F0F0F0; }
-        .ref-controls-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; }
-        .ref-control-group { border: 2px solid #FFFFFF; border-radius: 6px; padding: 4px; background: #3A3A3A; }
-        .ref-group-header { font-family: 'Segoe UI Variable'; font-size: 14px; font-weight: bold; color: #F0F0F0; margin-bottom: 4px; padding: 2px; text-align: left; }
-        .ref-control-item { display: flex; align-items: center; margin-bottom: 4px; gap: 5px; }
-        .ref-control-icon { width: 16px; height: 15px; fill: #F0F0F0; flex-shrink: 0; }
-        .ref-control-icon.large { width: 18px; height: 19px; }
-        .ref-control-icon.thickness { width: 18px; height: 17px; }
-        .ref-control-label { width: 110px; font-family: 'Segoe UI Variable'; font-size: 12px; color: #F0F0F0; flex-shrink: 0; text-align: left; }
-        .ref-color-button { width: 25px; height: 18px; border: 1px solid #666666; cursor: pointer; border-radius: 2px; }
-        .ref-font-combo { min-width: 70px; height: 18px; border: 1px solid #666666; cursor: pointer; background: #4A4A4A; border-radius: 2px; font-family: 'Segoe UI Variable'; font-size: 10px; padding: 1px 4px; color: #F0F0F0; }
-        .ref-slider { 
-            width: 70px; 
-            height: 20px; 
-            appearance: none;
-            background: #666666;
-            border-radius: 10px;
-            outline: none;
-        }
+         
         .ref-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
@@ -196,32 +186,19 @@
              text-overflow: ellipsis;
              margin: 0 5px;
          }
-
-         /* Curseur de souris avec z-index élevé */
-        .mouse-cursor {
-            z-index: 3000 !important;
-        }
-
-        /* Position de la souris ajustée pour le canvas agrandi */
-        .mouse-zero-click,
-        .mouse-left-click,
-        .mouse-right-click {
-            left: 350px !important;
-            top: 15px !important;
-        }
-
     </style>
 </head>
 <body>
     <div class="demo-container">
         <div class="demo-header">
-            <h1 class="demo-title">Démonstration - Personnaliser la Bulle Horloge</h1>
+            <h1 class="demo-title">Démonstration - Verrouiller/Déverrouiller l'affichage de l'horloge</h1>
             <p class="demo-description">
-                • Cette démonstration montre comment accéder aux options de personnalisation de l'horloge via le menu contextuel.<br>
-                • Cliquez droit sur l'horloge pour ouvrir le menu et sélectionnez <strong>Personnaliser l'horloge</strong>.
+                • Cette démonstration montre comment <strong>verrouiller</strong> ou <strong>déverrouiller</strong> l'affichage de l'horloge via le menu contextuel.<br>
+                • Faites un <strong>clic droit</strong> sur l'horloge, puis ouvrez <strong>Personnaliser l'horloge</strong> pour accéder à <strong>Verrouiller/Déverrouiller l'affichage</strong>.
             </p>
         </div>
         
+        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
         <div class="speed-control">
             <label for="speedSlider">Vitesse de l'animation :</label>
             <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
@@ -239,7 +216,15 @@
                 <div class="floating-clock" id="floating-clock">
                     <div class="clock-time">14:32:15</div>
                     <div class="clock-date">Lun 16 Déc 2024</div>
+                    <div id="lock-badge" style="position:absolute; right:4px; top:4px; width:10px; height:10px; display:none; align-items:center; justify-content:center; background:#3A3A3A; border:1px solid #ffffff; border-radius:25%; box-shadow: 0 0 4px rgba(0,0,0,0.35);">
+                        <svg viewBox="0 -960 960 960" width="6" height="6" style="width:6px; height:6px; display:block;" fill="#ffffff">
+                            <path d="M240,-80 q-33,0 -56.5,-23.5 T160,-160 v-400 q0,-33 23.5,-56.5 T240,-640 h40 v-80 q0,-83 58.5,-141.5 T480,-920 q83,0 141.5,58.5 T680,-720 v80 h40 q33,0 56.5,23.5 T800,-560 v400 q0,33 -23.5,56.5 T720,-80 H240 Z m0,-80 h480 v-400 H240 v400 Z m240,-120 q33,0 56.5,-23.5 T560,-360 q0,-33 -23.5,-56.5 T480,-440 q-33,0 -56.5,23.5 T400,-360 q0,33 23.5,56.5 T480,-280 Z M360,-640 h240 v-80 q0,-50 -35,-85 t-85,-35 q-50,0 -85,35 t-35,85 v80 Z m-120,480 v-400 400 Z"/>
+                        </svg>
+                    </div>
                 </div>
+
+                <!-- Masque visuel au-dessus de l'horloge -->
+                <div class="mask-over-clock" id="clock-visual-mask"></div>
 
                 <div class="mouse-cursor"></div>
                 <div class="mouse-zero-click large"></div>
@@ -354,7 +339,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <script>
@@ -363,6 +347,7 @@
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
+        let isClockLocked = false;
         
         // Variables pour la progression
         const progressBar = document.getElementById('progressBar');
@@ -371,11 +356,14 @@
         // Standardisation de la vitesse du curseur (selon demo-elements.css)
         const CURSOR_SPEED_PX_PER_FRAME = 9;
         let baseInterval = 50; // Intervalle de base pour cette démo
+        let toggledThisClick = false; // Pour éviter plusieurs inversions lors du clic
+        let startAtClockNext = false; // Démarrer directement sur l'horloge au prochain cycle
         
-        // Calculer le nombre total de frames de l'animation
-        const moveToClockFrames = Math.ceil(Math.sqrt((120-143)**2 + (130-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const moveToMenuFrames = Math.ceil(Math.sqrt((429-120)**2 + (450-130)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToClockFrames + 28 + moveToMenuFrames + 69; // Total jusqu'au redémarrage
+        // Calculer le nombre total de frames de l'animation (2 phases: verrouiller puis déverrouiller)
+        const moveToClockFrames = Math.ceil(Math.sqrt((200-285)**2 + (140-280)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const moveToMenuFrames = Math.ceil(Math.sqrt((285-200)**2 + (280-140)**2) / CURSOR_SPEED_PX_PER_FRAME);
+        const singlePhaseTotalFrames = moveToClockFrames + 28 + moveToMenuFrames + 35;
+        const totalAnimationFrames = singlePhaseTotalFrames * 2;
 
          const mouseCursor = document.querySelector('.mouse-cursor');
          const mouseZeroClick = document.querySelector('.mouse-zero-click');
@@ -385,7 +373,9 @@
          const toggleClockItem = document.getElementById('toggleClockItem');
          const clockSizeItem = document.getElementById('clockSizeItem');
          const customizeClockItem = document.getElementById('customizeClockItem');
-         const lockClockItem = document.getElementById('lockClockItem');
+        const lockClockItem = document.getElementById('lockClockItem');
+        const lockBadge = document.getElementById('lock-badge');
+        const visualMask = document.getElementById('clock-visual-mask');
          const customizeOverlay = document.getElementById('customize-overlay');
 
         function resetVisualState() {
@@ -420,6 +410,33 @@
             mouseZeroClick.style.visibility = 'visible';
             mouseRightClick.style.visibility = 'hidden';
             mouseLeftClick.style.visibility = 'hidden';
+
+            // Reset lock badge
+            if (lockBadge) { lockBadge.style.display = isClockLocked ? 'flex' : 'none'; }
+        }
+
+        // Mettre à jour le texte de l'option de verrouillage comme dans demo-Show-Clock
+        function updateLockOptionState() {
+            if (lockClockItem) {
+                const textEl = lockClockItem.querySelector('.menu-text');
+                if (textEl) {
+                    textEl.textContent = isClockLocked ? "Déverrouiller l'horloge" : "Verrouiller l'horloge";
+                }
+            }
+        }
+
+        // Mettre à jour la priorité d'affichage horloge/masque
+        function updateZOrder() {
+            if (!visualMask) return;
+            if (isClockLocked) {
+                // L'horloge passe au-dessus du masque
+                document.getElementById('floating-clock').style.zIndex = 2000;
+                visualMask.style.zIndex = 1500;
+            } else {
+                // Le masque reste au-dessus de l'horloge
+                document.getElementById('floating-clock').style.zIndex = 1000;
+                visualMask.style.zIndex = 1500;
+            }
         }
 
         function startAnimation() {
@@ -431,121 +448,131 @@
                 }
                 
                 animationPhase++;
-
-                // Calculer les frames de mouvement avec vitesse standardisée
                 const clockCenterX = 200; // centre de l'horloge
                 const clockCenterY = 140;
-                const moveToClockFrames = Math.ceil(Math.sqrt((clockCenterX-143)**2 + (clockCenterY-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
-                const moveToMenuFrames = Math.ceil(Math.sqrt((285-clockCenterX)**2 + (253-clockCenterY)**2) / CURSOR_SPEED_PX_PER_FRAME);
 
-                // Phase 1: Curseur se déplace vers le centre de l'horloge (vitesse standardisée)
-                if (animationPhase <= moveToClockFrames) {
-                    const p = animationPhase / moveToClockFrames;
-                    const sx = 143, sy = 92;
+                // Déterminer la phase locale (1: verrouillage, 2: déverrouillage)
+                const phaseIndex = animationPhase <= singlePhaseTotalFrames ? 1 : 2;
+                const localPhase = phaseIndex === 1 ? animationPhase : (animationPhase - singlePhaseTotalFrames);
+
+                // Au début de la phase 2, démarrer depuis la position de l'élément "Verrouiller/Déverrouiller"
+                if (phaseIndex === 2 && localPhase === 1) {
+                    mouseCursor.style.left = '285px';
+                    mouseCursor.style.top = '280px';
+                    mouseCursor.style.visibility = 'visible';
+                }
+
+                // Sous-phases communes
+                const rightClickStart = moveToClockFrames;
+                const moveToMenuStart = moveToClockFrames + 28;
+                const selectStart = moveToClockFrames + 28 + moveToMenuFrames;
+                const closeMenuStart = selectStart + 18;
+                const returnStart = closeMenuStart + 1;
+
+                if (localPhase <= moveToClockFrames) {
+                    if (localPhase === 1) {
+                        mouseCursor.style.visibility = 'visible';
+                    }
+                    const p = localPhase / moveToClockFrames;
+                    const sx = 285, sy = 280;
                     const ex = clockCenterX, ey = clockCenterY;
                     mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
                     mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
                 }
-                // Phase 2: Animation de clic droit sur l'horloge
-                else if (animationPhase <= moveToClockFrames + 28) {
-                    const clickPhase = animationPhase - moveToClockFrames;
-                    // clic droit centré sur l'horloge
+                else if (localPhase <= rightClickStart + 28) {
+                    const clickPhase = localPhase - rightClickStart;
                     if (clickPhase >= 2) { mouseZeroClick.style.visibility = 'hidden'; mouseRightClick.style.visibility = 'visible'; }
                     if (clickPhase >= 4) { mouseZeroClick.style.visibility = 'visible'; mouseRightClick.style.visibility = 'hidden'; }
-                    // onde de clic
-                    if (clickPhase <= 3) {
-                    } else if (clickPhase <= 6) {
-                        const shrink = clickPhase - 3;
-                    } else {
+                    if (clickPhase >= 10) {
+                        contextMenu.style.visibility = 'visible';
+                        contextMenu.style.opacity = '1';
+                        contextMenu.style.transform = 'scale(1)';
+                        contextMenu.classList.add('visible');
                     }
-                 // ouverture menu
-                 if (clickPhase >= 10) {
-                     const menuProgress = Math.min(1, (clickPhase - 10) / 6);
-                     contextMenu.style.visibility = 'visible';
-                     contextMenu.style.opacity = menuProgress;
-                     contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
-                     if (menuProgress >= 1) {
-                         contextMenu.classList.add('visible');
-                     }
-                 }
-             }
-             // Phase 3: Curseur se déplace vers "Personnaliser l'horloge" (vitesse standardisée)
-             else if (animationPhase <= moveToClockFrames + 28 + moveToMenuFrames) {
-                 const movePhase = animationPhase - (moveToClockFrames + 28);
-                 if (movePhase >= 2) {
-                     const progress = Math.min(1, (movePhase - 2) / (moveToMenuFrames - 2));
-                     // position vers "Personnaliser l'horloge" directement
-                     const startX = clockCenterX, startY = clockCenterY; // depuis centre horloge
-                     const endX = 285, endY = 253; // position "Personnaliser l'horloge" dans le menu
-                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
-                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
-                 }
-                 
-             }
-             // Phase 4: Animation de clic sur "Personnaliser l'horloge"
-             else if (animationPhase <= moveToClockFrames + 28 + moveToMenuFrames + 18) {
-                 const clickPhase = animationPhase - (moveToClockFrames + 28 + moveToMenuFrames);
-                 // Effet clic bleu uniquement sur "Personnaliser l'horloge"
-                 if (clickPhase >= 1 && clickPhase <= 2.5) {
-                     const activateProgress = (clickPhase - 1) / 1.5;
-                     const scale = 1 - (activateProgress * 0.05);
-                     customizeClockItem.style.background = 'linear-gradient(135deg, #0078d4, #106ebe)';
-                     customizeClockItem.style.color = '#ffffff';
-                     customizeClockItem.style.transform = `scale(${scale})`;
-                     customizeClockItem.style.boxShadow = `0 0 ${4 + activateProgress * 4}px rgba(0, 120, 212, ${0.3 + activateProgress * 0.3})`;
-                 } else if (clickPhase > 2.5 && clickPhase <= 4.5) {
-                     const releaseProgress = (clickPhase - 2.5) / 2;
-                     const scale = 0.95 + (releaseProgress * 0.05);
-                     customizeClockItem.style.transform = `scale(${scale})`;
-                     if (releaseProgress > 0.8) {
-                         customizeClockItem.style.background = '#2A2D31';
-                         customizeClockItem.style.color = 'cyan';
-                         customizeClockItem.style.boxShadow = 'none';
-                     }
-                 } else {
-                     customizeClockItem.style.background = '#2A2D31';
-                     customizeClockItem.style.color = 'cyan';
-                     customizeClockItem.style.transform = 'scale(1)';
-                     customizeClockItem.style.boxShadow = 'none';
-                 }
+                }
+                else if (localPhase <= moveToMenuStart + moveToMenuFrames) {
+                    const movePhase = localPhase - moveToMenuStart;
+                    if (movePhase >= 2) {
+                        const progress = Math.min(1, (movePhase - 2) / (moveToMenuFrames - 2));
+                        const startX = clockCenterX, startY = clockCenterY;
+                        const endX = 285, endY = 280;// position de l'élément "Verrouiller/Déverrouiller"
+                        mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
+                        mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
+                    }
+                }
+                else if (localPhase <= selectStart + 18) {
+                    const clickPhase = localPhase - selectStart;
+                    if (clickPhase >= 1 && clickPhase <= 2.5) {
+                        const activateProgress = (clickPhase - 1) / 1.5;
+                        const scale = 1 - (activateProgress * 0.05);
+                        lockClockItem.style.background = 'linear-gradient(135deg, #0078d4, #106ebe)';
+                        lockClockItem.style.color = '#ffffff';
+                        lockClockItem.style.transform = `scale(${scale})`;
+                        lockClockItem.style.boxShadow = `0 0 ${4 + activateProgress * 4}px rgba(0, 120, 212, ${0.3 + activateProgress * 0.3})`;
+                    } else if (clickPhase > 2.5 && clickPhase <= 4.5) {
+                        const releaseProgress = (clickPhase - 2.5) / 2;
+                        const scale = 0.95 + (releaseProgress * 0.05);
+                        lockClockItem.style.transform = `scale(${scale})`;
+                        if (releaseProgress > 0.8) {
+                            lockClockItem.style.background = '#2A2D31';
+                            lockClockItem.style.color = 'cyan';
+                            lockClockItem.style.boxShadow = 'none';
+                        }
+                    } else {
+                        lockClockItem.style.background = '#2A2D31';
+                        lockClockItem.style.color = 'cyan';
+                        lockClockItem.style.transform = 'scale(1)';
+                        lockClockItem.style.boxShadow = 'none';
+                    }
+                    if (clickPhase >= 2) { mouseZeroClick.style.visibility = 'hidden'; mouseLeftClick.style.visibility = 'visible'; }
+                    if (clickPhase >= 6) { mouseZeroClick.style.visibility = 'visible'; mouseLeftClick.style.visibility = 'hidden'; }
+                    if (clickPhase >= 4) {
+                        // Phase 1: on verrouille; Phase 2: on déverrouille
+                        const shouldToggle = (phaseIndex === 1 && !toggledThisClick) || (phaseIndex === 2 && toggledThisClick);
+                        if (shouldToggle) {
+                            isClockLocked = !isClockLocked;
+                            updateLockOptionState();
+                            updateZOrder();
+                            toggledThisClick = !toggledThisClick;
+                        }
+                    }
+                    if (clickPhase >= 6) {
+                        contextMenu.style.opacity = 0;
+                        contextMenu.style.visibility = 'hidden';
+                        contextMenu.classList.remove('visible');
+                    }
+                }
+                else if (localPhase <= closeMenuStart + 1) {
+                    contextMenu.style.opacity = 0;
+                    contextMenu.style.visibility = 'hidden';
+                    contextMenu.classList.remove('visible');
+                    if (lockBadge) { lockBadge.style.display = isClockLocked ? 'flex' : 'none'; }
+                }
+                else if (localPhase <= returnStart + 16) {
+                    if (phaseIndex === 2 && isClockLocked) {
+                        const movePhase = localPhase - returnStart;
+                        const progress = Math.min(1, movePhase / 16);
+                        const currentX = parseFloat(mouseCursor.style.left);
+                        const currentY = parseFloat(mouseCursor.style.top);
+                        const targetX = 200; // centre de l'horloge
+                        const targetY = 140;
+                        mouseCursor.style.left = (currentX + (targetX - currentX) * progress) + 'px';
+                        mouseCursor.style.top = (currentY + (targetY - currentY) * progress) + 'px';
+                    }
+                } else {
+                    // rien, laisser courir jusqu'à totalAnimationFrames
+                }
 
-                 // Synchroniser le clic gauche souris et l'onde de clic
-                 if (clickPhase >= 2) { mouseZeroClick.style.visibility = 'hidden'; mouseLeftClick.style.visibility = 'visible'; }
-                 if (clickPhase >= 6) { mouseZeroClick.style.visibility = 'visible'; mouseLeftClick.style.visibility = 'hidden'; }
-                 if (clickPhase <= 3) {
-                 } else if (clickPhase <= 6) {
-                     const shrinkPhase = clickPhase - 3;
-                 } else {
-                 }
-
-                 if (clickPhase >= 6) {
-                     contextMenu.style.opacity = 0;
-                     contextMenu.style.visibility = 'hidden';
-                     contextMenu.classList.remove('visible');
-                 }
-             }
-                // Phase 5: Apparition immédiate de la fenêtre de personnalisation
-                else if (animationPhase <= moveToClockFrames + 28 + moveToMenuFrames + 19) {
-                    customizeOverlay.classList.add('visible');
-                    customizeOverlay.style.opacity = 1;
-                }
-                // Phase 6: Pause avec la fenêtre visible
-                else if (animationPhase <= moveToClockFrames + 28 + moveToMenuFrames + 59) {
-                    // Pause avec la fenêtre visible
-                }
-                // Phase 7: Léger fondu pour la disparition
-                else if (animationPhase <= moveToClockFrames + 28 + moveToMenuFrames + 69) {
-                    const fadePhase = animationPhase - (moveToClockFrames + 28 + moveToMenuFrames + 59);
-                    const fadeProgress = fadePhase / 10;
-                    customizeOverlay.style.opacity = 1 - fadeProgress;
-                }
-                else {
+                if (animationPhase > totalAnimationFrames) {
                     animationPhase = 0;
-                    mouseCursor.style.left = '143px';
-                    mouseCursor.style.top = '92px';
-                    customizeOverlay.classList.remove('visible');
-                    customizeOverlay.style.opacity = 0;
+                    startAtClockNext = false;
+                    mouseCursor.style.left = '285px';
+                    mouseCursor.style.top = '280px';
+                    mouseCursor.style.visibility = 'hidden';
                     resetVisualState();
+                    updateLockOptionState();
+                    updateZOrder();
+                    toggledThisClick = false;
                 }
                 
                 // Mettre à jour la progression
@@ -564,8 +591,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            if (mouseCursor) { mouseCursor.style.visibility = 'visible'; mouseCursor.style.opacity = '1'; }
+            if (mouseCursor) { mouseCursor.style.visibility = 'hidden'; mouseCursor.style.opacity = '1'; }
             resetVisualState();
+            updateZOrder();
             setTimeout(startAnimation, 800);
         });
 
@@ -583,45 +611,26 @@
             // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
         }
         
-        // Fonction pour mettre à jour la progression
+        // Fonction pour mettre à jour la progression (2 phases)
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur les phases réelles de l'animation
-            const phase1End = moveToClockFrames; // Fin du déplacement vers l'horloge
-            const phase2End = moveToClockFrames + 18; // Fin du clic droit
-            const phase3End = moveToClockFrames + 22; // Fin de l'apparition du menu
-            const phase4End = moveToClockFrames + 28; // Fin de la phase menu visible
-            const phase5End = moveToClockFrames + 28 + moveToMenuFrames; // Fin du déplacement vers "Personnaliser l'horloge"
-            const phase6End = moveToClockFrames + 28 + moveToMenuFrames + 8; // Fin du clic sur "Personnaliser l'horloge"
-            const phase7End = moveToClockFrames + 28 + moveToMenuFrames + 18; // Fin de la disparition du menu
-            const phase8End = moveToClockFrames + 28 + moveToMenuFrames + 19; // Fin de l'apparition de l'overlay
-            const phase9End = moveToClockFrames + 28 + moveToMenuFrames + 59; // Fin de l'affichage de l'overlay
-            const phase10End = moveToClockFrames + 28 + moveToMenuFrames + 69; // Fin de la disparition de l'overlay
-            
-            // Mettre à jour le texte de progression
-            if (phase <= phase1End) {
-                progressText.textContent = 'Déplacement vers l\'horloge...';
-            } else if (phase <= phase2End) {
-                progressText.textContent = 'Clic droit sur l\'horloge...';
-            } else if (phase <= phase3End) {
-                progressText.textContent = 'Ouverture du menu contextuel...';
-            } else if (phase <= phase4End) {
-                progressText.textContent = 'Menu contextuel affiché...';
-            } else if (phase <= phase5End) {
-                progressText.textContent = 'Déplacement vers "Personnaliser l\'horloge"...';
-            } else if (phase <= phase6End) {
-                progressText.textContent = 'Clic sur "Personnaliser l\'horloge"...';
-            } else if (phase <= phase7End) {
-                progressText.textContent = 'Fermeture du menu...';
-            } else if (phase <= phase8End) {
-                progressText.textContent = 'Ouverture de l\'overlay de personnalisation...';
-            } else if (phase <= phase9End) {
-                progressText.textContent = 'Overlay de personnalisation affiché...';
-            } else if (phase <= phase10End) {
-                progressText.textContent = 'Fermeture de l\'overlay...';
+
+            if (phase <= 0) { progressText.textContent = 'Préparation de la démonstration...'; return; }
+
+            const describe = (prefix, p) => {
+                if (p <= moveToClockFrames) return `${prefix} · Déplacement vers l'horloge`;
+                if (p <= moveToClockFrames + 28) return `${prefix} · Clic droit sur l'horloge`;
+                if (p <= moveToClockFrames + 28 + moveToMenuFrames) return `${prefix} · Déplacement vers "${isClockLocked ? 'Déverrouiller' : 'Verrouiller'} l'horloge"`;
+                if (p <= moveToClockFrames + 28 + moveToMenuFrames + 18) return `${prefix} · Clic sur "${isClockLocked ? 'Déverrouiller' : 'Verrouiller'} l'horloge"`;
+                if (p <= moveToClockFrames + 28 + moveToMenuFrames + 19) return `${prefix} · Fermeture du menu`;
+                return `${prefix} · Ajustement du curseur`;
+            };
+
+            if (phase <= singlePhaseTotalFrames) {
+                progressText.textContent = describe('Phase 1/2', phase);
+            } else if (phase <= totalFrames) {
+                progressText.textContent = describe('Phase 2/2', phase - singlePhaseTotalFrames);
             } else {
                 progressText.textContent = 'Préparation du redémarrage...';
             }
