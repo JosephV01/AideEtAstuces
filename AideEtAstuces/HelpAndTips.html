@@ -31,6 +31,10 @@
         .nav-indicator {
             pointer-events: none;
         }
+
+        /* Ensure expanded content stays on top and clickable */
+        .collapsible-section .section-header { position: relative; z-index: 1; }
+        .collapsible-section .section-content { position: relative; z-index: 2; }
     </style>
 </head>
 <body>
@@ -1567,15 +1571,27 @@
         function toggleSection(headerElement) {
             const section = headerElement.closest('.collapsible-section');
             const content = section.querySelector('.section-content');
-            const icon = headerElement.querySelector('.collapse-icon');
-            
-            if (content.classList.contains('collapsed')) {
-                
+
+            const isCollapsed = content.classList.contains('collapsed');
+
+            if (isCollapsed) {
+                // Accordion behavior: collapse other sections within the same tab
+                const parentTab = section.closest('.tab-content');
+                if (parentTab) {
+                    parentTab.querySelectorAll('.collapsible-section .section-content.expanded').forEach(otherContent => {
+                        if (otherContent !== content) {
+                            otherContent.classList.remove('expanded');
+                            otherContent.classList.add('collapsed');
+                            const otherSection = otherContent.closest('.collapsible-section');
+                            if (otherSection) otherSection.classList.remove('expanded');
+                        }
+                    });
+                }
+
                 content.classList.remove('collapsed');
                 content.classList.add('expanded');
                 section.classList.add('expanded');
             } else {
-                
                 content.classList.remove('expanded');
                 content.classList.add('collapsed');
                 section.classList.remove('expanded');
