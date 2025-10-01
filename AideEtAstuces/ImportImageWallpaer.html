@@ -198,7 +198,6 @@
             gap: 5px;
         }
 
-
         .language-combo {
             width: 120px;
             margin-left: 5px;
@@ -223,7 +222,6 @@
             gap: 5px;
         }
 
-
         .settings-footer {
             position: absolute;
             bottom: 20px;
@@ -244,7 +242,6 @@
             background: #e0e0e0;
         }
 
-        /* Icônes SVG */
         .icon {
             width: 22px;
             height: 22px;
@@ -258,7 +255,6 @@
             height: 22px;
         }
 
-        /* Styles pour la démonstration */
         .demo-progress-window {
             width: 800px;
             margin: 20px auto;
@@ -445,7 +441,7 @@
     </style>
 </head>
 <body>
-    <!-- Fenêtre de progression de démonstration -->
+    
     <div class="demo-progress-window" id="demoProgressWindow">
         <div class="demo-progress-content">
             <div class="demo-progress-header">
@@ -481,9 +477,9 @@
             <div class="settings-header">Paramètres</div>
             
             <div class="settings-main">
-                <!-- Colonne de gauche -->
+                
                 <div class="settings-column">
-                    <!-- Couleur de fond d'écran -->
+                    
                     <div class="section-border">
                         <div class="section-title">Couleur de fond d'écran</div>
                         <div class="subsection-border">
@@ -496,7 +492,6 @@
                         </div>
                     </div>
 
-                    <!-- Fond d'écran personnalisé -->
                     <div class="section-border">
                         <div class="section-title">Fond d'écran personnalisé</div>
                         <div class="subsection-border">
@@ -531,7 +526,6 @@
                         </div>
                     </div>
 
-                    <!-- Thème de l'interface -->
                     <div class="section-border">
                         <div class="section-title">Thème de l'interface</div>
                         <div class="subsection-border">
@@ -547,7 +541,6 @@
                         </div>
                     </div>
 
-                    <!-- Personnaliser le titre des étiquettes -->
                     <div class="section-border">
                         <div class="section-title">Personnaliser le titre des étiquettes</div>
                         <div class="subsection-border">
@@ -577,7 +570,6 @@
                         </div>
                     </div>
 
-                    <!-- Magnétisme -->
                     <div class="section-border">
                         <div class="section-title">Magnétisme de déplacement et redimensionnement</div>
                         <div class="subsection-border">
@@ -590,9 +582,8 @@
                     </div>
                 </div>
 
-                <!-- Colonne de droite -->
                 <div class="settings-column">
-                    <!-- Langue de l'application -->
+                    
                     <div class="section-border">
                         <div class="section-title">Langue de l'application</div>
                         <div class="subsection-border">
@@ -618,7 +609,6 @@
                         </div>
                     </div>
 
-                    <!-- Démarrer avec Windows -->
                     <div class="section-border">
                         <div class="section-title">Démarrer avec Windows</div>
                         <div class="subsection-border">
@@ -629,7 +619,6 @@
                         </div>
                     </div>
 
-                    <!-- Son -->
                     <div class="section-border">
                         <div class="section-title">Son</div>
                         <div class="subsection-border">
@@ -643,7 +632,6 @@
                         </div>
                     </div>
 
-                    <!-- Options supplémentaires -->
                     <div class="section-border">
                         <div class="section-title">Options supplémentaires</div>
                         <div class="subsection-border">
@@ -694,19 +682,17 @@
         </div>
     </div>
 
-    <!-- Input file caché pour l'import réel -->
     <input type="file" id="fileInput" accept="image/*" style="display: none;" />
-    
-    <!-- Sélecteur d'images simulé (plus utilisé avec l'import réel) -->
+
     <div class="color-picker-demo" id="colorPicker" style="display: none;">
         <div style="font-weight: bold; margin-bottom: 10px; color: #0078d4;">Sélecteur d'images</div>
         <div class="color-palette" id="colorPalette">
-            <!-- Plus utilisé avec l'import réel -->
+            
         </div>
     </div>
 
     <script>
-        // Variables globales pour la démonstration
+        
         let demoRunning = false;
         let currentStep = 0;
         let demoSteps = [
@@ -716,7 +702,6 @@
             "Bravo ! L'image a été appliquée comme fond d'écran"
         ];
 
-        // Images disponibles pour la démonstration
         const demoImages = [
             { name: 'Paysage 1', url: '../MediaLibrary/Landscape/landscape1.jpg' },
             { name: 'Nature 1', url: '../MediaLibrary/Nature/nature1.jpg' },
@@ -728,18 +713,16 @@
             { name: 'Simple 1', url: '../MediaLibrary/Simple/simple1.jpg' }
         ];
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeDemo();
-            // generateImageGallery(); // Plus nécessaire avec l'import réel
+            
             setupEventListeners();
         });
 
         function initializeDemo() {
-            // Afficher la fenêtre de progression
-            document.getElementById('demoProgressWindow').style.display = 'block';
             
-            // Mettre à jour l'instruction
+            document.getElementById('demoProgressWindow').style.display = 'block';
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment importer une image comme fond d'écran personnalisé.";
         }
@@ -769,7 +752,7 @@
             document.getElementById('stopDemo').addEventListener('click', stopDemo);
             document.getElementById('resetDemo').addEventListener('click', resetDemo);
             document.getElementById('closeDemo').addEventListener('click', closeDemo);
-            // Plus besoin des boutons Appliquer/Annuler avec l'import automatique
+            
             document.getElementById('fileInput').addEventListener('change', handleFileSelect);
         }
 
@@ -778,32 +761,25 @@
             
             demoRunning = true;
             currentStep = 0;
-            
-            // Réinitialiser la barre de progression à 0%
+
             updateProgress(0);
-            
-            // Désactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = true;
             document.getElementById('stopDemo').disabled = false;
-            
-            // Commencer la démonstration interactive
+
             startInteractiveDemo();
         }
 
         function stopDemo() {
             demoRunning = false;
-            
-            // Réactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = false;
             document.getElementById('stopDemo').disabled = true;
-            
-            // Supprimer les écouteurs d'événements
+
             removeInteractiveListeners();
-            
-            // Masquer les éléments de démonstration
+
             hideHighlight();
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Démonstration arrêtée. Cliquez sur 'Démarrer la démonstration' pour recommencer.";
             document.getElementById('demoStep').textContent = '';
@@ -812,28 +788,23 @@
 
         function resetDemo() {
             stopDemo();
-            
-            // Réinitialiser le fond d'écran
+
             document.body.style.background = '#f0f0f0';
             document.body.style.backgroundImage = 'none';
-            
-            // Réinitialiser l'image sélectionnée
+
             window.selectedDemoImage = null;
             window.selectedFileName = null;
-            
-            // Réinitialiser la case à cocher
+
             document.getElementById('custom-wallpaper').checked = false;
-            
-            // Réinitialiser l'input file
+
             document.getElementById('fileInput').value = '';
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment importer une image comme fond d'écran personnalisé.";
         }
 
         function closeDemo() {
-            // Fermer l'onglet
+            
             window.close();
         }
 
@@ -841,7 +812,7 @@
             if (!demoRunning) return;
             
             currentStep = 0;
-            // S'assurer que la barre est à 0% au début
+            
             updateProgress(0);
             showCurrentStep();
             setupInteractiveListeners();
@@ -850,8 +821,7 @@
         function showCurrentStep() {
             const step = demoSteps[currentStep];
             document.getElementById('demoStep').textContent = `Étape ${currentStep + 1}: ${step}`;
-            // Calculer le pourcentage basé sur l'étape actuelle
-            // Étape 0 = 0%, Étape 1 = 33%, Étape 2 = 66%, Étape 3 = 100%
+
             let percentage = 0;
             if (currentStep === 0) percentage = 0;
             else if (currentStep === 1) percentage = 33;
@@ -882,16 +852,16 @@
         }
 
         function setupInteractiveListeners() {
-            // Supprimer les anciens écouteurs
+            
             removeInteractiveListeners();
             
             if (currentStep === 0) {
-                // Écouter le clic sur la checkbox
+                
                 const checkbox = document.getElementById('custom-wallpaper');
                 checkbox.addEventListener('change', onCheckboxChange);
                 checkbox.style.cursor = 'pointer';
             } else if (currentStep === 1) {
-                // Écouter le clic sur le bouton importer
+                
                 const importButton = document.querySelectorAll('.settings-button')[1];
                 importButton.addEventListener('click', onImportButtonClick);
                 importButton.style.cursor = 'pointer';
@@ -924,7 +894,7 @@
         function onImportButtonClick() {
             if (currentStep === 1 && demoRunning) {
                 hideHighlight();
-                // Déclencher l'import de fichier réel
+                
                 document.getElementById('fileInput').click();
             }
         }
@@ -932,25 +902,22 @@
         function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file && demoRunning && currentStep === 1) {
-                // Vérifier que c'est bien une image
+                
                 if (file.type.startsWith('image/')) {
-                    // Créer une URL pour l'image sélectionnée
+                    
                     const imageUrl = URL.createObjectURL(file);
                     window.selectedDemoImage = imageUrl;
                     window.selectedFileName = file.name;
-                    
-                    // Appliquer automatiquement l'image et passer à l'étape finale
+
                     applyBackgroundImage();
                     currentStep = 3;
                     showCurrentStep();
-                    
-                    // Terminer la démonstration après 2 secondes
+
                     setTimeout(() => {
                         if (demoRunning) {
                             document.getElementById('demoInstruction').textContent = 
                                 "Démonstration terminée ! Vous avez appris à importer une image comme fond d'écran personnalisé.";
-                            
-                            // Réinitialiser la case à cocher
+
                             document.getElementById('custom-wallpaper').checked = false;
                             
                             demoRunning = false;
@@ -977,8 +944,7 @@
             highlight.style.height = (rect.height + 6) + 'px';
             
             document.body.appendChild(highlight);
-            
-            // Simuler un clic visuel
+
             checkbox.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 checkbox.style.transform = 'scale(1)';
@@ -998,8 +964,7 @@
             highlight.style.height = (rect.height + 6) + 'px';
             
             document.body.appendChild(highlight);
-            
-            // Simuler un clic visuel
+
             importButton.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 importButton.style.transform = 'scale(1)';
@@ -1034,26 +999,22 @@
         }
 
         function selectImage(imageElement) {
-            // Désélectionner toutes les images
+            
             document.querySelectorAll('.color-option').forEach(option => {
                 option.classList.remove('selected');
             });
-            
-            // Sélectionner l'image cliquée
+
             imageElement.classList.add('selected');
             window.selectedDemoImage = imageElement.dataset.imageUrl;
-            
-            // Si on est en mode démonstration et à l'étape 2, passer à l'étape 3
+
             if (demoRunning && currentStep === 2) {
                 currentStep = 3;
                 showCurrentStep();
             }
         }
 
-        // Fonction applySelectedImage supprimée - plus nécessaire avec l'application automatique
-
         function cancelImageSelection() {
-            // Réinitialiser la sélection
+            
             window.selectedDemoImage = null;
             window.selectedFileName = null;
             document.getElementById('fileInput').value = '';
@@ -1067,8 +1028,7 @@
                 document.body.style.backgroundPosition = 'center';
                 document.body.style.backgroundRepeat = 'no-repeat';
                 document.body.style.transition = 'background-image 0.5s ease';
-                
-                // Afficher un message de confirmation
+
                 console.log(`Image appliquée: ${window.selectedFileName || 'Fichier sélectionné'}`);
             }
         }

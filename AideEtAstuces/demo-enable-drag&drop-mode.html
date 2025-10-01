@@ -36,7 +36,6 @@
             display: inline-block;
         }
 
-        /* Menu contextuel complet du projet */
         .context-menu {
             background: #26292C;
             border: 2px solid #444;
@@ -107,7 +106,6 @@
             margin: 0 5px;
         }
 
-        /* Section headers avec flèche - comportement submenu */
         .menu-section {
             position: relative;
         }
@@ -140,8 +138,7 @@
             margin-left: auto;
             transition: transform 0.2s;
         }
-        
-        /* Sous-menu séparé */
+
         .submenu {
             position: absolute;
             left: 100%;
@@ -167,14 +164,12 @@
             transform: scale(1);
         }
 
-        /* Séparateurs */
         .menu-separator {
             height: 1px;
             background: #444;
             margin: 4px 8px;
         }
 
-        /* Boutons d'aide */
         .help-button {
             width: 28px;
             height: 28px;
@@ -198,7 +193,6 @@
             background: #003C74;
         }
 
-        /* Styles pour les éléments avec aide */
         .menu-item-with-help {
             justify-content: space-between;
         }
@@ -209,7 +203,6 @@
             flex: 1;
         }
 
-        /* Poignée de redimensionnement (ajustement pour cette démo) */
         .resize-handle {
             width: 12px;
             height: 12px;
@@ -218,9 +211,6 @@
             z-index: 5;
         }
 
-        /* back-button styles removed to use global styles in demo-elements.css */
-
-        /* Curseur au-dessus de tout */
         .mouse-cursor {
             z-index: 2000 !important;
         }
@@ -252,8 +242,7 @@
                 • Le curseur ouvre le menu contextuel, clique sur « Activer Glisser/Déposer » puis sur « Activer le glisser-déposer ».
             </p>
         </div>
-        
-        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+
         <div class="speed-control">
             <label for="speedSlider">Vitesse de l'animation :</label>
             <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
@@ -268,29 +257,21 @@
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
-                <!-- Bordure dynamique -->
+                
                 <div class="dynamic-border"></div>
 
-                <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
                     <div class="label-text">Mode glisser/déposer</div>
                 </div>
 
-                <!-- Curseur de souris -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Cercle d'animation de clic -->
-
-                <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
 
-                <!-- Souris avec bouton droit coloré (pour les clics) -->
                 <div class="mouse-right-click"></div>
 
-                <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
                     <button class="menu-item menu-item-with-help">
                         <div class="menu-item-content">
@@ -481,30 +462,24 @@
             </div>
         </div>
 
-        
     </div>
 
     <script>
-        // Variables pour l'animation
+        
         let animationPhase = 0;
         let animationTimer;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        
-        // Standardisation de la vitesse du curseur (selon demo-elements.css)
-        const CURSOR_SPEED_PX_PER_FRAME = 9;
-        
-        // Calculer le nombre total de frames de l'animation
-        let totalAnimationFrames = 0; // Sera calculé dans startAnimation
-        
-        // Variables pour le contrôle de vitesse
-        let animationSpeed = 1; // Vitesse par défaut (1x)
-        let isPaused = false;
-        let baseInterval = 80; // Intervalle de base en millisecondes
 
-        // Éléments DOM
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
+
+        let totalAnimationFrames = 0; 
+
+        let animationSpeed = 1; 
+        let isPaused = false;
+        let baseInterval = 80; 
+
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
@@ -514,13 +489,13 @@
         const labelBorder = document.querySelector('.label-border');
         let labelCenterX = 240;
         let labelCenterY = 50;
-        let canvasCenterX = 240; // Centre X du canvas (480px / 2)
-        let canvasCenterY = 150; // Centre Y du canvas (300px / 2)
-        let movementFrames = 40; // Sera calculé dynamiquement selon la distance
-        let labelMovementFrames = 40; // Sera calculé pour le déplacement vers l'étiquette
-        let sectionMovementFrames = 30; // Déplacement vers l'option de section
-        let submenuMovementFrames = 30; // Déplacement vers l'élément du sous-menu
-        let postActivatePauseFrames = 40; // Pause après activation pour voir le titre
+        let canvasCenterX = 240; 
+        let canvasCenterY = 150; 
+        let movementFrames = 40; 
+        let labelMovementFrames = 40; 
+        let sectionMovementFrames = 30; 
+        let submenuMovementFrames = 30; 
+        let postActivatePauseFrames = 40; 
 
         let sectionHeaderEl;
         let submenuActivateEl;
@@ -529,7 +504,6 @@
         let submenuCenterX = 0;
         let submenuCenterY = 0;
 
-        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
         document.querySelectorAll('.help-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -573,89 +547,84 @@
 
         function startAnimation() {
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
 
-                // Phase 1: Curseur se déplace du centre du canvas vers le centre de la poignée
                 if (animationPhase <= movementFrames) {
                     const progress = animationPhase / movementFrames;
-                    const startX = canvasCenterX, startY = canvasCenterY; // Centre du canvas
-                    const endX = 249, endY = 139; // Centre de la poignée (243 + 6, 133 + 6)
+                    const startX = canvasCenterX, startY = canvasCenterY; 
+                    const endX = 249, endY = 139; 
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 2: Animation de clic droit sur la poignée et expansion
+                
                 else if (animationPhase <= movementFrames + 10) {
                     const clickPhase = animationPhase - movementFrames;
-                    
-                    // Changement de souris pour le clic droit
+
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour à la souris normale après le clic
+
                     if (clickPhase >= 6) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';
                     }
 
-                    // Animation d'expansion et rétraction de la poignée
                     if (clickPhase >= 2) {
                         const expandPhase = clickPhase - 2;
                         if (expandPhase <= 3) {
-                            // Expansion
+                            
                             const scale = 1 + (expandPhase * 0.4);
                             resizeHandle.style.transform = `scale(${scale})`;
                             resizeHandle.style.background = '#ffffff';
                             resizeHandle.style.border = '2px solid #ffffff';
                         } else if (expandPhase <= 6) {
-                            // Rétraction
+                            
                             const shrinkPhase = expandPhase - 3;
                             const scale = 2.2 - (shrinkPhase * 0.4);
                             resizeHandle.style.transform = `scale(${scale})`;
                             resizeHandle.style.background = '#00ffff';
                             resizeHandle.style.border = '1px solid #000';
                         } else {
-                            // Retour à l'état initial
+                            
                             resizeHandle.style.transform = 'scale(1)';
                             resizeHandle.style.background = '#ffffff';
                             resizeHandle.style.border = '1px solid #000';
                         }
                     }
                 }
-                // Phase 3: Ouverture immédiate du menu contextuel
+                
                 else if (animationPhase <= movementFrames + 18) {
                     const menuPhase = animationPhase - (movementFrames + 10);
-                    
-                    // Positionner immédiatement le menu à la position correcte (même si invisible)
-                    const cursorX = 249; // Position X actuelle du curseur (centre poignée)
-                    const cursorY = 139; // Position Y actuelle du curseur (centre poignée)
-                    contextMenu.style.left = (cursorX + 5) + 'px'; // Décalage de 5px à droite du curseur
-                    contextMenu.style.top = cursorY + 'px'; // Aligné verticalement avec le curseur
+
+                    const cursorX = 249; 
+                    const cursorY = 139; 
+                    contextMenu.style.left = (cursorX + 5) + 'px'; 
+                    contextMenu.style.top = cursorY + 'px'; 
                     
                     if (menuPhase >= 1) {
                         contextMenu.style.visibility = 'visible';
                         contextMenu.style.opacity = '1';
                         contextMenu.style.transform = 'scale(1)';
                     } else {
-                        // S'assurer que le menu reste invisible jusqu'au bon moment
+                        
                         contextMenu.style.visibility = 'hidden';
                         contextMenu.style.opacity = '0';
                         contextMenu.style.transform = 'scale(1)';
                     }
                 }
-                // Phase 4: Menu visible et stable court
+                
                 else if (animationPhase <= movementFrames + 20) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                 }
-                // Phase 5: Déplacement vers l'option de section "Activer Glisser/Déposer"
+                
                 else if (animationPhase <= movementFrames + 20 + sectionMovementFrames) {
                     const sectionPhase = animationPhase - (movementFrames + 20);
                     const progress = sectionPhase / sectionMovementFrames;
@@ -664,29 +633,29 @@
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 6: Clic sur l'en-tête de section pour ouvrir le sous-menu
+                
                 else if (animationPhase <= movementFrames + 20 + sectionMovementFrames + 6) {
                     const clickPhase = animationPhase - (movementFrames + 20 + sectionMovementFrames);
                     if (clickPhase === 1 && sectionHeaderEl) {
-                        // Clic sur l'en-tête: ouvre le sous-menu via la classe 'open'
+                        
                         const parentSection = sectionHeaderEl.parentElement;
                         if (parentSection) {
-                            // Fermer les autres et ouvrir celui-ci
+                            
                             document.querySelectorAll('.menu-section').forEach(other => {
                                 if (other !== parentSection) other.classList.remove('open');
                             });
                             parentSection.classList.add('open');
                         }
-                        // Surbrillance bleue de l'option principale
+                        
                         sectionHeaderEl.style.background = '#0078D4';
                     }
                 }
-                // Phase 7: Déplacement vers l'élément de sous-menu "Activer le glisser-déposer"
+                
                 else if (animationPhase <= movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames) {
                     const subPhase = animationPhase - (movementFrames + 20 + sectionMovementFrames + 6);
                     const progress = subPhase / submenuMovementFrames;
                     const startX = sectionCenterX, startY = sectionCenterY;
-                    // Recalcule la position du sous-menu une fois visible
+                    
                     const parentSection = sectionHeaderEl ? sectionHeaderEl.parentElement : null;
                     const visibleSubmenuItem = parentSection ? Array.from(parentSection.querySelectorAll('.submenu .menu-item')).find(b => b.querySelector('.menu-text') && b.querySelector('.menu-text').textContent.trim() === 'Activer le glisser-déposer') : null;
                     if (visibleSubmenuItem) {
@@ -699,19 +668,19 @@
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 8: Clic sur l'élément de sous-menu pour activer
+                
                 else if (animationPhase <= movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames + 6) {
                     const clickPhase = animationPhase - (movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames);
                     if (submenuActivateEl) {
-                        // Afficher la surbrillance dès le début du clic
+                        
                         if (clickPhase >= 1) {
                             submenuActivateEl.style.background = '#0078D4';
                         }
-                        // Effectuer l'action au début du clic
+                        
                         if (clickPhase === 1) {
                             submenuActivateEl.click();
                         }
-                        // Laisser visible la surbrillance quelques frames, puis fermer
+                        
                         if (clickPhase >= 4) {
                             const parentSection = sectionHeaderEl ? sectionHeaderEl.parentElement : null;
                             if (parentSection) parentSection.classList.remove('open');
@@ -725,33 +694,28 @@
                         }
                     }
                 }
-                // Phase 9: Pause finale avant reset (allongée pour voir le titre clignoter)
+                
                 else if (animationPhase <= movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames + 16 + postActivatePauseFrames) {
-                    // maintenir l'état activé; l'animation du label gère la visibilité
+                    
                 }
-                // Reset pour boucle
+                
                 else {
                     animationPhase = 0;
-                    
-                    // Reset position du curseur au centre du canvas
+
                     mouseCursor.style.left = canvasCenterX + 'px';
                     mouseCursor.style.top = canvasCenterY + 'px';
-                    
-                    // Reset menu
+
                     contextMenu.style.visibility = 'hidden';
                     contextMenu.style.opacity = '0';
                     contextMenu.style.transform = 'scale(1)';
-                    
-                    // Reset position du menu contextuel à sa position de reset
-                    contextMenu.style.left = '254px'; // Position initiale à côté de la poignée (249 + 5)
-                    contextMenu.style.top = '139px'; // Position initiale alignée avec la poignée
-                    
-                    // Reset poignée
+
+                    contextMenu.style.left = '254px'; 
+                    contextMenu.style.top = '139px'; 
+
                     resizeHandle.style.transform = 'scale(1)';
                     resizeHandle.style.background = '#ffffff';
                     resizeHandle.style.border = '1px solid #000';
-                    
-                    // Reset souris
+
                     mouseZeroClick.style.visibility = 'visible';
                     mouseRightClick.style.visibility = 'hidden';
                     
@@ -760,7 +724,7 @@
                         labelTextEl.textContent = 'Mode glisser/déposer';
                         labelTextEl.classList.remove('flash');
                     }
-                    // Nettoyage des surbrillances et fermeture des sections
+                    
                     if (sectionHeaderEl) {
                         sectionHeaderEl.style.background = 'transparent';
                         const parentSection = sectionHeaderEl.parentElement;
@@ -770,42 +734,34 @@
                         submenuActivateEl.style.background = 'transparent';
                     }
                 }
-                // Mettre à jour la progression
-                updateProgress(animationPhase, totalAnimationFrames);
                 
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                updateProgress(animationPhase, totalAnimationFrames);
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
-        // Démarrer l'animation au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
             const canvasRect = canvas.getBoundingClientRect();
             const labelRect = labelBorder.getBoundingClientRect();
             labelCenterX = Math.round(labelRect.left - canvasRect.left + labelRect.width / 2);
             labelCenterY = Math.round(labelRect.top - canvasRect.top + labelRect.height / 2);
-            
-            // Calculer le centre exact du canvas
+
             canvasCenterX = Math.round(canvasRect.width / 2);
             canvasCenterY = Math.round(canvasRect.height / 2);
-            
-            // Calculer la durée de déplacement selon la standardisation
-            const endX = 249, endY = 139; // Centre de la poignée
+
+            const endX = 249, endY = 139; 
             const distance = Math.sqrt((endX - canvasCenterX) ** 2 + (endY - canvasCenterY) ** 2);
             movementFrames = Math.ceil(distance / CURSOR_SPEED_PX_PER_FRAME);
-            
-            // Calculer la durée pour le déplacement vers l'étiquette
+
             const labelDistance = Math.sqrt((labelCenterX - endX) ** 2 + (labelCenterY - endY) ** 2);
             labelMovementFrames = Math.ceil(labelDistance / CURSOR_SPEED_PX_PER_FRAME);
-            
-            // Cibler l'en-tête de section et l'élément du sous-menu
+
             const sectionHeaders = Array.from(document.querySelectorAll('.menu-section-header'));
             sectionHeaderEl = sectionHeaders.find(h => h.querySelector('.menu-text') && h.querySelector('.menu-text').textContent.trim() === 'Activer Glisser/Déposer');
             if (sectionHeaderEl) {
@@ -822,7 +778,6 @@
                 }
             }
 
-            // Durées de déplacements supplémentaires
             if (sectionCenterX && sectionCenterY) {
                 const distToSection = Math.sqrt((sectionCenterX - 249) ** 2 + (sectionCenterY - 139) ** 2);
                 sectionMovementFrames = Math.max(10, Math.ceil(distToSection / CURSOR_SPEED_PX_PER_FRAME));
@@ -832,21 +787,18 @@
                 submenuMovementFrames = Math.max(10, Math.ceil(distToSub / CURSOR_SPEED_PX_PER_FRAME));
             }
 
-            // Calculer le nombre total de frames de l'animation
-            totalAnimationFrames = movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames + 16 + postActivatePauseFrames; // Total jusqu'au redémarrage
+            totalAnimationFrames = movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames + 16 + postActivatePauseFrames; 
             
             console.log(`Distance canvas→poignée: ${Math.round(distance)}px, Frames: ${movementFrames}`);
             console.log(`Distance poignée→étiquette: ${Math.round(labelDistance)}px, Frames: ${labelMovementFrames}`);
             console.log(`Total animation frames: ${totalAnimationFrames}`);
-            
-            // Positionner le curseur au centre du canvas dès le début
+
             mouseCursor.style.left = canvasCenterX + 'px';
             mouseCursor.style.top = canvasCenterY + 'px';
             
             setTimeout(startAnimation, 1000);
         });
 
-        // Fonction pour redémarrer l'animation avec la nouvelle vitesse
         function restartAnimationWithNewSpeed() {
             if (animationTimer) {
                 clearTimeout(animationTimer);
@@ -854,25 +806,22 @@
             startAnimation();
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression
+
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Bornes dynamiques selon les phases effectives
-            const afterHandleMove = movementFrames; // fin déplacement vers poignée
-            const afterHandleClickAndMenu = movementFrames + 18; // menu visible
-            const afterMoveToSection = movementFrames + 20 + sectionMovementFrames; // curseur sur la section
-            const afterOpenSection = movementFrames + 20 + sectionMovementFrames + 6; // section ouverte
-            const afterMoveToSubmenu = movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames; // curseur sur l'item
-            const afterActivate = afterMoveToSubmenu + 6; // activation cliquée
+
+            const afterHandleMove = movementFrames; 
+            const afterHandleClickAndMenu = movementFrames + 18; 
+            const afterMoveToSection = movementFrames + 20 + sectionMovementFrames; 
+            const afterOpenSection = movementFrames + 20 + sectionMovementFrames + 6; 
+            const afterMoveToSubmenu = movementFrames + 20 + sectionMovementFrames + 6 + submenuMovementFrames; 
+            const afterActivate = afterMoveToSubmenu + 6; 
             
             if (phase <= afterHandleMove) {
                 progressText.textContent = 'Déplacement vers la poignée...';
@@ -904,25 +853,22 @@
             }
         }
 
-        // Gestion du slider de vitesse
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
             const pauseButton = document.getElementById('pauseButton');
 
             if (speedSlider && speedValue) {
-                // Écouteur d'événement pour le slider
+                
                 speedSlider.addEventListener('input', function() {
                     const newSpeed = parseFloat(this.value);
                     speedValue.textContent = newSpeed + 'x';
                     
                     console.log('Nouvelle vitesse (context-menu):', newSpeed);
-                    
-                    // Changement de vitesse réactif sans restart
+
                     changeAnimationSpeed(newSpeed);
                 });
 
-                // Initialiser l'affichage de la vitesse
                 speedValue.textContent = animationSpeed + 'x';
             } else {
                 console.warn('Éléments du slider non trouvés dans demo-enable-drag&drop-mode');

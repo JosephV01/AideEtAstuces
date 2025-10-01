@@ -52,7 +52,6 @@
             overflow: hidden;
         }
 
-        /* En-tête */
         .header {
             display: grid;
             grid-template-columns: 1fr auto;
@@ -84,7 +83,6 @@
             background: #e5e5e5;
         }
 
-        /* Contenu principal */
         .main-content {
             display: grid;
             grid-template-columns: 100px 3px 1fr;
@@ -94,7 +92,6 @@
             overflow: hidden;
         }
 
-        /* Volet des catégories */
         .categories-panel {
             width: 100px;
             background: #f0f0f0;
@@ -146,14 +143,12 @@
             font-weight: bold;
         }
 
-        /* Séparateur */
         .splitter {
             background: #d1d1d1;
             width: 1px;
             cursor: col-resize;
         }
 
-        /* Zone des images */
         .images-panel {
             background: #f0f0f0;
             border-radius: 6px;
@@ -212,7 +207,6 @@
             object-fit: cover;
         }
 
-        /* Barre d'état */
         .status-bar {
             display: grid;
             grid-template-columns: 1fr auto;
@@ -265,7 +259,6 @@
             background: #004080;
         }
 
-        /* Scrollbar personnalisée */
         .categories-list::-webkit-scrollbar,
         .images-container::-webkit-scrollbar {
             width: 8px;
@@ -292,15 +285,14 @@
     <div class="main-container">
         <div class="main-border">
             <div class="content-grid">
-                <!-- En-tête -->
+                
                 <div class="header">
                     <div class="title">Bibliothèque d'Images</div>
                     <button class="close-button" onclick="closeWindow()">✕</button>
                 </div>
 
-                <!-- Contenu principal -->
                 <div class="main-content">
-                    <!-- Volet des catégories -->
+                    
                     <div class="categories-panel">
                         <div class="categories-title">Catégories</div>
                         <div class="categories-list" id="categoriesList">
@@ -315,21 +307,18 @@
                         </div>
                     </div>
 
-                    <!-- Séparateur -->
                     <div class="splitter"></div>
 
-                    <!-- Zone des images -->
                     <div class="images-panel">
                         <div class="current-category-title" id="currentCategoryTitle">3D</div>
                         <div class="images-container">
                             <div class="images-grid" id="imagesGrid">
-                                <!-- Les images seront générées par JavaScript -->
+                                
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Barre d'état -->
                 <div class="status-bar">
                     <div class="status-text" id="statusText">3D - 12 image(s)</div>
                     <div class="action-buttons">
@@ -343,7 +332,7 @@
     </div>
 
     <script>
-        // Données de démonstration
+        
         const categories = {
             '3d': { name: '3D', count: 24 },
             'abstract': { name: 'Abstract', count: 24 },
@@ -358,10 +347,8 @@
         let currentCategory = '3d';
         let selectedImageIndex = -1;
 
-        // Image de démonstration (SVG simple)
         const demoImage = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA4MCA2MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRjBGMEYwIiBzdHJva2U9IiNDQ0NDQ0MiLz4KPHN2ZyB4PSIzIiB5PSIzIiB3aWR0aD0iNzQiIGhlaWdodD0iNTQiIHZpZXdCb3g9IjAgMCA3NCA1NCI+CjxyZWN0IHdpZHRoPSI3NCIgaGVpZ2h0PSI1NCIgZmlsbD0iIzAwNUU5MiIvPgo8dGV4dCB4PSIzNyIgeT0iMjciIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSI4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2U8L3RleHQ+Cjwvc3ZnPgo8L3N2Zz4=';
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeCategories();
             loadImagesForCategory(currentCategory);
@@ -378,13 +365,12 @@
         }
 
         function selectCategory(category) {
-            // Mettre à jour la sélection visuelle
+            
             document.querySelectorAll('.category-button').forEach(btn => {
                 btn.classList.remove('selected');
             });
             document.querySelector(`[data-category="${category}"]`).classList.add('selected');
 
-            // Charger les images pour cette catégorie
             currentCategory = category;
             loadImagesForCategory(category);
         }
@@ -395,10 +381,8 @@
             const categoryTitle = document.getElementById('currentCategoryTitle');
             const statusText = document.getElementById('statusText');
 
-            // Mettre à jour le titre
             categoryTitle.textContent = categoryData.name;
 
-            // Générer les images
             imagesGrid.innerHTML = '';
             for (let i = 0; i < categoryData.count; i++) {
                 const imageButton = document.createElement('button');
@@ -410,35 +394,29 @@
                 imagesGrid.appendChild(imageButton);
             }
 
-            // Mettre à jour le statut
             statusText.textContent = `${categoryData.name} - ${categoryData.count} image(s)`;
 
-            // Réinitialiser la sélection
             selectedImageIndex = -1;
             document.getElementById('selectBtn').disabled = true;
             document.getElementById('applyWallpaperBtn').disabled = true;
         }
 
         function selectImage(index, buttonElement) {
-            // Retirer la sélection précédente
+            
             document.querySelectorAll('.image-button').forEach(btn => {
                 btn.classList.remove('selected');
             });
 
-            // Sélectionner la nouvelle image
             buttonElement.classList.add('selected');
             selectedImageIndex = index;
 
-            // Activer les boutons
             document.getElementById('selectBtn').disabled = false;
             document.getElementById('applyWallpaperBtn').disabled = false;
 
-            // Mettre à jour le statut
             const statusText = document.getElementById('statusText');
             statusText.textContent = `Image sélectionnée: Image ${index + 1}.jpg`;
         }
 
-        // Gestionnaires d'événements pour les boutons
         document.getElementById('selectBtn').addEventListener('click', function() {
             if (selectedImageIndex >= 0) {
                 alert(`Image sélectionnée: ${categories[currentCategory].name} - Image ${selectedImageIndex + 1}.jpg`);

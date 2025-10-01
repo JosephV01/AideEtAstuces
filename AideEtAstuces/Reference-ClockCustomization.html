@@ -52,7 +52,6 @@
             min-height: 0;
         }
 
-        /* Zone de prévisualisation */
         .preview-section {
             margin: 10px 160px 15px 160px;
             background: #1E1E1E;
@@ -114,7 +113,6 @@
             line-height: 1;
         }
 
-        /* Zone de personnalisation */
         .customization-section {
             margin: 5px;
             display: flex;
@@ -246,7 +244,6 @@
             border: none;
         }
 
-        /* Boutons d'action */
         .actions-section {
             display: flex;
             justify-content: flex-end;
@@ -272,7 +269,6 @@
             border-color: #777777;
         }
 
-        /* Icônes SVG */
         .icon-title-color {
             fill: #F0F0F0;
         }
@@ -293,7 +289,6 @@
             fill: #F0F0F0;
         }
 
-        /* Fenêtre de sélection de couleurs */
         .color-picker-overlay {
             position: fixed;
             top: 0;
@@ -418,7 +413,7 @@
     <div class="main-container">
         <div class="main-border">
             <div class="content-grid">
-                <!-- Zone de prévisualisation -->
+                
                 <div class="preview-section">
                     <div class="preview-container">
                         <div class="preview-clock">
@@ -430,13 +425,12 @@
                     </div>
                 </div>
 
-                <!-- Zone de personnalisation -->
                 <div class="customization-section">
                     <div class="preview-title">Aperçu</div>
                     <div class="customization-title">Personnalisation</div>
 
                     <div class="controls-grid">
-                        <!-- Paramètres de texte -->
+                        
                         <div class="control-group">
                             <div class="group-header">Paramètres de texte</div>
                             
@@ -468,7 +462,6 @@
                             </div>
                         </div>
 
-                        <!-- Paramètres de bordure -->
                         <div class="control-group">
                             <div class="group-header">Paramètres de bordure</div>
                             
@@ -499,7 +492,6 @@
                     </div>
                 </div>
 
-                <!-- Boutons d'action -->
                 <div class="actions-section">
                     <button class="action-button" id="cancelBtn">Annuler</button>
                     <button class="action-button" id="applyBtn">Appliquer</button>
@@ -508,7 +500,6 @@
         </div>
     </div>
 
-    <!-- Fenêtre de sélection de couleurs -->
     <div id="colorPickerOverlay" class="color-picker-overlay">
         <div class="color-picker-window">
             <div class="color-picker-title">Sélectionner une couleur</div>
@@ -534,7 +525,7 @@
             </div>
             
             <div class="color-palette" id="colorPalette">
-                <!-- Palette de couleurs prédéfinies -->
+                
             </div>
             
             <div class="color-picker-buttons">
@@ -545,18 +536,16 @@
     </div>
 
     <script>
-        // Variables de personnalisation
+        
         let currentTextColor = '#000000';
         let currentBackgroundColor = '#FFFFFF';
         let currentBorderColor = '#8A8A8A';
         let currentBorderThickness = 1;
         let currentFontFamily = 'Segoe UI';
 
-        // Variables pour le sélecteur de couleurs
         let currentColorType = '';
         let tempColor = { r: 255, g: 255, b: 255 };
 
-        // Palette de couleurs prédéfinies
         const predefinedColors = [
             '#000000', '#FFFFFF', '#FF0000', '#00FF00', '#0000FF',
             '#FFFF00', '#FF00FF', '#00FFFF', '#800000', '#008000',
@@ -565,7 +554,6 @@
             '#FFD700', '#ADFF2F', '#FF69B4', '#CD853F', '#4B0082'
         ];
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeControls();
             initializeColorPicker();
@@ -573,7 +561,7 @@
         });
 
         function initializeControls() {
-            // Boutons de couleur
+            
             document.getElementById('textColorBtn').addEventListener('click', function() {
                 openColorPicker('text');
             });
@@ -586,19 +574,16 @@
                 openColorPicker('border');
             });
 
-            // Combobox de police
             document.getElementById('fontFamilyCombo').addEventListener('change', function() {
                 currentFontFamily = this.value;
                 updatePreview();
             });
 
-            // Slider d'épaisseur
             document.getElementById('borderThicknessSlider').addEventListener('input', function() {
                 currentBorderThickness = parseInt(this.value);
                 updatePreview();
             });
 
-            // Boutons d'action
             document.getElementById('cancelBtn').addEventListener('click', function() {
                 alert('Personnalisation annulée');
             });
@@ -609,7 +594,7 @@
         }
 
         function initializeColorPicker() {
-            // Créer la palette de couleurs prédéfinies
+            
             const palette = document.getElementById('colorPalette');
             predefinedColors.forEach(color => {
                 const colorItem = document.createElement('div');
@@ -623,7 +608,6 @@
                 palette.appendChild(colorItem);
             });
 
-            // Sliders RGB
             document.getElementById('redSlider').addEventListener('input', function() {
                 tempColor.r = parseInt(this.value);
                 updateColorPicker();
@@ -639,7 +623,6 @@
                 updateColorPicker();
             });
 
-            // Boutons du sélecteur de couleurs
             document.getElementById('colorPickerOk').addEventListener('click', function() {
                 applyColor();
                 closeColorPicker();
@@ -652,8 +635,7 @@
 
         function openColorPicker(type) {
             currentColorType = type;
-            
-            // Définir la couleur actuelle selon le type
+
             let currentColor;
             switch(type) {
                 case 'text':
@@ -666,13 +648,11 @@
                     currentColor = currentBorderColor;
                     break;
             }
-            
-            // Convertir en RGB et mettre à jour les sliders
+
             const rgb = hexToRgb(currentColor);
             tempColor = rgb;
             updateColorPicker();
-            
-            // Afficher la fenêtre
+
             document.getElementById('colorPickerOverlay').classList.add('visible');
         }
 
@@ -681,17 +661,15 @@
         }
 
         function updateColorPicker() {
-            // Mettre à jour les sliders
+            
             document.getElementById('redSlider').value = tempColor.r;
             document.getElementById('greenSlider').value = tempColor.g;
             document.getElementById('blueSlider').value = tempColor.b;
-            
-            // Mettre à jour les valeurs affichées
+
             document.getElementById('redValue').textContent = tempColor.r;
             document.getElementById('greenValue').textContent = tempColor.g;
             document.getElementById('blueValue').textContent = tempColor.b;
-            
-            // Mettre à jour la prévisualisation
+
             const colorHex = rgbToHex(tempColor.r, tempColor.g, tempColor.b);
             document.getElementById('colorPreview').style.backgroundColor = colorHex;
         }
@@ -735,18 +713,15 @@
             const previewTime = document.getElementById('previewTime');
             const previewDate = document.getElementById('previewDate');
 
-            // Appliquer les couleurs
             previewTime.style.color = currentTextColor;
             previewDate.style.color = currentTextColor;
             previewBorder.style.backgroundColor = currentBackgroundColor;
             previewBorder.style.borderColor = currentBorderColor;
             previewBorder.style.borderWidth = currentBorderThickness + 'px';
 
-            // Appliquer la police
             previewTime.style.fontFamily = currentFontFamily;
             previewDate.style.fontFamily = currentFontFamily;
 
-            // Mettre à jour l'heure (simulation)
             const now = new Date();
             const timeString = now.toLocaleTimeString('fr-FR', { 
                 hour: '2-digit', 
@@ -767,7 +742,6 @@
             previewDate.textContent = dateString;
         }
 
-        // Mise à jour de l'heure en temps réel
         setInterval(updatePreview, 1000);
     </script>
 </body>

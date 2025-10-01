@@ -36,14 +36,12 @@
             display: inline-block;
         }
 
-        /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
-            /* Hérite de demo-elements.css, adaptations spécifiques */
+            
             width: 750px;
             height: 750px;
         }
 
-        /* Menu contextuel complet du projet */
         .context-menu {
             background: #26292C;
             border: 2px solid #444;
@@ -114,7 +112,6 @@
             margin: 0 5px;
         }
 
-        /* Section headers avec flèche - comportement submenu */
         .menu-section {
             position: relative;
         }
@@ -147,8 +144,7 @@
             margin-left: auto;
             transition: transform 0.2s;
         }
-        
-        /* Sous-menu séparé */
+
         .submenu {
             position: absolute;
             left: 100%;
@@ -174,14 +170,12 @@
             transform: scale(1);
         }
 
-        /* Séparateurs */
         .menu-separator {
             height: 1px;
             background: #444;
             margin: 4px 8px;
         }
 
-        /* Boutons d'aide */
         .help-button {
             width: 28px;
             height: 28px;
@@ -205,7 +199,6 @@
             background: #003C74;
         }
 
-        /* Styles pour les éléments avec aide */
         .menu-item-with-help {
             justify-content: space-between;
         }
@@ -216,9 +209,8 @@
             flex: 1;
         }
 
-        /* Poignée de redimensionnement (adaptations pour cette démo) */
         .resize-handle {
-            /* Override de demo-elements.css pour cette démo */
+            
             width: 12px;
             height: 12px;
             left: 243px !important;
@@ -226,12 +218,10 @@
             z-index: 5;
         }
 
-        /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
             z-index: 1500 !important;
         }
 
-        /* Position de la souris ajustée pour le canvas agrandi */
         .mouse-zero-click,
         .mouse-zero-click.large {
             left: 655px !important;
@@ -248,9 +238,6 @@
             top: 55px !important;
         }
 
-        /* back-button styles removed to use global styles in demo-elements.css */
-
-        /* Fenêtre de personnalisation réelle */
         .customization-window {
             position: absolute;
             background: #ffffff;
@@ -293,7 +280,6 @@
             overflow: hidden;
         }
 
-        /* Zone d'aperçu */
         .preview-section {
             background: #2D2D2D;
             border-radius: 8px;
@@ -357,7 +343,6 @@
             white-space: nowrap;
         }
 
-        /* Contenu principal */
         .main-content {
             margin: 5px;
             display: flex;
@@ -375,7 +360,6 @@
             margin-bottom: 8px;
         }
 
-        /* GroupBox styles */
         .groupbox {
             border: 1px solid #000000;
             border-radius: 4px;
@@ -395,7 +379,6 @@
             padding: 3px;
         }
 
-        /* Section Styles */
         .styles-section {
             margin-bottom: 8px;
         }
@@ -451,7 +434,6 @@
             width: 70px;
         }
 
-        /* Section Styles par défaut */
         .default-styles-section {
             margin-bottom: 8px;
         }
@@ -492,7 +474,6 @@
             opacity: 0.8;
         }
 
-        /* Panneaux de personnalisation */
         .customization-panels {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -613,7 +594,6 @@
             background: #e0e0e0;
         }
 
-        /* Barre d'action */
         .action-bar {
             display: flex;
             justify-content: flex-end;
@@ -640,12 +620,10 @@
             min-width: 140px;
         }
 
-        /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
             z-index: 1500 !important;
         }
 
-        /* Position de la souris ajustée pour le canvas agrandi */
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
@@ -678,30 +656,23 @@
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
-                <!-- Bordure dynamique -->
+                
                 <div class="dynamic-border"></div>
 
-                <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
                     <div class="label-text">Personnaliser la Bulle Note</div>
                 </div>
 
-                <!-- Curseur de souris -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click large"></div>
 
-                <!-- Souris avec bouton droit coloré (pour les clics) -->
                 <div class="mouse-right-click large"></div>
 
-                <!-- Souris avec bouton gauche coloré (pour les clics) -->
                 <div class="mouse-left-click large"></div>
 
-                <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
                     <button class="menu-item menu-item-with-help">
                         <div class="menu-item-content">
@@ -940,11 +911,10 @@
                     </button>
                 </div>
 
-                <!-- Fenêtre de personnalisation réelle -->
                 <div class="customization-window">
                     <div class="main-border">
                         <div class="content-grid">
-                            <!-- Zone d'aperçu -->
+                            
                             <div class="preview-section">
                                 <div class="preview-container">
                                     <div class="preview-area">
@@ -957,11 +927,9 @@
                                 </div>
                             </div>
 
-                            <!-- Contenu principal -->
                             <div class="main-content">
                                 <div class="customization-title">Personnalisation</div>
 
-                                <!-- Section Styles -->
                                 <div class="groupbox styles-section">
                                     <div class="groupbox-header">Gérer les styles</div>
                                     <div class="groupbox-content">
@@ -981,7 +949,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Section Styles par défaut -->
                                 <div class="groupbox default-styles-section">
                                     <div class="groupbox-header">Styles par défaut</div>
                                     <div class="groupbox-content">
@@ -1001,9 +968,8 @@
                                     </div>
                                 </div>
 
-                                <!-- Panneaux de personnalisation -->
                                 <div class="customization-panels">
-                                    <!-- Panneau Bulle -->
+                                    
                                     <div class="groupbox bubble-panel">
                                         <div class="panel-header">Bulle</div>
                                         <div class="panel-content">
@@ -1059,7 +1025,6 @@
                                         </div>
                                     </div>
 
-                                    <!-- Panneau Label -->
                                     <div class="groupbox label-panel">
                                         <div class="panel-header">Label</div>
                                         <div class="panel-content">
@@ -1117,7 +1082,6 @@
                                 </div>
                             </div>
 
-                            <!-- Barre d'action -->
                             <div class="action-bar">
                                 <button class="action-button create-style-button" onclick="createStyle()">Créer un style</button>
                                 <button class="action-button" onclick="cancel()">Annuler</button>
@@ -1133,26 +1097,22 @@
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        
-        // Standardisation de la vitesse du curseur (selon demo-elements.css)
+
         const CURSOR_SPEED_PX_PER_FRAME = 9;
-        let baseInterval = 50; // Intervalle de base pour cette démo
-        
-        // Calculer le nombre total de frames de l'animation
+        let baseInterval = 50; 
+
         const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Total jusqu'au redémarrage
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 55; 
 
-        // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
@@ -1164,15 +1124,14 @@
 
         function startAnimation() {
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
 
-                // Phase 1: Curseur se déplace vers la poignée (vitesse standardisée)
                 const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 if (animationPhase <= moveToHandleFrames) {
                     const progress = animationPhase / moveToHandleFrames;
@@ -1181,23 +1140,20 @@
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 2: Animation de clic droit et expansion de la poignée
+                
                 else if (animationPhase <= moveToHandleFrames + 23) {
                     const clickPhase = animationPhase - moveToHandleFrames;
 
-                    // Changement de souris pour le clic droit (synchronisé)
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';
                     }
 
-                    // Animation d'expansion et rétraction de la poignée
                     if (clickPhase >= 3) {
                         const expandPhase = clickPhase - 3;
                         if (expandPhase <= 3) {
@@ -1218,70 +1174,65 @@
                         }
                     }
                 }
-                // Phase 3: Menu apparaît
+                
                 else if (animationPhase <= moveToHandleFrames + 27) {
                     const menuProgress = (animationPhase - (moveToHandleFrames + 23)) / 4;
                     contextMenu.style.visibility = 'visible';
                     contextMenu.style.opacity = menuProgress;
                     contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
                 }
-                // Phase 4: Menu visible
+                
                 else if (animationPhase <= moveToHandleFrames + 33) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                 }
-                // Phase 5: Curseur se déplace vers "Personnaliser la bulle" (vitesse standardisée)
+                
                 else {
                     const moveToMenuFrames = Math.ceil(Math.sqrt((254-243)**2 + (80-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
                     if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames) {
                         const progress = (animationPhase - (moveToHandleFrames + 33)) / moveToMenuFrames;
                         const startX = 243, startY = 133;
-                        const endX = 429, endY = 208; // Centre exact de l'option "Personnaliser la bulle" (2ème option)
+                        const endX = 429, endY = 208; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 6: Clic sur "Personnaliser"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
 
-                    // Changement de souris au clic gauche (synchronisé)
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
                     }
 
-                    // Effet hover sur l'option "Personnaliser la bulle" (2ème option)
                     if (clickPhase >= 1) {
                         menuItems[1].style.background = '#0078D4';
                     }
                     }
-                    // Phase 7: Menu disparaît et fenêtre de personnalisation apparaît
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 15) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 8)) / 7;
                     contextMenu.style.opacity = 1 - progress;
                     contextMenu.style.transform = `scale(${1 - progress * 0.2})`;
-                    
-                    // La souris est déjà revenue à la normale après le clic
-                    
+
                     if (progress >= 0.5) {
                         customizationWindow.style.visibility = 'visible';
                         customizationWindow.style.opacity = (progress - 0.5) * 2;
                         customizationWindow.style.transform = `scale(${0.8 + (progress - 0.5) * 0.4})`;
                     }
                     }
-                    // Phase 8: Fenêtre de personnalisation visible
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 45) {
                         customizationWindow.style.visibility = 'visible';
                         customizationWindow.style.opacity = '1';
                         customizationWindow.style.transform = 'scale(1)';
                     }
-                    // Phase 9: Fenêtre de personnalisation se ferme
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 55) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 45)) / 10;
                     customizationWindow.style.opacity = 1 - progress;
@@ -1290,7 +1241,7 @@
                         customizationWindow.style.visibility = 'hidden';
                     }
                     }
-                    // Reset immédiat après fermeture de la fenêtre
+                    
                     else {
                     animationPhase = 0;
                     mouseCursor.style.left = '143px';
@@ -1311,18 +1262,15 @@
                     customizationWindow.style.transform = 'scale(0.8)';
                     }
                 }
-                // Mettre à jour la progression
-                updateProgress(animationPhase, totalAnimationFrames);
                 
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                updateProgress(animationPhase, totalAnimationFrames);
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
@@ -1333,30 +1281,26 @@
             startAnimation();
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression
+
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur les phases réelles de l'animation
-            const phase1End = moveToHandleFrames; // Fin du déplacement vers poignée
-            const phase2End = moveToHandleFrames + 23; // Fin du clic droit
-            const phase3End = moveToHandleFrames + 27; // Fin de l'apparition du menu
-            const phase4End = moveToHandleFrames + 33; // Fin de la phase menu visible
-            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; // Fin du déplacement vers "Personnaliser"
-            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; // Fin du clic sur "Personnaliser"
-            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; // Fin de l'ouverture de la fenêtre
-            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 45; // Fin de l'affichage de la fenêtre
-            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Fin de la fermeture de la fenêtre
-            
-            // Mettre à jour le texte de progression
+
+            const phase1End = moveToHandleFrames; 
+            const phase2End = moveToHandleFrames + 23; 
+            const phase3End = moveToHandleFrames + 27; 
+            const phase4End = moveToHandleFrames + 33; 
+            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; 
+            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; 
+            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; 
+            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 45; 
+            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 55; 
+
             if (phase <= phase1End) {
                 progressText.textContent = 'Déplacement vers la poignée...';
             } else if (phase <= phase2End) {
@@ -1380,12 +1324,10 @@
             }
         }
 
-        // Fonction pour centrer la fenêtre dans le canvas
         function centerWindow() {
             const window = customizationWindow;
             const canvas = document.querySelector('.demo-canvas');
-            
-            // Centrer la fenêtre dans le canvas avec la nouvelle taille
+
             const canvasWidth = canvas.offsetWidth;
             const canvasHeight = canvas.offsetHeight;
             const windowWidth = 725;
@@ -1398,7 +1340,6 @@
             window.style.top = centerY + 'px';
         }
 
-        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
         document.querySelectorAll('.help-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -1453,7 +1394,6 @@
             }
         }
 
-        // Démarrer l'animation au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
@@ -1477,14 +1417,12 @@
                 console.warn('Bouton pause non trouvé dans demo-OpenBorderCustomization');
             }
 
-            // Centrer la fenêtre avant de démarrer l'animation
             setTimeout(() => {
                 centerWindow();
                 setTimeout(startAnimation, 500);
             }, 100);
         });
 
-        // Configuration de démonstration pour la fenêtre de personnalisation
         let config = {
             borderColor: 'white',
             rectBgColor: '#2D2D30',
@@ -1501,20 +1439,18 @@
 
         let selectedDefaultStyle = 0;
 
-        // Fonctions pour la fenêtre de personnalisation
         function updatePreview() {
             const previewBubble = document.getElementById('previewBubble');
             const previewLabel = document.getElementById('previewLabel');
             const previewLabelText = document.getElementById('previewLabelText');
 
             if (previewBubble && previewLabel && previewLabelText) {
-                // Mettre à jour la bulle
+                
                 previewBubble.style.borderColor = config.borderColor;
                 previewBubble.style.borderWidth = config.borderThickness + 'px';
                 previewBubble.style.borderRadius = config.borderCornerRadius + 'px';
                 previewBubble.style.backgroundColor = config.rectBgColor;
 
-                // Mettre à jour le label
                 previewLabel.style.backgroundColor = config.labelBgColor;
                 previewLabel.style.borderColor = config.labelBorderColor;
                 previewLabel.style.borderWidth = config.labelBorderThickness + 'px';
@@ -1522,7 +1458,6 @@
                 previewLabelText.style.color = config.titleColor;
                 previewLabelText.textContent = config.text;
 
-                // Ajuster la largeur du label selon le texte
                 adjustLabelWidth();
             }
         }
@@ -1531,14 +1466,14 @@
             const previewLabel = document.getElementById('previewLabel');
             if (previewLabel) {
                 const text = config.text || '';
-                // L'étiquette s'adapte automatiquement à la largeur du texte
+                
                 previewLabel.style.width = 'auto';
                 previewLabel.style.minWidth = 'fit-content';
             }
         }
 
         function pickColor(type) {
-            // Simulation d'un sélecteur de couleur
+            
             const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF', '#808080', '#2D2D30'];
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             
@@ -1575,8 +1510,7 @@
 
         function selectDefaultStyle(styleIndex) {
             selectedDefaultStyle = styleIndex;
-            
-            // Appliquer le style par défaut
+
             const styleColors = {
                 1: '#E74C3C', 2: '#3498DB', 3: '#2ECC71', 4: '#F39C12', 5: '#9B59B6',
                 6: '#1ABC9C', 7: '#E67E22', 8: '#34495E', 9: '#95A5A6', 10: '#16A085'
@@ -1595,8 +1529,7 @@
             config.borderCornerRadius = 6;
             config.labelCornerRadius = 3;
             config.rectangleImagePath = null;
-            
-            // Mettre à jour les contrôles
+
             const borderButton = document.getElementById('borderColorButton');
             const labelBorderButton = document.getElementById('labelBorderColorButton');
             const titleButton = document.getElementById('titleColorButton');
@@ -1684,7 +1617,6 @@
             alert('Personnalisation annulée');
         }
 
-        // Initialiser l'aperçu au chargement
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(updatePreview, 100);
         });

@@ -36,14 +36,12 @@
             display: inline-block;
         }
 
-        /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
-            /* Hérite de demo-elements.css, adaptations spécifiques */
+            
             width: 600px;
             height: 400px;
         }
 
-        /* Menu contextuel complet du projet */
         .context-menu {
             background: #26292C;
             border: 2px solid #444;
@@ -114,7 +112,6 @@
             margin: 0 5px;
         }
 
-        /* Section headers avec flèche - comportement submenu */
         .menu-section {
             position: relative;
         }
@@ -147,8 +144,7 @@
             margin-left: auto;
             transition: transform 0.2s;
         }
-        
-        /* Sous-menu séparé */
+
         .submenu {
             position: absolute;
             left: 100%;
@@ -174,14 +170,12 @@
             transform: scale(1);
         }
 
-        /* Séparateurs */
         .menu-separator {
             height: 1px;
             background: #444;
             margin: 4px 8px;
         }
 
-        /* Boutons d'aide */
         .help-button {
             width: 28px;
             height: 28px;
@@ -205,7 +199,6 @@
             background: #003C74;
         }
 
-        /* Styles pour les éléments avec aide */
         .menu-item-with-help {
             justify-content: space-between;
         }
@@ -216,9 +209,8 @@
             flex: 1;
         }
 
-        /* Poignée de redimensionnement (adaptations pour cette démo) */
         .resize-handle {
-            /* Override de demo-elements.css pour cette démo */
+            
             width: 12px;
             height: 12px;
             left: 243px !important;
@@ -226,7 +218,6 @@
             z-index: 5;
         }
 
-        /* Effets de masquage/affichage pour l'étiquette */
         .label-hidden {
             opacity: 0;
             transform: translateX(-50%) scale(0.8);
@@ -259,12 +250,10 @@
             100% { transform: translateX(-50%) scale(1); opacity: 1; border-color: #ffffff; box-shadow: none; }
         }
 
-        /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
             z-index: 1500 !important;
         }
 
-        /* Position de la souris ajustée pour le canvas agrandi */
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
@@ -297,32 +286,23 @@
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
-                <!-- Bordure dynamique -->
+                
                 <div class="dynamic-border"></div>
 
-                <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
                     <div class="label-text">Masquer l'Étiquette d'une Bulle</div>
                 </div>
 
-                <!-- Curseur de souris -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Cercle d'animation de clic -->
-
-                <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
 
-                <!-- Souris avec bouton droit coloré (pour les clics) -->
                 <div class="mouse-right-click"></div>
 
-                <!-- Souris avec bouton gauche coloré (pour les clics) -->
                 <div class="mouse-left-click"></div>
 
-                <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
                     <button class="menu-item menu-item-with-help">
                         <div class="menu-item-content">
@@ -564,28 +544,23 @@
             </div>
         </div>
 
-        
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        
-        // Standardisation de la vitesse du curseur (selon demo-elements.css)
-        const CURSOR_SPEED_PX_PER_FRAME = 9;
-        let baseInterval = 50; // Intervalle de base pour cette démo
-        
-        // Calculer le nombre total de frames de l'animation (basé sur les phases fixes)
-        const totalAnimationFrames = 220; // Total jusqu'au redémarrage
 
-        // Éléments DOM
+        const CURSOR_SPEED_PX_PER_FRAME = 9;
+        let baseInterval = 50; 
+
+        const totalAnimationFrames = 220; 
+
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
@@ -597,30 +572,27 @@
         const menuSections = document.querySelectorAll('.menu-section');
         const submenus = document.querySelectorAll('.submenu');
         const hideLabelItem = document.querySelector('#hide-label-item');
-        let isLabelVisible = true; // État de l'étiquette : true = visible, false = masquée
+        let isLabelVisible = true; 
 
-        // Fonction pour mettre à jour le texte et l'icône de la sous-option
         function updateLabelOptionState() {
             const iconElement = hideLabelItem.querySelector('.menu-icon');
             const textElement = hideLabelItem.querySelector('.label-option-text');
             
             if (isLabelVisible) {
-                // État : étiquette visible -> option "Masquer l'étiquette"
+                
                 if (textElement) {
                     textElement.textContent = hideLabelItem.getAttribute('data-text-hide');
                 }
-                
-                // Mettre à jour l'icône (œil barré)
+
                 if (iconElement) {
                     iconElement.innerHTML = '<path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z" fill="currentColor"/>';
                 }
             } else {
-                // État : étiquette masquée -> option "Afficher l'étiquette"
+                
                 if (textElement) {
                     textElement.textContent = hideLabelItem.getAttribute('data-text-show');
                 }
-                
-                // Mettre à jour l'icône (œil normal)
+
                 if (iconElement) {
                     iconElement.innerHTML = '<path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-146 0-266-81.5T40-500q54-137 174-218.5T480-800q146 0 266 81.5T920-500q-54 137-174 218.5T480-200Zm0-300Zm0 220q113 0 207.5-59.5T832-500q-50-101-144.5-160.5T480-720q-113 0-207.5 59.5T128-500q50 101 144.5 160.5T480-280Z" fill="currentColor"/>';
                 }
@@ -628,45 +600,41 @@
         }
 
         function startAnimation() {
-            // Calculer les positions des éléments - centre exact de l'étiquette
-            const labelCenterX = 150; // Position left de l'étiquette selon demo-elements.css
-            const labelCenterY = 35;  // Position top de l'étiquette selon demo-elements.css
+            
+            const labelCenterX = 150; 
+            const labelCenterY = 35;  
             
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
 
-                // Calculer les frames de mouvement une seule fois
                 const moveToLabelFrames = Math.ceil(Math.sqrt((labelCenterX-143)**2 + (labelCenterY-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 const moveToOptionsFrames = Math.ceil(Math.sqrt((80)**2 + (30)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 const moveToSubmenuFrames = Math.ceil(Math.sqrt((160)**2 + (35)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 const moveToHandleFrames = Math.ceil(Math.sqrt((244-labelCenterX-240)**2 + (133-labelCenterY-65)**2) / CURSOR_SPEED_PX_PER_FRAME);
 
-                // Phase 1: Curseur se déplace vers l'étiquette (vitesse standardisée)
                 if (animationPhase <= moveToLabelFrames) {
                     const progress = animationPhase / moveToLabelFrames;
-                    const startX = 143, startY = 92; // Position par défaut selon demo-elements.css
+                    const startX = 143, startY = 92; 
                     const endX = labelCenterX, endY = labelCenterY;
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 2: Clic droit sur l'étiquette
+                
                 else if (animationPhase <= moveToLabelFrames + 25) {
                     const clickPhase = animationPhase - moveToLabelFrames;
-                    
-                    // Animation de clic
+
                     if (clickPhase <= 3) {
                     } else if (clickPhase <= 6) {
                         const shrinkPhase = clickPhase - 3;
                     } else {
                     }
 
-                    // Changement de souris selon demo-elements.css
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
@@ -676,13 +644,11 @@
                         mouseRightClick.style.visibility = 'hidden';
                     }
 
-                    // Ouverture du menu contextuel à la position de l'étiquette
                     if (clickPhase >= 8) {
                         const menuProgress = Math.min(1, (clickPhase - 8) / 6);
-                        // Position du menu contextuel : coin gauche supérieur à côté du curseur (étiquette)
-                        // Le menu s'ouvre légèrement à droite et en dessous du curseur
-                        const menuX = labelCenterX + 20; // 20px à droite de l'étiquette
-                        const menuY = labelCenterY + 10; // 10px en dessous de l'étiquette
+
+                        const menuX = labelCenterX + 20; 
+                        const menuY = labelCenterY + 10; 
                         contextMenu.style.left = menuX + 'px';
                         contextMenu.style.top = menuY + 'px';
                     contextMenu.style.visibility = 'visible';
@@ -690,37 +656,33 @@
                     contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
                 }
                 }
-                // Phase 3: Menu visible, déplacement vers "Options de l'étiquette"
+                
                 else if (animationPhase <= moveToLabelFrames + 25 + moveToOptionsFrames) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
-                    
-                    // Déplacement vers "Options de l'étiquette" (vitesse standardisée)
+
                     const movePhase = animationPhase - (moveToLabelFrames + 25);
                     if (movePhase >= 2) {
                         const progress = Math.min(1, (movePhase - 2) / moveToOptionsFrames);
                         const startX = labelCenterX, startY = labelCenterY;
-                        // Position de "Options de l'étiquette" dans le menu (4ème option)
+                        
                         const menuX = labelCenterX + 20, menuY = labelCenterY + 10;
-                        // Calcul précis : padding(8px) + 3 options précédentes(3*30px) + hauteur option/2(15px)
-                        const endX = menuX + 175, endY = menuY + 8 + (4 * 46) + 15; // Centre exact de "Options de l'étiquette"
+                        
+                        const endX = menuX + 175, endY = menuY + 8 + (4 * 46) + 15; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
                 }
-                // Phase 4: Survol et clic sur "Options de l'étiquette"
+                
                 else if (animationPhase <= moveToLabelFrames + 25 + moveToOptionsFrames + 20) {
                     const hoverPhase = animationPhase - (moveToLabelFrames + 25 + moveToOptionsFrames);
-                    
-                    // Effet de survol sur "Options de l'étiquette"
+
                     if (hoverPhase >= 2) {
                         menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
-                        
-                        // Animation de clic sur "Options de l'étiquette"
+
                         if (hoverPhase >= 3 && hoverPhase <= 13) {
                             const clickPhase = hoverPhase - 3;
-                            
-                            // Effet de clic sur "Options de l'étiquette"
+
                             if (clickPhase >= 1 && clickPhase <= 2.5) {
                                 const activateProgress = (clickPhase - 1) / 1.5;
                                 const scale = 1 - (activateProgress * 0.05);
@@ -737,8 +699,7 @@
                                 menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
                                 menuSections[1].querySelector('.menu-section-header').style.transform = 'scale(1)';
                             }
-                            
-                            // Changement de souris pour clic gauche
+
                             if (clickPhase >= 2) {
                                 mouseZeroClick.style.visibility = 'hidden';
                                 mouseLeftClick.style.visibility = 'visible';
@@ -747,11 +708,10 @@
                                 mouseZeroClick.style.visibility = 'visible';
                                 mouseLeftClick.style.visibility = 'hidden';
                             }
-                            
-                            // Animation circulaire de clic
+
                             if (clickPhase <= 3) {
                                 const menuX = labelCenterX + 20, menuY = labelCenterY + 10;
-                                const clickX = menuX + 175, clickY = menuY + 8 + (3 * 30) + 15; // Position exacte de "Options de l'étiquette"
+                                const clickX = menuX + 175, clickY = menuY + 8 + (3 * 30) + 15; 
                             } else if (clickPhase <= 6) {
                                 const shrinkPhase = clickPhase - 3;
                                 const menuX = labelCenterX + 20, menuY = labelCenterY + 10;
@@ -759,8 +719,7 @@
                             } else {
                             }
                         }
-                        
-                        // Ouverture du sous-menu
+
                         if (hoverPhase >= 6) {
                             const submenuProgress = Math.min(1, (hoverPhase - 6) / 6);
                             submenus[1].style.visibility = 'visible';
@@ -769,22 +728,21 @@
                         }
                     }
                 }
-                // Phase 5: Déplacement vers "Masquer l'étiquette"
+                
                 else if (animationPhase <= moveToLabelFrames + 25 + moveToOptionsFrames + 20 + moveToSubmenuFrames) {
                     const movePhase = animationPhase - (moveToLabelFrames + 25 + moveToOptionsFrames + 20);
                     if (movePhase <= moveToSubmenuFrames) {
                         const progress = movePhase / moveToSubmenuFrames;
                         const menuX = labelCenterX + 20, menuY = labelCenterY + 10;
-                        const startX = menuX + 175, startY = menuY + 8 + (4 * 46) + 15; // Position de "Options de l'étiquette"
-                        // Sous-menu : position du menu + largeur du menu + marge + position dans le sous-menu
-                        const submenuX = menuX + 350 + 5; // 350px (largeur menu) + 5px (marge)
-                        const submenuY = menuY + 8 + (4 * 46); // Même hauteur que "Options de l'étiquette"
-                        const endX = submenuX + 100, endY = submenuY + 46; // Position de "Masquer l'étiquette" (2ème option du sous-menu)
+                        const startX = menuX + 175, startY = menuY + 8 + (4 * 46) + 15; 
+                        
+                        const submenuX = menuX + 350 + 5; 
+                        const submenuY = menuY + 8 + (4 * 46); 
+                        const endX = submenuX + 100, endY = submenuY + 46; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    
-                    // Effet de survol sur "Masquer l'étiquette"
+
                     if (movePhase >= moveToSubmenuFrames - 5) {
                         const submenuItems = submenus[1].querySelectorAll('.menu-item');
                         if (submenuItems[1]) {
@@ -792,15 +750,14 @@
                         }
                     }
                 }
-                // Phase 6: Clic sur "Masquer l'étiquette"
+                
                 else if (animationPhase <= 105) {
                     const clickPhase = animationPhase - 90;
-                    
-                    // Animation de clic (position exacte du curseur)
+
                     const menuX = labelCenterX + 20, menuY = labelCenterY + 10;
-                    const submenuX = menuX + 350 + 5; // Position du sous-menu
-                    const submenuY = menuY + 8 + (4 * 46); // Même hauteur que "Options de l'étiquette"
-                    const cursorX = submenuX + 100; // Position de "Masquer l'étiquette" dans le sous-menu
+                    const submenuX = menuX + 350 + 5; 
+                    const submenuY = menuY + 8 + (4 * 46); 
+                    const cursorX = submenuX + 100; 
                     const cursorY = submenuY + 30;
                     
                     if (clickPhase <= 3) {
@@ -808,8 +765,7 @@
                         const shrinkPhase = clickPhase - 3;
                     } else {
                     }
-                    
-                    // Effet de clic sur "Masquer l'étiquette"
+
                     if (clickPhase >= 1 && clickPhase <= 2.5) {
                         const activateProgress = (clickPhase - 1) / 1.5;
                         const scale = 1 - (activateProgress * 0.05);
@@ -836,7 +792,6 @@
                         }
                     }
 
-                    // Changement de souris pour clic gauche
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
@@ -845,8 +800,7 @@
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
                     }
-                    
-                    // Fermeture du menu après le clic
+
                     if (clickPhase >= 8) {
                         const closeProgress = Math.min(1, (clickPhase - 8) / 6);
                         contextMenu.style.opacity = 1 - closeProgress;
@@ -855,15 +809,13 @@
                         submenus[1].style.transform = `scale(${1 - closeProgress * 0.2})`;
                     }
                 }
-                // Phase 7: Animation de masquage de l'étiquette
+                
                 else if (animationPhase <= 125) {
                     const hidePhase = animationPhase - 105;
-                    
-                    // Masquer le menu complètement
+
                     contextMenu.style.visibility = 'hidden';
                     submenus[1].style.visibility = 'hidden';
-                    
-                    // Réinitialiser tous les effets de surbrillance pour la deuxième étape
+
                     const allMenuItems = contextMenu.querySelectorAll('.menu-item');
                     allMenuItems.forEach(item => {
                         item.style.background = '';
@@ -884,63 +836,57 @@
                             item.style.transform = 'scale(1)';
                         });
                     });
-                    
-                    // Animation de disparition de l'étiquette
+
                     if (hidePhase >= 3) {
                         const fadeProgress = Math.min(1, (hidePhase - 3) / 12);
-                        
-                        // Effet de pulsation avant disparition
+
                         if (fadeProgress < 0.3) {
                             const pulseScale = 1 + Math.sin(fadeProgress * 20) * 0.1;
                             labelBorder.style.transform = `translateX(-50%) scale(${pulseScale})`;
                             labelBorder.style.border = '3px solid #ff6b35';
                             labelBorder.style.boxShadow = '0 0 15px rgba(255, 107, 53, 0.8)';
                         } else {
-                            // Disparition graduelle
+                            
                             const fadeAmount = 1 - ((fadeProgress - 0.3) / 0.7);
                             labelBorder.style.opacity = fadeAmount;
                             labelBorder.style.transform = `translateX(-50%) scale(${fadeAmount})`;
                             
                             if (fadeProgress >= 0.9) {
                                 labelBorder.style.visibility = 'hidden';
-                                // Changer l'état : étiquette maintenant masquée
+                                
                                 isLabelVisible = false;
                             }
                         }
                     }
                 }
-                // Phase 8: Déplacement vers la poignée pour réouvrir le menu
+                
                 else if (animationPhase <= 140) {
                     const movePhase = animationPhase - 125;
-                    
-                    // Étiquette reste masquée
+
                     labelBorder.style.visibility = 'hidden';
                     mouseCursor.style.visibility = 'visible';
-                    
-                    // Déplacement vers la poignée
+
                     if (movePhase <= 15) {
                         const progress = movePhase / 15;
                         const menuX = labelCenterX + 20, menuY = labelCenterY + 10;
                         const submenuX = menuX + 350 + 5;
                         const submenuY = menuY + 8 + (4 * 46);
-                        const startX = submenuX + 100, startY = submenuY + 46; // Position de "Masquer l'étiquette"
-                        const endX = 244, endY = 133; // Position de la poignée selon demo-elements.css
+                        const startX = submenuX + 100, startY = submenuY + 46; 
+                        const endX = 244, endY = 133; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
                 }
-                // Phase 9: Clic sur la poignée pour réouvrir le menu
+                
                 else if (animationPhase <= 145) {
                     const clickPhase = animationPhase - 140;
-                    
-                    // Animation de clic sur la poignée (clic quasi-immédiat)
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
 
-                    // Changement de souris pour clic droit (plus rapide)
                     if (clickPhase >= 1) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
@@ -949,14 +895,12 @@
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';
                     }
-                    
-                    // Réouverture du menu à proximité de la poignée (plus rapide)
+
                     if (clickPhase >= 2) {
                         const menuProgress = Math.min(1, (clickPhase - 2) / 2);
-                        // Position du menu contextuel : coin gauche supérieur à côté de la poignée
-                        // Le menu s'ouvre légèrement à droite et en dessous de la poignée
-                        const menuX = 244 + 20; // 20px à droite de la poignée
-                        const menuY = 133 + 20; // 20px en dessous de la poignée
+
+                        const menuX = 244 + 20; 
+                        const menuY = 133 + 20; 
                         contextMenu.style.left = menuX + 'px';
                         contextMenu.style.top = menuY + 'px';
                         contextMenu.style.visibility = 'visible';
@@ -964,37 +908,33 @@
                         contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
                     }
                 }
-                // Phase 10: Menu visible, déplacement vers "Options de l'étiquette"
+                
                 else if (animationPhase <= 160) {
                     const movePhase = animationPhase - 145;
                     
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
-                    
-                    // Déplacement vers "Options de l'étiquette"
+
                     if (movePhase <= 15) {
                         const progress = movePhase / 15;
-                        const startX = 244, startY = 133; // Position de la poignée
-                        const menuX = 244 + 20, menuY = 133 + 20; // Position du menu depuis la poignée
-                        // Calcul précis : padding(8px) + 3 options précédentes(3*30px) + hauteur option/2(15px)
-                        const endX = menuX + 175, endY = menuY + 8 + (4 * 46) - 15; // Centre exact de "Options de l'étiquette"
+                        const startX = 244, startY = 133; 
+                        const menuX = 244 + 20, menuY = 133 + 20; 
+                        
+                        const endX = menuX + 175, endY = menuY + 8 + (4 * 46) - 15; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
                 }
-                // Phase 11: Clic sur "Options de l'étiquette" pour ouvrir le sous-menu
+                
                 else if (animationPhase <= 175) {
                     const clickPhase = animationPhase - 160;
-                    
-                    // Effet de survol sur "Options de l'étiquette"
+
                     if (clickPhase >= 2) {
                         menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
-                        
-                        // Animation de clic
+
                         if (clickPhase >= 3 && clickPhase <= 13) {
                             const clickPhaseInner = clickPhase - 3;
-                            
-                            // Effet de clic bleu
+
                             if (clickPhaseInner >= 1 && clickPhaseInner <= 2.5) {
                                 const activateProgress = (clickPhaseInner - 1) / 1.5;
                                 const scale = 1 - (activateProgress * 0.05);
@@ -1011,8 +951,7 @@
                                 menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
                                 menuSections[1].querySelector('.menu-section-header').style.transform = 'scale(1)';
                             }
-                            
-                            // Changement de souris
+
                             if (clickPhaseInner >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
@@ -1021,11 +960,10 @@
                                 mouseZeroClick.style.visibility = 'visible';
                                 mouseLeftClick.style.visibility = 'hidden';
                             }
-                            
-                            // Animation circulaire
+
                             if (clickPhaseInner <= 3) {
-                                const menuX = 244 + 20, menuY = 133 + 20; // Position du menu depuis la poignée
-                                const clickX = menuX + 175, clickY = menuY + 8 + (4 * 46) + 15; // Position exacte de "Options de l'étiquette"
+                                const menuX = 244 + 20, menuY = 133 + 20; 
+                                const clickX = menuX + 175, clickY = menuY + 8 + (4 * 46) + 15; 
                             } else if (clickPhaseInner <= 6) {
                                 const shrinkPhase = clickPhaseInner - 3;
                                 const menuX = 244 + 20, menuY = 133 + 20;
@@ -1033,53 +971,48 @@
                             } else {
                             }
                         }
-                        
-                        // Ouverture du sous-menu
+
                         if (clickPhase >= 6) {
                             const submenuProgress = Math.min(1, (clickPhase - 6) / 6);
                             submenus[1].style.visibility = 'visible';
                             submenus[1].style.opacity = submenuProgress;
                             submenus[1].style.transform = `scale(${0.8 + submenuProgress * 0.2})`;
-                            
-                            // Mettre à jour l'état de l'option quand le sous-menu s'ouvre
+
                             if (submenuProgress >= 0.5) {
                                 updateLabelOptionState();
                             }
                         }
                     }
                 }
-                // Phase 12: Déplacement vers "Afficher l'étiquette"
+                
                 else if (animationPhase <= 190) {
                     const movePhase = animationPhase - 175;
                     
                     if (movePhase <= 15) {
                         const progress = movePhase / 15;
-                        const menuX = 244 + 20, menuY = 133 + 20; // Position du menu depuis la poignée
-                        const startX = menuX + 175, startY = menuY + 8 + (4 * 46) + 15; // Position de "Options de l'étiquette"
-                        // Sous-menu : position du menu + largeur du menu + marge + position dans le sous-menu
-                        const submenuX = menuX + 350 + 5; // 350px (largeur menu) + 5px (marge)
-                        const submenuY = menuY + 8 + (4 * 46); // Même hauteur que "Options de l'étiquette"
-                        const endX = submenuX + 100, endY = submenuY + 46; // Position de "Afficher l'étiquette" (2ème option du sous-menu)
+                        const menuX = 244 + 20, menuY = 133 + 20; 
+                        const startX = menuX + 175, startY = menuY + 8 + (4 * 46) + 15; 
+                        
+                        const submenuX = menuX + 350 + 5; 
+                        const submenuY = menuY + 8 + (4 * 46); 
+                        const endX = submenuX + 100, endY = submenuY + 46; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
                 }
-                // Phase 13: Clic sur "Afficher l'étiquette"
+                
                 else if (animationPhase <= 205) {
                     const clickPhase = animationPhase - 190;
-                    
-                    // Effet de survol sur "Afficher l'étiquette"
+
                     if (clickPhase >= 2) {
                         const submenuItems = submenus[1].querySelectorAll('.menu-item');
                         if (submenuItems[1]) {
                             submenuItems[1].style.background = '#0078D4';
                         }
-                        
-                        // Animation de clic
+
                         if (clickPhase >= 3 && clickPhase <= 13) {
                             const clickPhaseInner = clickPhase - 3;
-                            
-                            // Effet de clic bleu
+
                             if (clickPhaseInner >= 1 && clickPhaseInner <= 2.5) {
                                 const activateProgress = (clickPhaseInner - 1) / 1.5;
                                 const scale = 1 - (activateProgress * 0.05);
@@ -1105,8 +1038,7 @@
                                     submenuItems[1].style.transform = 'scale(1)';
                                 }
                             }
-                            
-                            // Changement de souris
+
                             if (clickPhaseInner >= 2) {
                                 mouseZeroClick.style.visibility = 'hidden';
                                 mouseLeftClick.style.visibility = 'visible';
@@ -1116,11 +1048,10 @@
                         mouseLeftClick.style.visibility = 'hidden';
                     }
 
-                            // Animation circulaire (position exacte du curseur)
-                            const menuX = 244 + 20, menuY = 133 + 20; // Position du menu depuis la poignée
-                            const submenuX = menuX + 350 + 5; // Position du sous-menu
-                            const submenuY = menuY + 8 + (3 * 30); // Même hauteur que "Options de l'étiquette"
-                            const cursorX = submenuX + 100; // Position de "Afficher l'étiquette" dans le sous-menu
+                            const menuX = 244 + 20, menuY = 133 + 20; 
+                            const submenuX = menuX + 350 + 5; 
+                            const submenuY = menuY + 8 + (3 * 30); 
+                            const cursorX = submenuX + 100; 
                             const cursorY = submenuY + 30;
                             
                             if (clickPhaseInner <= 3) {
@@ -1129,8 +1060,7 @@
                             } else {
                             }
                         }
-                        
-                        // Fermeture du menu après le clic
+
                         if (clickPhase >= 6) {
                             const closeProgress = Math.min(1, (clickPhase - 6) / 6);
                             contextMenu.style.opacity = 1 - closeProgress;
@@ -1142,22 +1072,20 @@
                         }
                     }
                 }
-                // Phase 14: Animation de réapparition de l'étiquette
+                
                 else if (animationPhase <= 220) {
                     const showPhase = animationPhase - 205;
-                    
-                    // Animation de réapparition de l'étiquette
+
                     if (showPhase >= 3) {
                         const fadeProgress = Math.min(1, (showPhase - 3) / 12);
-                        
-                        // Effet de pulsation avant réapparition
+
                         if (fadeProgress < 0.3) {
                             const pulseScale = 0.5 + Math.sin(fadeProgress * 20) * 0.1;
                             labelBorder.style.transform = `translateX(-50%) scale(${pulseScale})`;
                             labelBorder.style.border = '3px solid #00ff88';
                             labelBorder.style.boxShadow = '0 0 15px rgba(0, 255, 136, 0.8)';
                         } else {
-                            // Réapparition graduelle
+                            
                             const fadeAmount = (fadeProgress - 0.3) / 0.7;
                             labelBorder.style.opacity = fadeAmount;
                             labelBorder.style.transform = `translateX(-50%) scale(${fadeAmount})`;
@@ -1169,15 +1097,15 @@
                             if (fadeProgress >= 0.9) {
                                 labelBorder.style.border = '2px solid white';
                                 labelBorder.style.boxShadow = 'none';
-                                // Changer l'état : étiquette maintenant visible
+                                
                                 isLabelVisible = true;
                             }
                         }
                     }
                 }
-                // Phase 15: Pause finale avant reset
+                
                 else if (animationPhase <= 235) {
-                    // Étiquette visible, pause avant redémarrage
+                    
                     labelBorder.style.visibility = 'visible';
                     labelBorder.style.opacity = '1';
                     labelBorder.style.transform = 'translateX(-50%) scale(1)';
@@ -1185,34 +1113,29 @@
                     labelBorder.style.boxShadow = 'none';
                     mouseCursor.style.visibility = 'hidden';
                 }
-                // Phase 16: Reset pour la boucle
+                
                     else {
-                    // Reset de tous les éléments
-                    animationPhase = 0;
                     
-                    // Reset de la position du curseur (position par défaut)
+                    animationPhase = 0;
+
                     mouseCursor.style.left = '143px';
                     mouseCursor.style.top = '92px';
                     mouseCursor.style.visibility = 'visible';
-                    
-                    // Reset de l'étiquette
+
                     labelBorder.style.visibility = 'visible';
                     labelBorder.style.opacity = '1';
                     labelBorder.style.transform = 'translateX(-50%) scale(1)';
                     labelBorder.style.border = '2px solid white';
                     labelBorder.style.boxShadow = 'none';
-                    
-                    // Reset du menu
+
                     contextMenu.style.visibility = 'hidden';
                     contextMenu.style.opacity = '0';
                     contextMenu.style.transform = 'scale(0.8)';
-                    
-                    // Reset du sous-menu
+
                     submenus[1].style.visibility = 'hidden';
                     submenus[1].style.opacity = '0';
                     submenus[1].style.transform = 'scale(0.8)';
-                    
-                    // Reset des effets de survol
+
                     menuSections[1].querySelector('.menu-section-header').style.background = 'transparent';
                     menuSections[1].querySelector('.menu-section-header').style.transform = 'scale(1)';
                     const submenuItems = submenus[1].querySelectorAll('.menu-item');
@@ -1220,30 +1143,23 @@
                         item.style.background = 'transparent';
                         item.style.transform = 'scale(1)';
                     });
-                    
-                    // Reset de l'animation de clic
-                    
-                    // Reset de la souris selon demo-elements.css
+
                     mouseZeroClick.style.visibility = 'visible';
                     mouseRightClick.style.visibility = 'hidden';
                     mouseLeftClick.style.visibility = 'hidden';
-                    
-                    // Reset de l'état et de l'option
+
                     isLabelVisible = true;
                     updateLabelOptionState();
                 }
-                // Mettre à jour la progression
-                updateProgress(animationPhase, totalAnimationFrames);
                 
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                updateProgress(animationPhase, totalAnimationFrames);
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
@@ -1254,33 +1170,29 @@
             startAnimation();
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression
+
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur les phases réelles de l'animation
-            const phase1End = 30; // Fin du déplacement vers l'étiquette
-            const phase2End = 50; // Fin du clic sur l'étiquette
-            const phase3End = 70; // Fin du déplacement vers "Options de l'étiquette"
-            const phase4End = 90; // Fin du clic sur "Options de l'étiquette"
-            const phase5End = 105; // Fin du déplacement vers "Masquer l'étiquette"
-            const phase6End = 125; // Fin du clic sur "Masquer l'étiquette"
-            const phase7End = 140; // Fin de la disparition du menu
-            const phase8End = 160; // Fin de l'animation de masquage
-            const phase9End = 175; // Fin du déplacement vers "Afficher l'étiquette"
-            const phase10End = 190; // Fin du clic sur "Afficher l'étiquette"
-            const phase11End = 205; // Fin de la disparition du menu
-            const phase12End = 220; // Fin de l'animation d'affichage
-            
-            // Mettre à jour le texte de progression
+
+            const phase1End = 30; 
+            const phase2End = 50; 
+            const phase3End = 70; 
+            const phase4End = 90; 
+            const phase5End = 105; 
+            const phase6End = 125; 
+            const phase7End = 140; 
+            const phase8End = 160; 
+            const phase9End = 175; 
+            const phase10End = 190; 
+            const phase11End = 205; 
+            const phase12End = 220; 
+
             if (phase <= phase1End) {
                 progressText.textContent = 'Déplacement vers l\'étiquette...';
             } else if (phase <= phase2End) {
@@ -1310,7 +1222,6 @@
             }
         }
 
-        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
         document.querySelectorAll('.help-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -1365,7 +1276,6 @@
             }
         }
 
-        // Démarrer l'animation au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
@@ -1389,10 +1299,8 @@
                 console.warn('Bouton pause non trouvé dans demo-Hide-Label');
             }
 
-            // Initialiser l'état de la sous-option
             updateLabelOptionState();
-            
-            // Démarrer l'animation
+
             setTimeout(() => {
                 setTimeout(startAnimation, 500);
             }, 100);

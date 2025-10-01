@@ -36,7 +36,6 @@
             display: inline-block;
         }
 
-        /* Styles spécifiques à cette démonstration */
         .demo-canvas {
             width: 400px;
             height: 200px;
@@ -92,9 +91,6 @@
             text-align: center;
         }
 
-        /* back-button styles removed to use global styles in demo-elements.css */
-
-        /* S'assurer que le curseur reste au-dessus de tout */
         .mouse-cursor {
             z-index: 1500 !important;
         }
@@ -138,25 +134,22 @@
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        
-        // Standardisation de la vitesse du curseur (selon demo-elements.css)
+
         const CURSOR_SPEED_PX_PER_FRAME = 9;
-        let baseInterval = 50; // Intervalle de base pour cette démo
-        
-        // Calculer le nombre total de frames de l'animation
+        let baseInterval = 50; 
+
         const moveToClockFrames = Math.ceil(Math.sqrt((120-143)**2 + (130-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const movingFrames = Math.ceil(Math.sqrt((260-120)**2 + (130-130)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const returnFrames = Math.ceil(Math.sqrt((120-260)**2 + (130-130)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 20; // Total jusqu'au redémarrage
+        const totalAnimationFrames = moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 20; 
 
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
@@ -166,34 +159,32 @@
 
         function startAnimation() {
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
 
-                // Calculer les frames de mouvement avec vitesse standardisée
                 const moveToClockFrames = Math.ceil(Math.sqrt((165-143)**2 + (148-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 const movingFrames = Math.ceil(Math.sqrt((260-120)**2 + (0)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 const returnFrames = Math.ceil(Math.sqrt((260-120)**2 + (0)**2) / CURSOR_SPEED_PX_PER_FRAME);
 
-                // Phase 1: Curseur se déplace vers le centre de l'horloge (vitesse standardisée)
                 if (animationPhase <= moveToClockFrames) {
                     const p = animationPhase / moveToClockFrames;
                     const sx = 143, sy = 92;
-                    const ex = 120 + 45, ey = 130 + 18; // Centre de l'horloge
+                    const ex = 120 + 45, ey = 130 + 18; 
                     mouseCursor.style.left = (sx + (ex - sx) * p) + 'px';
                     mouseCursor.style.top = (sy + (ey - sy) * p) + 'px';
-                // Phase 2: Animation de clic pour commencer le déplacement
+                
                 } else if (animationPhase <= moveToClockFrames + 10) {
                     const cp = animationPhase - moveToClockFrames;
                     if (cp >= 3) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
                     }
-                // Phase 3: Déplacement de l'horloge vers la droite (vitesse standardisée)
+                
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames) {
                     const mp = (animationPhase - (moveToClockFrames + 10)) / movingFrames;
                     const startX = 120, startY = 130;
@@ -202,27 +193,26 @@
                     const y = startY + (endY - startY) * mp;
                     floatingClock.style.left = x + 'px';
                     floatingClock.style.top = y + 'px';
-                    // Adapter le marqueur à la taille de l'horloge
+                    
                     destinationMarker.style.width = floatingClock.offsetWidth + 'px';
                     destinationMarker.style.height = floatingClock.offsetHeight + 'px';
                     const cx = x + 45, cy = y + 18;
                     mouseCursor.style.left = cx + 'px';
                     mouseCursor.style.top = cy + 'px';
-                // Phase 4: Relâcher le clic
+                
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 10) {
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
-                // Phase 5: Pause
+                
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 30) {
-                    // Pause
-                // Phase 6: Nouveau clic pour retour
+
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40) {
                     const cp = animationPhase - (moveToClockFrames + 10 + movingFrames + 30);
                     if (cp >= 3) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
                     }
-                // Phase 7: Retour de l'horloge (vitesse standardisée)
+                
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40 + returnFrames) {
                     const mp = (animationPhase - (moveToClockFrames + 10 + movingFrames + 40)) / returnFrames;
                     const startX = 260, startY = 130;
@@ -231,20 +221,19 @@
                     const y = startY + (endY - startY) * mp;
                     floatingClock.style.left = x + 'px';
                     floatingClock.style.top = y + 'px';
-                    // Adapter le marqueur à la taille de l'horloge
+                    
                     destinationMarker.style.width = floatingClock.offsetWidth + 'px';
                     destinationMarker.style.height = floatingClock.offsetHeight + 'px';
                     const cx = x + 45, cy = y + 18;
                     mouseCursor.style.left = cx + 'px';
                     mouseCursor.style.top = cy + 'px';
-                // Phase 8: Relâcher le clic final
+                
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 10) {
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
-                // Phase 9: Pause finale
+                
                 } else if (animationPhase <= moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 20) {
-                    // Pause finale
-                // Reset pour boucle
+
                 } else {
                     animationPhase = 0;
                     floatingClock.style.left = '120px';
@@ -255,29 +244,25 @@
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
                 }
-                
-                // Mettre à jour la progression
+
                 updateProgress(animationPhase, totalAnimationFrames);
-                
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // S'assurer que le curseur est toujours visible
+            
             if (mouseCursor) {
                 mouseCursor.style.visibility = 'visible';
                 mouseCursor.style.opacity = '1';
             }
-            // Dimensionner la zone pointillée dès le départ
+            
             const syncDestinationSize = () => {
                 if (destinationMarker && floatingClock) {
                     destinationMarker.style.width = floatingClock.offsetWidth + 'px';
@@ -285,14 +270,13 @@
                 }
             };
             syncDestinationSize();
-            // Re-synchroniser après le rendu des polices et à la prochaine frame
+            
             setTimeout(syncDestinationSize, 50);
             requestAnimationFrame(syncDestinationSize);
             window.addEventListener('resize', syncDestinationSize);
             setTimeout(startAnimation, 1000);
         });
 
-        // Fonction pour redémarrer l'animation avec la nouvelle vitesse
         function restartAnimationWithNewSpeed() {
             if (animationTimer) {
                 clearTimeout(animationTimer);
@@ -300,30 +284,26 @@
             startAnimation();
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression
+
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur les phases réelles de l'animation
-            const phase1End = moveToClockFrames; // Fin du déplacement vers l'horloge
-            const phase2End = moveToClockFrames + 10; // Fin du premier clic
-            const phase3End = moveToClockFrames + 10 + movingFrames; // Fin du déplacement de l'horloge
-            const phase4End = moveToClockFrames + 10 + movingFrames + 10; // Fin du relâchement du clic
-            const phase5End = moveToClockFrames + 10 + movingFrames + 30; // Fin de la pause
-            const phase6End = moveToClockFrames + 10 + movingFrames + 40; // Fin du deuxième clic
-            const phase7End = moveToClockFrames + 10 + movingFrames + 40 + returnFrames; // Fin du retour de l'horloge
-            const phase8End = moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 10; // Fin du relâchement du clic
-            const phase9End = moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 20; // Fin de la pause finale
-            
-            // Mettre à jour le texte de progression
+
+            const phase1End = moveToClockFrames; 
+            const phase2End = moveToClockFrames + 10; 
+            const phase3End = moveToClockFrames + 10 + movingFrames; 
+            const phase4End = moveToClockFrames + 10 + movingFrames + 10; 
+            const phase5End = moveToClockFrames + 10 + movingFrames + 30; 
+            const phase6End = moveToClockFrames + 10 + movingFrames + 40; 
+            const phase7End = moveToClockFrames + 10 + movingFrames + 40 + returnFrames; 
+            const phase8End = moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 10; 
+            const phase9End = moveToClockFrames + 10 + movingFrames + 40 + returnFrames + 20; 
+
             if (phase <= phase1End) {
                 progressText.textContent = 'Déplacement vers l\'horloge...';
             } else if (phase <= phase2End) {
@@ -360,25 +340,22 @@
             }
         }
 
-        // Gestion du slider de vitesse
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
             const pauseButton = document.getElementById('pauseButton');
 
             if (speedSlider && speedValue) {
-                // Écouteur d'événement pour le slider
+                
                 speedSlider.addEventListener('input', function() {
                     const newSpeed = parseFloat(this.value);
                     speedValue.textContent = newSpeed + 'x';
                     
                     console.log('Nouvelle vitesse (move-clock):', newSpeed);
-                    
-                    // Changement de vitesse réactif sans restart
+
                     changeAnimationSpeed(newSpeed);
                 });
 
-                // Initialiser l'affichage de la vitesse
                 speedValue.textContent = animationSpeed + 'x';
             } else {
                 console.warn('Éléments du slider non trouvés dans demo-move-clock');

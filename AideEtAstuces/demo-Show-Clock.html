@@ -36,14 +36,12 @@
             display: inline-block;
         }
 
-        /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
-            /* Hérite de demo-elements.css, adaptations spécifiques */
+            
             width: 600px;
             height: 400px;
         }
 
-        /* Menu contextuel complet du projet */
         .context-menu {
             background: #26292C;
             border: 2px solid #444;
@@ -114,7 +112,6 @@
             margin: 0 5px;
         }
 
-        /* Section headers avec flèche - comportement submenu */
         .menu-section {
             position: relative;
         }
@@ -147,8 +144,7 @@
             margin-left: auto;
             transition: transform 0.2s;
         }
-        
-        /* Sous-menu séparé */
+
         .submenu {
             position: absolute;
             left: 100%;
@@ -174,14 +170,12 @@
             transform: scale(1);
         }
 
-        /* Séparateurs */
         .menu-separator {
             height: 1px;
             background: #444;
             margin: 4px 8px;
         }
 
-        /* Boutons d'aide */
         .help-button {
             width: 28px;
             height: 28px;
@@ -205,7 +199,6 @@
             background: #003C74;
         }
 
-        /* Styles pour les éléments avec aide */
         .menu-item-with-help {
             justify-content: space-between;
         }
@@ -216,9 +209,8 @@
             flex: 1;
         }
 
-        /* Poignée de redimensionnement (adaptations pour cette démo) */
         .resize-handle {
-            /* Override de demo-elements.css pour cette démo */
+            
             width: 12px;
             height: 12px;
             left: 243px !important;
@@ -226,7 +218,6 @@
             z-index: 5;
         }
 
-        /* Horloge flottante */
         .floating-clock {
             position: absolute;
             background: rgba(45, 45, 48, 0.95);
@@ -265,12 +256,10 @@
             text-align: center;
         }
 
-        /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
             z-index: 1500 !important;
         }
 
-        /* Position de la souris ajustée pour le canvas agrandi */
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
@@ -278,7 +267,6 @@
             top: 15px !important;
         }
 
-        /* back-button styles removed to use global styles in demo-elements.css */
     </style>
 </head>
 <body>
@@ -305,38 +293,28 @@
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
-                <!-- Bordure dynamique -->
+                
                 <div class="dynamic-border"></div>
 
-                <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
                     <div class="label-text">Afficher l'Horloge d'une Bulle</div>
                 </div>
 
-                <!-- Curseur de souris -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Horloge flottante -->
                 <div class="floating-clock" id="floating-clock">
                     <div class="clock-time">14:32:15</div>
                     <div class="clock-date">Lun 16 Déc 2024</div>
                 </div>
 
-                <!-- Cercle d'animation de clic -->
-
-                <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
 
-                <!-- Souris avec bouton droit coloré (pour les clics) -->
                 <div class="mouse-right-click"></div>
 
-                <!-- Souris avec bouton gauche coloré (pour les clics) -->
                 <div class="mouse-left-click"></div>
 
-                <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
                     <button class="menu-item menu-item-with-help">
                         <div class="menu-item-content">
@@ -581,24 +559,21 @@
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        let baseInterval = 50; // Intervalle de base pour cette démo
-        const CURSOR_SPEED_PX_PER_FRAME = 9; // Vitesse standardisée
-        
-        // Calculer le nombre total de frames de l'animation
+        let baseInterval = 50; 
+        const CURSOR_SPEED_PX_PER_FRAME = 9; 
+
         const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 195; // Total jusqu'au redémarrage
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 195; 
 
-        // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
@@ -609,11 +584,10 @@
         const menuItems = document.querySelectorAll('.menu-item');
         const menuSections = document.querySelectorAll('.menu-section');
         const submenus = document.querySelectorAll('.submenu');
-        let isClockVisible = false; // État de l'horloge : false = masquée, true = visible
+        let isClockVisible = false; 
 
-        // Fonction pour mettre à jour le texte de l'option horloge
         function updateClockOptionState() {
-            const clockSubmenu = submenus[4]; // Sous-menu "Afficher l'horloge"
+            const clockSubmenu = submenus[4]; 
             if (clockSubmenu) {
                 const firstOption = clockSubmenu.querySelector('.menu-item');
                 if (firstOption) {
@@ -631,15 +605,14 @@
 
         function startAnimation() {
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
 
-                // Phase 1: Curseur se déplace vers la poignée (vitesse standardisée)
                 const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 if (animationPhase <= moveToHandleFrames) {
                     const progress = animationPhase / moveToHandleFrames;
@@ -648,30 +621,26 @@
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 2: Animation de clic droit et expansion de la poignée
+                
                 else if (animationPhase <= moveToHandleFrames + 23) {
                     const clickPhase = animationPhase - moveToHandleFrames;
-                    
-                    // Animation de clic très rapide
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
 
-                    // Changement de souris pour le clic droit (synchronisé)
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';
                     }
 
-                    // Animation d'expansion et rétraction de la poignée
                     if (clickPhase >= 3) {
                         const expandPhase = clickPhase - 3;
                         if (expandPhase <= 3) {
@@ -692,57 +661,53 @@
                         }
                     }
                 }
-                // Phase 3: Menu apparaît
+                
                 else if (animationPhase <= moveToHandleFrames + 27) {
                     const menuProgress = (animationPhase - (moveToHandleFrames + 23)) / 4;
                     contextMenu.style.visibility = 'visible';
                     contextMenu.style.opacity = menuProgress;
                     contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
                 }
-                // Phase 4: Menu visible
+                
                 else if (animationPhase <= moveToHandleFrames + 33) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                 }
-                // Phase 5: Curseur se déplace vers "Afficher l'horloge" (vitesse standardisée)
+                
                 else {
                     const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
                     if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames) {
                         const progress = (animationPhase - (moveToHandleFrames + 33)) / moveToMenuFrames;
                         const startX = 243, startY = 133;
-                        const endX = 429, endY = 450; // Centre exact de l'option "Afficher l'horloge" (6ème option)
+                        const endX = 429, endY = 450; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 6: Clic sur "Afficher l'horloge"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
-                    
-                    // Animation de clic
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                             } else {
                             }
-                            
-                    // Changement de souris au clic gauche (synchronisé)
+
                             if (clickPhase >= 2) {
                                 mouseZeroClick.style.visibility = 'hidden';
                                 mouseLeftClick.style.visibility = 'visible';
                             }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                                 mouseZeroClick.style.visibility = 'visible';
                                 mouseLeftClick.style.visibility = 'hidden';
                             }
-                            
-                    // Effet hover sur l'option "Afficher l'horloge" (6ème option - section)
+
                     if (clickPhase >= 1) {
                         menuSections[4].querySelector('.menu-section-header').style.background = '#0078D4';
                     }
                     }
-                    // Phase 7: Sous-menu "Afficher l'horloge" s'ouvre
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 15) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 8)) / 7;
                         if (submenus[4]) {
@@ -751,7 +716,7 @@
                             submenus[4].style.transform = `scale(${0.8 + progress * 0.2})`;
                         }
                     }
-                    // Phase 8: Sous-menu visible
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25) {
                         if (submenus[4]) {
                             submenus[4].style.visibility = 'visible';
@@ -759,46 +724,42 @@
                             submenus[4].style.transform = 'scale(1)';
                         }
                     }
-                    // Phase 9: Curseur se déplace vers "Masquer l'horloge"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 35) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 25)) / 10;
                         const startX = 429, startY = 450;
-                        const endX = 750, endY = 450; // Centre du sous-menu "Masquer l'horloge" (1ère option)
+                        const endX = 750, endY = 450; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 10: Clic sur "Masquer l'horloge"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 43) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 35);
-                    
-                    // Animation de clic
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
-                    
-                    // Changement de souris au clic gauche (synchronisé)
+
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
                     }
-                    
-                    // Effet hover sur "Masquer l'horloge"
+
                     if (clickPhase >= 1) {
                         const submenuItems = submenus[4].querySelectorAll('.menu-item');
-                        if (submenuItems[0]) { // 1ère option du sous-menu
+                        if (submenuItems[0]) { 
                             submenuItems[0].style.background = '#0078D4';
                         }
                     }
                     }
-                    // Phase 11: Menu et sous-menu disparaissent, horloge s'affiche
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 55) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 43)) / 12;
                         contextMenu.style.opacity = 1 - progress;
@@ -809,7 +770,7 @@
                         }
                         
                         if (progress >= 0.5) {
-                            // Animation d'apparition de l'horloge
+                            
                             floatingClock.style.visibility = 'visible';
                             floatingClock.style.opacity = (progress - 0.5) * 2;
                             floatingClock.style.transform = 'translateX(-50%)';
@@ -818,45 +779,41 @@
                             }
                         }
                     }
-                    // Phase 12: Horloge visible, pause
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 75) {
                         floatingClock.style.visibility = 'visible';
                         floatingClock.style.opacity = '1';
                         floatingClock.style.transform = 'translateX(-50%)';
                         isClockVisible = true;
                     }
-                    // Phase 13: Déplacement vers la poignée pour réouvrir le menu
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 90) {
                         const movePhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 75);
-                        
-                        // Horloge reste visible
+
                         floatingClock.style.visibility = 'visible';
                         floatingClock.style.opacity = '1';
                         floatingClock.style.transform = 'translateX(-50%)';
                         isClockVisible = true;
                     mouseCursor.style.visibility = 'visible';
-                    
-                    // Déplacement vers la poignée
+
                     if (movePhase <= 15) {
                         const progress = movePhase / 15;
-                            const startX = 750, startY = 450; // Position de "Masquer l'horloge"
-                            const endX = 243, endY = 133; // Position de la poignée
+                            const startX = 750, startY = 450; 
+                            const endX = 243, endY = 133; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
                 }
-                    // Phase 14: Clic sur la poignée pour réouvrir le menu
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 115) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 90);
-                        
-                        // Animation de clic sur la poignée
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
 
-                        // Changement de souris pour le clic droit
                         if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
@@ -865,8 +822,7 @@
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';
                     }
-                    
-                        // Animation d'expansion et rétraction de la poignée
+
                         if (clickPhase >= 3) {
                             const expandPhase = clickPhase - 3;
                             if (expandPhase <= 3) {
@@ -887,38 +843,36 @@
                             }
                         }
                     }
-                    // Phase 15: Menu réapparaît
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 119) {
                         const menuProgress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 115)) / 4;
                         contextMenu.style.visibility = 'visible';
                         contextMenu.style.opacity = menuProgress;
                         contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
                     }
-                    // Phase 16: Menu visible
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 125) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                     }
-                    // Phase 17: Curseur se déplace vers "Afficher l'horloge"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 140) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 125)) / 15;
                         const startX = 243, startY = 133;
-                        const endX = 429, endY = 450; // Centre exact de l'option "Afficher l'horloge"
+                        const endX = 429, endY = 450; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 18: Clic sur "Afficher l'horloge" pour ouvrir le sous-menu
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 148) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 140);
-                        
-                        // Animation de clic
+
                         if (clickPhase <= 2) {
                         } else if (clickPhase <= 4) {
                             const shrinkPhase = clickPhase - 2;
                             } else {
                             }
-                            
-                        // Changement de souris au clic gauche
+
                         if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
@@ -927,27 +881,25 @@
                                 mouseZeroClick.style.visibility = 'visible';
                                 mouseLeftClick.style.visibility = 'hidden';
                             }
-                            
-                        // Effet hover sur l'option "Afficher l'horloge"
+
                         if (clickPhase >= 1) {
                             menuSections[4].querySelector('.menu-section-header').style.background = '#0078D4';
                         }
                     }
-                    // Phase 19: Sous-menu "Afficher l'horloge" s'ouvre
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 155) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 148)) / 7;
                         if (submenus[4]) {
                             submenus[4].style.visibility = 'visible';
                             submenus[4].style.opacity = progress;
                             submenus[4].style.transform = `scale(${0.8 + progress * 0.2})`;
-                            
-                            // Mettre à jour l'état de l'option quand le sous-menu s'ouvre
+
                             if (progress >= 0.5) {
                                 updateClockOptionState();
                             }
                         }
                     }
-                    // Phase 20: Sous-menu visible
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 165) {
                         if (submenus[4]) {
                             submenus[4].style.visibility = 'visible';
@@ -955,26 +907,24 @@
                             submenus[4].style.transform = 'scale(1)';
                         }
                     }
-                    // Phase 21: Curseur se déplace vers "Masquer l'horloge"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 175) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 165)) / 10;
                         const startX = 429, startY = 450;
-                        const endX = 750, endY = 450; // Centre du sous-menu "Masquer l'horloge"
+                        const endX = 750, endY = 450; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 22: Clic sur "Masquer l'horloge"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 183) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 175);
-                        
-                        // Animation de clic
+
                         if (clickPhase <= 2) {
                         } else if (clickPhase <= 4) {
                             const shrinkPhase = clickPhase - 2;
                             } else {
                         }
 
-                        // Changement de souris au clic gauche
                         if (clickPhase >= 2) {
                                 mouseZeroClick.style.visibility = 'hidden';
                                 mouseLeftClick.style.visibility = 'visible';
@@ -984,15 +934,14 @@
                         mouseLeftClick.style.visibility = 'hidden';
                     }
 
-                        // Effet hover sur "Masquer l'horloge"
                         if (clickPhase >= 1) {
                             const submenuItems = submenus[4].querySelectorAll('.menu-item');
-                            if (submenuItems[0]) { // 1ère option du sous-menu
+                            if (submenuItems[0]) { 
                                 submenuItems[0].style.background = '#0078D4';
                             }
                         }
                     }
-                    // Phase 23: Menu et sous-menu disparaissent, horloge disparaît
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 195) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 183)) / 12;
                         contextMenu.style.opacity = 1 - progress;
@@ -1003,7 +952,7 @@
                         }
                         
                         if (progress >= 0.5) {
-                            // Animation de disparition de l'horloge
+                            
                             floatingClock.style.opacity = 1 - ((progress - 0.5) * 2);
                             floatingClock.style.transform = 'translateX(-50%)';
                             if (progress >= 0.8) {
@@ -1012,7 +961,7 @@
                             }
                         }
                     }
-                    // Reset immédiat après fermeture de la fenêtre
+                    
                     else {
                     animationPhase = 0;
                     mouseCursor.style.left = '143px';
@@ -1026,42 +975,35 @@
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
                     menuSections[4].querySelector('.menu-section-header').style.background = 'transparent';
-                    
-                    // Reset des sous-menus
+
                     submenus.forEach(submenu => {
                         submenu.style.visibility = 'hidden';
                         submenu.style.opacity = '0';
                         submenu.style.transform = 'scale(0.8)';
                     });
-                    
-                    // Reset des éléments de sous-menu
+
                     submenus.forEach(submenu => {
                         const submenuItems = submenu.querySelectorAll('.menu-item');
                     submenuItems.forEach(item => {
                         item.style.background = 'transparent';
                         });
                     });
-                    
-                    // Reset de l'horloge
+
                     floatingClock.style.visibility = 'hidden';
                     floatingClock.style.opacity = '0';
                     floatingClock.style.transform = 'translateX(-50%)';
                     isClockVisible = false;
                     }
                 }
-                
-                // Mettre à jour la progression
+
                 updateProgress(animationPhase, totalAnimationFrames);
-                
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
@@ -1069,32 +1011,27 @@
             if (animationTimer) {
                 clearTimeout(animationTimer);
             }
-            // Reset complet de l'état avant de redémarrer
+            
                     animationPhase = 0;
-                    
-                    // Reset de la position du curseur (position par défaut)
+
                     mouseCursor.style.left = '143px';
                     mouseCursor.style.top = '92px';
                     mouseCursor.style.visibility = 'visible';
-                    
-            // Reset de l'horloge
+
             floatingClock.style.visibility = 'hidden';
             floatingClock.style.opacity = '0';
             floatingClock.style.transform = 'translateX(-50%)';
-                    
-                    // Reset du menu
+
                     contextMenu.style.visibility = 'hidden';
                     contextMenu.style.opacity = '0';
                     contextMenu.style.transform = 'scale(0.8)';
-                    
-            // Reset des sous-menus
+
             submenus.forEach(submenu => {
                 submenu.style.visibility = 'hidden';
                 submenu.style.opacity = '0';
                 submenu.style.transform = 'scale(0.8)';
             });
-                    
-                    // Reset des effets de survol
+
             menuSections[4].querySelector('.menu-section-header').style.background = 'transparent';
             submenus.forEach(submenu => {
                 const submenuItems = submenu.querySelectorAll('.menu-item');
@@ -1102,41 +1039,33 @@
                         item.style.background = 'transparent';
                 });
                     });
-                    
-                    // Reset de l'animation de clic
-                    
-                    // Reset de la souris selon demo-elements.css
+
                     mouseZeroClick.style.visibility = 'visible';
                     mouseRightClick.style.visibility = 'hidden';
                     mouseLeftClick.style.visibility = 'hidden';
-                    
-            // Reset de l'état
+
             isClockVisible = false;
             
             setTimeout(startAnimation, 100);
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression
+
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur le nombre total de frames
-            const step1 = Math.floor(totalFrames * 0.15); // 15% - Déplacement vers poignée
-            const step2 = Math.floor(totalFrames * 0.25); // 25% - Clic droit
-            const step3 = Math.floor(totalFrames * 0.40); // 40% - Menu contextuel
-            const step4 = Math.floor(totalFrames * 0.60); // 60% - Sélection "Afficher l'horloge"
-            const step5 = Math.floor(totalFrames * 0.80); // 80% - Horloge affichée
-            const step6 = Math.floor(totalFrames * 0.95); // 95% - Sélection "Masquer l'horloge"
-            
-            // Mettre à jour le texte de progression
+
+            const step1 = Math.floor(totalFrames * 0.15); 
+            const step2 = Math.floor(totalFrames * 0.25); 
+            const step3 = Math.floor(totalFrames * 0.40); 
+            const step4 = Math.floor(totalFrames * 0.60); 
+            const step5 = Math.floor(totalFrames * 0.80); 
+            const step6 = Math.floor(totalFrames * 0.95); 
+
             if (phase <= step1) {
                 progressText.textContent = 'Déplacement vers la poignée...';
             } else if (phase <= step2) {
@@ -1154,7 +1083,6 @@
             }
         }
 
-        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
         document.querySelectorAll('.help-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -1209,7 +1137,6 @@
             }
         }
 
-        // Démarrer l'animation au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
@@ -1233,10 +1160,8 @@
                 console.warn('Bouton pause non trouvé dans demo-Show-Clock');
             }
 
-            // Initialiser l'état de l'option horloge
             updateClockOptionState();
-            
-            // Démarrer l'animation
+
             setTimeout(() => {
                 setTimeout(startAnimation, 500);
             }, 100);

@@ -52,7 +52,6 @@
             overflow: hidden;
         }
 
-        /* Zone d'aperçu */
         .preview-section {
             background: #2D2D2D;
             border-radius: 8px;
@@ -116,8 +115,6 @@
             white-space: nowrap;
         }
 
-
-        /* Contenu principal */
         .main-content {
             margin: 5px;
             display: flex;
@@ -135,7 +132,6 @@
             margin-bottom: 8px;
         }
 
-        /* GroupBox styles */
         .groupbox {
             border: 1px solid #000000;
             border-radius: 4px;
@@ -155,7 +151,6 @@
             padding: 3px;
         }
 
-        /* Section Styles */
         .styles-section {
             margin-bottom: 8px;
         }
@@ -210,7 +205,6 @@
             width: 70px;
         }
 
-        /* Section Styles par défaut */
         .default-styles-section {
             margin-bottom: 8px;
         }
@@ -251,7 +245,6 @@
             opacity: 0.8;
         }
 
-        /* Panneaux de personnalisation */
         .customization-panels {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -370,7 +363,6 @@
             background: #e0e0e0;
         }
 
-        /* Barre d'action */
         .action-bar {
             display: flex;
             justify-content: flex-end;
@@ -403,7 +395,7 @@
     <div class="main-container">
         <div class="main-border">
             <div class="content-grid">
-                <!-- Zone d'aperçu -->
+                
                 <div class="preview-section">
                     <div class="preview-container">
                         <div class="preview-area">
@@ -416,11 +408,9 @@
                     </div>
                  </div>
 
-                <!-- Contenu principal -->
                 <div class="main-content">
                     <div class="customization-title">Personnalisation</div>
 
-                    <!-- Section Styles -->
                     <div class="groupbox styles-section">
                         <div class="groupbox-header">Gérer les styles</div>
                         <div class="groupbox-content">
@@ -440,7 +430,6 @@
                         </div>
                     </div>
 
-                    <!-- Section Styles par défaut -->
                     <div class="groupbox default-styles-section">
                         <div class="groupbox-header">Styles par défaut</div>
                         <div class="groupbox-content">
@@ -460,9 +449,8 @@
                         </div>
                     </div>
 
-                    <!-- Panneaux de personnalisation -->
                     <div class="customization-panels">
-                        <!-- Panneau Bulle -->
+                        
                         <div class="groupbox bubble-panel">
                             <div class="panel-header">Bulle</div>
                             <div class="panel-content">
@@ -518,7 +506,6 @@
                             </div>
                         </div>
 
-                        <!-- Panneau Label -->
                         <div class="groupbox label-panel">
                             <div class="panel-header">Label</div>
                             <div class="panel-content">
@@ -576,7 +563,6 @@
                     </div>
                 </div>
 
-                <!-- Barre d'action -->
                 <div class="action-bar">
                     <button class="action-button create-style-button" onclick="createStyle()">Créer un style</button>
                     <button class="action-button" onclick="cancel()">Annuler</button>
@@ -587,7 +573,7 @@
     </div>
 
     <script>
-        // Configuration de démonstration
+        
         let config = {
             borderColor: 'white',
             rectBgColor: '#2D2D30',
@@ -604,7 +590,6 @@
 
         let selectedDefaultStyle = 0;
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             updatePreview();
         });
@@ -614,13 +599,11 @@
             const previewLabel = document.getElementById('previewLabel');
             const previewLabelText = document.getElementById('previewLabelText');
 
-            // Mettre à jour la bulle
             previewBubble.style.borderColor = config.borderColor;
             previewBubble.style.borderWidth = config.borderThickness + 'px';
             previewBubble.style.borderRadius = config.borderCornerRadius + 'px';
             previewBubble.style.backgroundColor = config.rectBgColor;
 
-            // Mettre à jour le label
             previewLabel.style.backgroundColor = config.labelBgColor;
             previewLabel.style.borderColor = config.labelBorderColor;
             previewLabel.style.borderWidth = config.labelBorderThickness + 'px';
@@ -628,7 +611,6 @@
             previewLabelText.style.color = config.titleColor;
             previewLabelText.textContent = config.text;
 
-            // Ajuster la largeur du label selon le texte
             adjustLabelWidth();
         }
 
@@ -637,13 +619,13 @@
             const previewLabelText = document.getElementById('previewLabelText');
             
             const text = config.text || '';
-            // L'étiquette s'adapte automatiquement à la largeur du texte
+            
             previewLabel.style.width = 'auto';
             previewLabel.style.minWidth = 'fit-content';
         }
 
         function pickColor(type) {
-            // Simulation d'un sélecteur de couleur
+            
             const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF', '#808080', '#2D2D30'];
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             
@@ -675,8 +657,7 @@
 
         function selectDefaultStyle(styleIndex) {
             selectedDefaultStyle = styleIndex;
-            
-            // Appliquer le style par défaut
+
             const styleColors = {
                 1: '#E74C3C', 2: '#3498DB', 3: '#2ECC71', 4: '#F39C12', 5: '#9B59B6',
                 6: '#1ABC9C', 7: '#E67E22', 8: '#34495E', 9: '#95A5A6', 10: '#16A085'
@@ -695,8 +676,7 @@
             config.borderCornerRadius = 6;
             config.labelCornerRadius = 3;
             config.rectangleImagePath = null;
-            
-            // Mettre à jour les contrôles
+
             document.getElementById('borderColorButton').style.backgroundColor = styleColor;
             document.getElementById('labelBorderColorButton').style.backgroundColor = styleColor;
             document.getElementById('titleColorButton').style.backgroundColor = styleColor;

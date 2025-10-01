@@ -198,7 +198,6 @@
             gap: 5px;
         }
 
-
         .language-combo {
             width: 120px;
             margin-left: 5px;
@@ -223,7 +222,6 @@
             gap: 5px;
         }
 
-
         .settings-footer {
             position: absolute;
             bottom: 20px;
@@ -244,7 +242,6 @@
             background: #e0e0e0;
         }
 
-        /* Icônes SVG */
         .icon {
             width: 22px;
             height: 22px;
@@ -258,7 +255,6 @@
             height: 22px;
         }
 
-        /* Styles pour la démonstration */
         .demo-progress-window {
             width: 800px;
             margin: 20px auto;
@@ -445,7 +441,7 @@
     </style>
 </head>
 <body>
-    <!-- Fenêtre de progression de démonstration -->
+    
     <div class="demo-progress-window" id="demoProgressWindow">
         <div class="demo-progress-content">
             <div class="demo-progress-header">
@@ -481,9 +477,9 @@
             <div class="settings-header">Paramètres</div>
             
             <div class="settings-main">
-                <!-- Colonne de gauche -->
+                
                 <div class="settings-column">
-                    <!-- Couleur de fond d'écran -->
+                    
                     <div class="section-border">
                         <div class="section-title">Couleur de fond d'écran</div>
                         <div class="subsection-border">
@@ -496,7 +492,6 @@
                         </div>
                     </div>
 
-                    <!-- Fond d'écran personnalisé -->
                     <div class="section-border">
                         <div class="section-title">Fond d'écran personnalisé</div>
                         <div class="subsection-border">
@@ -531,7 +526,6 @@
                         </div>
                     </div>
 
-                    <!-- Thème de l'interface -->
                     <div class="section-border">
                         <div class="section-title">Thème de l'interface</div>
                         <div class="subsection-border">
@@ -547,7 +541,6 @@
                         </div>
                     </div>
 
-                    <!-- Personnaliser le titre des étiquettes -->
                     <div class="section-border">
                         <div class="section-title">Personnaliser le titre des étiquettes</div>
                         <div class="subsection-border">
@@ -577,7 +570,6 @@
                         </div>
                     </div>
 
-                    <!-- Magnétisme -->
                     <div class="section-border">
                         <div class="section-title">Magnétisme de déplacement et redimensionnement</div>
                         <div class="subsection-border">
@@ -590,9 +582,8 @@
                     </div>
                 </div>
 
-                <!-- Colonne de droite -->
                 <div class="settings-column">
-                    <!-- Langue de l'application -->
+                    
                     <div class="section-border">
                         <div class="section-title">Langue de l'application</div>
                         <div class="subsection-border">
@@ -618,7 +609,6 @@
                         </div>
                     </div>
 
-                    <!-- Démarrer avec Windows -->
                     <div class="section-border">
                         <div class="section-title">Démarrer avec Windows</div>
                         <div class="subsection-border">
@@ -629,7 +619,6 @@
                         </div>
                     </div>
 
-                    <!-- Son -->
                     <div class="section-border">
                         <div class="section-title">Son</div>
                         <div class="subsection-border">
@@ -643,7 +632,6 @@
                         </div>
                     </div>
 
-                    <!-- Options supplémentaires -->
                     <div class="section-border">
                         <div class="section-title">Options supplémentaires</div>
                         <div class="subsection-border">
@@ -694,16 +682,15 @@
         </div>
     </div>
 
-    <!-- Sélecteur de couleur simulé (plus utilisé pour cette démonstration) -->
     <div class="color-picker-demo" id="colorPicker" style="display: none;">
         <div style="font-weight: bold; margin-bottom: 10px; color: #0078d4;">Sélecteur de couleur</div>
         <div class="color-palette" id="colorPalette">
-            <!-- Plus utilisé pour cette démonstration -->
+            
         </div>
     </div>
 
     <script>
-        // Variables globales pour la démonstration
+        
         let demoRunning = false;
         let currentStep = 0;
         let demoSteps = [
@@ -714,7 +701,6 @@
             "Bravo ! L'intervalle personnalisé est activé"
         ];
 
-        // Images aléatoires pour la démonstration
         const randomImages = [
             '../MediaLibrary/Landscape/landscape1.jpg',
             '../MediaLibrary/Nature/nature1.jpg',
@@ -728,24 +714,22 @@
         
         let randomInterval = null;
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeDemo();
-            // generateColorPalette(); // Plus nécessaire pour cette démonstration
+            
             setupEventListeners();
         });
 
         function initializeDemo() {
-            // Afficher la fenêtre de progression
-            document.getElementById('demoProgressWindow').style.display = 'block';
             
-            // Mettre à jour l'instruction
+            document.getElementById('demoProgressWindow').style.display = 'block';
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment définir l'intervalle de changement d'images.";
         }
 
         function generateColorPalette() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function setupEventListeners() {
@@ -753,7 +737,7 @@
             document.getElementById('stopDemo').addEventListener('click', stopDemo);
             document.getElementById('resetDemo').addEventListener('click', resetDemo);
             document.getElementById('closeDemo').addEventListener('click', closeDemo);
-            // Plus besoin des boutons Appliquer/Annuler pour cette démonstration
+            
         }
 
         function startDemo() {
@@ -761,33 +745,26 @@
             
             demoRunning = true;
             currentStep = 0;
-            
-            // Réinitialiser la barre de progression à 0%
+
             updateProgress(0);
-            
-            // Désactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = true;
             document.getElementById('stopDemo').disabled = false;
-            
-            // Commencer la démonstration interactive
+
             startInteractiveDemo();
         }
 
         function stopDemo() {
             demoRunning = false;
-            
-            // Réactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = false;
             document.getElementById('stopDemo').disabled = true;
-            
-            // Supprimer les écouteurs d'événements
+
             removeInteractiveListeners();
-            
-            // Masquer les éléments de démonstration
+
             hideHighlight();
             hideColorPicker();
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Démonstration arrêtée. Cliquez sur 'Démarrer la démonstration' pour recommencer.";
             document.getElementById('demoStep').textContent = '';
@@ -796,31 +773,26 @@
 
         function resetDemo() {
             stopDemo();
-            
-            // Réinitialiser le fond d'écran
+
             document.body.style.background = '#f0f0f0';
             document.body.style.backgroundImage = 'none';
-            
-            // Réinitialiser les cases à cocher
+
             document.getElementById('custom-wallpaper').checked = false;
             document.getElementById('random-image').checked = false;
-            
-            // Réinitialiser l'input d'intervalle
+
             document.querySelector('.text-input').value = '30';
-            
-            // Réinitialiser l'intervalle aléatoire
+
             if (randomInterval) {
                 clearInterval(randomInterval);
                 randomInterval = null;
             }
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment définir l'intervalle de changement d'images.";
         }
 
         function closeDemo() {
-            // Fermer l'onglet
+            
             window.close();
         }
 
@@ -828,7 +800,7 @@
             if (!demoRunning) return;
             
             currentStep = 0;
-            // S'assurer que la barre est à 0% au début
+            
             updateProgress(0);
             showCurrentStep();
             setupInteractiveListeners();
@@ -837,8 +809,7 @@
         function showCurrentStep() {
             const step = demoSteps[currentStep];
             document.getElementById('demoStep').textContent = `Étape ${currentStep + 1}: ${step}`;
-            // Calculer le pourcentage basé sur l'étape actuelle
-            // Étape 0 = 0%, Étape 1 = 25%, Étape 2 = 50%, Étape 3 = 75%, Étape 4 = 100%
+
             let percentage = 0;
             if (currentStep === 0) percentage = 0;
             else if (currentStep === 1) percentage = 25;
@@ -876,26 +847,26 @@
         }
 
         function setupInteractiveListeners() {
-            // Supprimer les anciens écouteurs
+            
             removeInteractiveListeners();
             
             if (currentStep === 0) {
-                // Écouter le clic sur la checkbox fond personnalisé
+                
                 const checkbox = document.getElementById('custom-wallpaper');
                 checkbox.addEventListener('change', onCheckboxChange);
                 checkbox.style.cursor = 'pointer';
             } else if (currentStep === 1) {
-                // Écouter le clic sur la checkbox changement aléatoire
+                
                 const randomCheckbox = document.getElementById('random-image');
                 randomCheckbox.addEventListener('change', onRandomCheckboxChange);
                 randomCheckbox.style.cursor = 'pointer';
             } else if (currentStep === 2) {
-                // Écouter la modification de l'input d'intervalle
+                
                 const intervalInput = document.querySelector('.text-input');
                 intervalInput.addEventListener('input', onIntervalInputChange);
                 intervalInput.style.cursor = 'pointer';
             } else if (currentStep === 3) {
-                // Écouter le clic sur le bouton définir
+                
                 const defineButton = document.querySelectorAll('.settings-button')[2];
                 defineButton.addEventListener('click', onDefineButtonClick);
                 defineButton.style.cursor = 'pointer';
@@ -962,18 +933,15 @@
                 startRandomImageChange(parseInt(intervalValue) * 1000);
                 currentStep = 4;
                 showCurrentStep();
-                
-                // Terminer la démonstration après 3 secondes
+
                 setTimeout(() => {
                     if (demoRunning) {
                         document.getElementById('demoInstruction').textContent = 
                             "Démonstration terminée ! Vous avez appris à définir l'intervalle de changement d'images.";
-                        
-                        // Réinitialiser les cases à cocher
+
                         document.getElementById('custom-wallpaper').checked = false;
                         document.getElementById('random-image').checked = false;
-                        
-                        // Réinitialiser l'intervalle
+
                         document.querySelector('.text-input').value = '30';
                         
                         demoRunning = false;
@@ -997,8 +965,7 @@
             highlight.style.height = (rect.height + 6) + 'px';
             
             document.body.appendChild(highlight);
-            
-            // Simuler un clic visuel
+
             checkbox.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 checkbox.style.transform = 'scale(1)';
@@ -1018,8 +985,7 @@
             highlight.style.height = (rect.height + 6) + 'px';
             
             document.body.appendChild(highlight);
-            
-            // Simuler un clic visuel
+
             randomCheckbox.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 randomCheckbox.style.transform = 'scale(1)';
@@ -1039,8 +1005,7 @@
             highlight.style.height = (rect.height + 6) + 'px';
             
             document.body.appendChild(highlight);
-            
-            // Simuler un clic visuel
+
             intervalInput.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 intervalInput.style.transform = 'scale(1)';
@@ -1060,8 +1025,7 @@
             highlight.style.height = (rect.height + 6) + 'px';
             
             document.body.appendChild(highlight);
-            
-            // Simuler un clic visuel
+
             defineButton.style.transform = 'scale(0.95)';
             setTimeout(() => {
                 defineButton.style.transform = 'scale(1)';
@@ -1088,32 +1052,31 @@
         }
 
         function showColorPicker() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function hideColorPicker() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function selectColor(colorElement) {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function applySelectedColor() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function cancelColorSelection() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function startRandomImageChange(intervalMs = 2000) {
-            // Arrêter l'intervalle précédent s'il existe
+            
             if (randomInterval) {
                 clearInterval(randomInterval);
             }
-            
-            // Démarrer le changement aléatoire d'images avec l'intervalle personnalisé
+
             randomInterval = setInterval(() => {
                 const randomImage = randomImages[Math.floor(Math.random() * randomImages.length)];
                 document.body.style.backgroundImage = `url(${randomImage})`;
@@ -1121,7 +1084,7 @@
                 document.body.style.backgroundPosition = 'center';
                 document.body.style.backgroundRepeat = 'no-repeat';
                 document.body.style.transition = 'background-image 0.5s ease';
-            }, intervalMs); // Utiliser l'intervalle personnalisé
+            }, intervalMs); 
         }
 
         function updateProgress(percentage) {

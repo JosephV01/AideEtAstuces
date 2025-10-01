@@ -198,7 +198,6 @@
             gap: 5px;
         }
 
-
         .language-combo {
             width: 120px;
             margin-left: 5px;
@@ -223,7 +222,6 @@
             gap: 5px;
         }
 
-
         .settings-footer {
             position: absolute;
             bottom: 20px;
@@ -244,7 +242,6 @@
             background: #e0e0e0;
         }
 
-        /* Icônes SVG */
         .icon {
             width: 22px;
             height: 22px;
@@ -258,7 +255,6 @@
             height: 22px;
         }
 
-        /* Styles pour la démonstration */
         .demo-progress-window {
             width: 800px;
             margin: 20px auto;
@@ -445,7 +441,7 @@
     </style>
 </head>
 <body>
-    <!-- Fenêtre de progression de démonstration -->
+    
     <div class="demo-progress-window" id="demoProgressWindow">
         <div class="demo-progress-content">
             <div class="demo-progress-header">
@@ -481,9 +477,9 @@
             <div class="settings-header">Paramètres</div>
             
             <div class="settings-main">
-                <!-- Colonne de gauche -->
+                
                 <div class="settings-column">
-                    <!-- Couleur de fond d'écran -->
+                    
                     <div class="section-border">
                         <div class="section-title">Couleur de fond d'écran</div>
                         <div class="subsection-border">
@@ -496,7 +492,6 @@
                         </div>
                     </div>
 
-                    <!-- Fond d'écran personnalisé -->
                     <div class="section-border">
                         <div class="section-title">Fond d'écran personnalisé</div>
                         <div class="subsection-border">
@@ -531,7 +526,6 @@
                         </div>
                     </div>
 
-                    <!-- Thème de l'interface -->
                     <div class="section-border">
                         <div class="section-title">Thème de l'interface</div>
                         <div class="subsection-border">
@@ -547,7 +541,6 @@
                         </div>
                     </div>
 
-                    <!-- Personnaliser le titre des étiquettes -->
                     <div class="section-border">
                         <div class="section-title">Personnaliser le titre des étiquettes</div>
                         <div class="subsection-border">
@@ -577,7 +570,6 @@
                         </div>
                     </div>
 
-                    <!-- Magnétisme -->
                     <div class="section-border">
                         <div class="section-title">Magnétisme de déplacement et redimensionnement</div>
                         <div class="subsection-border">
@@ -590,9 +582,8 @@
                     </div>
                 </div>
 
-                <!-- Colonne de droite -->
                 <div class="settings-column">
-                    <!-- Langue de l'application -->
+                    
                     <div class="section-border">
                         <div class="section-title">Langue de l'application</div>
                         <div class="subsection-border">
@@ -618,7 +609,6 @@
                         </div>
                     </div>
 
-                    <!-- Démarrer avec Windows -->
                     <div class="section-border">
                         <div class="section-title">Démarrer avec Windows</div>
                         <div class="subsection-border">
@@ -629,7 +619,6 @@
                         </div>
                     </div>
 
-                    <!-- Son -->
                     <div class="section-border">
                         <div class="section-title">Son</div>
                         <div class="subsection-border">
@@ -643,7 +632,6 @@
                         </div>
                     </div>
 
-                    <!-- Options supplémentaires -->
                     <div class="section-border">
                         <div class="section-title">Options supplémentaires</div>
                         <div class="subsection-border">
@@ -694,16 +682,15 @@
         </div>
     </div>
 
-    <!-- Sélecteur de couleur simulé (plus utilisé pour cette démonstration) -->
     <div class="color-picker-demo" id="colorPicker" style="display: none;">
         <div style="font-weight: bold; margin-bottom: 10px; color: #0078d4;">Sélecteur de couleur</div>
         <div class="color-palette" id="colorPalette">
-            <!-- Plus utilisé pour cette démonstration -->
+            
         </div>
     </div>
 
     <script>
-        // Variables globales pour la démonstration
+        
         let demoRunning = false;
         let currentStep = 0;
         let demoSteps = [
@@ -714,27 +701,24 @@
             "Bravo ! L'export/import est configuré"
         ];
 
-        // Variables pour la démonstration d'export/import
         let exportImportDemoActive = false;
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeDemo();
-            // generateColorPalette(); // Plus nécessaire pour cette démonstration
+            
             setupEventListeners();
         });
 
         function initializeDemo() {
-            // Afficher la fenêtre de progression
-            document.getElementById('demoProgressWindow').style.display = 'block';
             
-            // Mettre à jour l'instruction
+            document.getElementById('demoProgressWindow').style.display = 'block';
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment exporter et importer vos paramètres.";
         }
 
         function generateColorPalette() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function setupEventListeners() {
@@ -742,7 +726,7 @@
             document.getElementById('stopDemo').addEventListener('click', stopDemo);
             document.getElementById('resetDemo').addEventListener('click', resetDemo);
             document.getElementById('closeDemo').addEventListener('click', closeDemo);
-            // Plus besoin des boutons Appliquer/Annuler pour cette démonstration
+            
         }
 
         function startDemo() {
@@ -750,33 +734,26 @@
             
             demoRunning = true;
             currentStep = 0;
-            
-            // Réinitialiser la barre de progression à 0%
+
             updateProgress(0);
-            
-            // Désactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = true;
             document.getElementById('stopDemo').disabled = false;
-            
-            // Commencer la démonstration interactive
+
             startInteractiveDemo();
         }
 
         function stopDemo() {
             demoRunning = false;
-            
-            // Réactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = false;
             document.getElementById('stopDemo').disabled = true;
-            
-            // Supprimer les écouteurs d'événements
+
             removeInteractiveListeners();
-            
-            // Masquer les éléments de démonstration
+
             hideHighlight();
             hideColorPicker();
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Démonstration arrêtée. Cliquez sur 'Démarrer la démonstration' pour recommencer.";
             document.getElementById('demoStep').textContent = '';
@@ -785,13 +762,10 @@
 
         function resetDemo() {
             stopDemo();
-            
-            // Réinitialiser le fond d'écran
+
             document.body.style.background = '#f0f0f0';
             document.body.style.backgroundImage = 'none';
-            
-            // Réinitialiser les contrôles de police
-            // Trouver la section "Personnaliser le titre des étiquettes"
+
             let fontSectionBorder = null;
             document.querySelectorAll('.section-title').forEach(title => {
                 if (title.textContent.includes('Personnaliser le titre des étiquettes')) {
@@ -801,20 +775,18 @@
             
             const fontSelector = fontSectionBorder?.querySelector('.combo-box');
             const sizeSelector = fontSectionBorder?.querySelector('.combo-box-small');
-            if (fontSelector) fontSelector.selectedIndex = 0; // Police par défaut
-            if (sizeSelector) sizeSelector.selectedIndex = 0; // Taille par défaut
+            if (fontSelector) fontSelector.selectedIndex = 0; 
+            if (sizeSelector) sizeSelector.selectedIndex = 0; 
             document.getElementById('bold-title').checked = false;
-            
-            // Réinitialiser la démonstration d'export/import
+
             exportImportDemoActive = false;
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment exporter et importer vos paramètres.";
         }
 
         function closeDemo() {
-            // Fermer l'onglet
+            
             window.close();
         }
 
@@ -822,7 +794,7 @@
             if (!demoRunning) return;
             
             currentStep = 0;
-            // S'assurer que la barre est à 0% au début
+            
             updateProgress(0);
             showCurrentStep();
             setupInteractiveListeners();
@@ -831,8 +803,7 @@
         function showCurrentStep() {
             const step = demoSteps[currentStep];
             document.getElementById('demoStep').textContent = `Étape ${currentStep + 1}: ${step}`;
-            // Calculer le pourcentage basé sur l'étape actuelle
-            // Étape 0 = 0%, Étape 1 = 25%, Étape 2 = 50%, Étape 3 = 75%, Étape 4 = 100%
+
             let percentage = 0;
             if (currentStep === 0) percentage = 0;
             else if (currentStep === 1) percentage = 25;
@@ -870,11 +841,11 @@
         }
 
         function setupInteractiveListeners() {
-            // Supprimer les anciens écouteurs
+            
             removeInteractiveListeners();
             
             if (currentStep === 0) {
-                // Écouter le clic sur le bouton d'export
+                
                 const exportButton = document.querySelector('button[onclick*="export"]') || 
                                    Array.from(document.querySelectorAll('.settings-button')).find(btn => 
                                        btn.textContent.includes('Exporter les paramètres'));
@@ -883,7 +854,7 @@
                     exportButton.style.cursor = 'pointer';
                 }
             } else if (currentStep === 2) {
-                // Écouter le clic sur le bouton d'import
+                
                 const importButton = document.querySelector('button[onclick*="import"]') || 
                                    Array.from(document.querySelectorAll('.settings-button')).find(btn => 
                                        btn.textContent.includes('Importer les paramètres'));
@@ -895,7 +866,7 @@
         }
 
         function removeInteractiveListeners() {
-            // Supprimer les écouteurs des boutons d'export/import
+            
             const exportButton = document.querySelector('button[onclick*="export"]') || 
                                Array.from(document.querySelectorAll('.settings-button')).find(btn => 
                                    btn.textContent.includes('Exporter les paramètres'));
@@ -930,7 +901,7 @@
         }
 
         function highlightExportButton() {
-            // Attendre que le texte des instructions soit mis à jour
+            
             setTimeout(() => {
                 const exportButton = Array.from(document.querySelectorAll('.settings-button')).find(btn => 
                     btn.textContent.includes('Exporter les paramètres'));
@@ -949,18 +920,17 @@
                     highlight.style.pointerEvents = 'none';
                     
                     document.body.appendChild(highlight);
-                    
-                    // Simuler un clic visuel
+
                     exportButton.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         exportButton.style.transform = 'scale(1)';
                     }, 150);
                 }
-            }, 100); // Délai pour permettre la mise à jour du texte
+            }, 100); 
         }
         
         function highlightImportButton() {
-            // Attendre que le texte des instructions soit mis à jour
+            
             setTimeout(() => {
                 const importButton = Array.from(document.querySelectorAll('.settings-button')).find(btn => 
                     btn.textContent.includes('Importer les paramètres'));
@@ -979,14 +949,13 @@
                     highlight.style.pointerEvents = 'none';
                     
                     document.body.appendChild(highlight);
-                    
-                    // Simuler un clic visuel
+
                     importButton.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         importButton.style.transform = 'scale(1)';
                     }, 150);
                 }
-            }, 100); // Délai pour permettre la mise à jour du texte
+            }, 100); 
         }
 
         function hideHighlight() {
@@ -1001,7 +970,7 @@
         }
 
         function showExportDialog() {
-            // Afficher une explication claire du comportement d'export
+            
             const dialog = document.createElement('div');
             dialog.id = 'exportDialog';
             dialog.style.position = 'fixed';
@@ -1035,13 +1004,12 @@
             `;
             
             document.body.appendChild(dialog);
-            
-            // Ajouter l'écouteur pour le bouton OK
+
             document.getElementById('exportOkButton').addEventListener('click', () => {
                 dialog.style.opacity = '0';
                 setTimeout(() => {
                     dialog.remove();
-                    // Passer à l'étape suivante
+                    
                     if (demoRunning) {
                         currentStep = 2;
                         showCurrentStep();
@@ -1052,7 +1020,7 @@
         }
         
         function showImportDialog() {
-            // Afficher une explication claire du comportement d'import
+            
             const dialog = document.createElement('div');
             dialog.id = 'importDialog';
             dialog.style.position = 'fixed';
@@ -1086,19 +1054,17 @@
             `;
             
             document.body.appendChild(dialog);
-            
-            // Ajouter l'écouteur pour le bouton OK
+
             document.getElementById('importOkButton').addEventListener('click', () => {
                 dialog.style.opacity = '0';
                 setTimeout(() => {
                     dialog.remove();
-                    // Passer à l'étape suivante
+                    
                     if (demoRunning) {
                         activateExportImportDemo();
                         currentStep = 4;
                         showCurrentStep();
-                        
-                        // Terminer la démonstration après 3 secondes
+
                         setTimeout(() => {
                             if (demoRunning) {
                                 document.getElementById('demoInstruction').textContent = 
@@ -1115,10 +1081,9 @@
         }
 
         function activateExportImportDemo() {
-            // Activer la démonstration d'export/import
-            exportImportDemoActive = true;
             
-            // Créer un effet visuel pour montrer que l'export/import est configuré
+            exportImportDemoActive = true;
+
             const demoIndicator = document.createElement('div');
             demoIndicator.style.position = 'fixed';
             demoIndicator.style.top = '50%';
@@ -1135,8 +1100,7 @@
             demoIndicator.style.transition = 'all 0.3s ease';
             
             document.body.appendChild(demoIndicator);
-            
-            // Désactiver après 2 secondes
+
             setTimeout(() => {
                 exportImportDemoActive = false;
                 demoIndicator.style.opacity = '0';

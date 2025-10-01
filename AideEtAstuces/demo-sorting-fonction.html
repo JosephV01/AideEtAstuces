@@ -37,7 +37,7 @@
             height: 550px;
             width: 950px;
         }
-        /* Bulle dimension */
+        
         .demo-canvas .dynamic-border {
             width: 350px;
             height: 160px;
@@ -46,11 +46,10 @@
             border-radius: 12px;
         }
         .demo-canvas .label-border {
-            left: 200px; /* centre de la bulle (20 + 260/2) */
+            left: 200px; 
             top: 75px;
         }
 
-        /* Bouton tri positionné à droite de l'étiquette */
         .sort-trigger {
             position: absolute;
             left: 252px;
@@ -72,7 +71,6 @@
         .sort-trigger:active { background: #003C74; }
         .sort-trigger svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* Panneau de tri (simulé) */
         .sort-panel {
             position: absolute;
             left: 55px;
@@ -114,12 +112,11 @@
             padding: 0 6px;
         }
 
-        /* Panneau d'options simulé pour le menu déroulant */
         .sort-options-panel {
             position: absolute;
-            left: 0px; /* sera positionné dynamiquement */
-            top: 0px;  /* sera positionné dynamiquement */
-            width: 200px; /* sera redimensionné dynamiquement */
+            left: 0px; 
+            top: 0px;  
+            width: 200px; 
             background: #1f1f1f;
             border: 1px solid #555;
             border-radius: 6px;
@@ -140,7 +137,6 @@
         .sort-option-item:hover { background: #303030; }
         .sort-option-item.active { background: #2a4a6a; }
 
-        /* Icônes simulées (raccourcis) dans la bulle */
         .shortcuts-area {
             position: absolute;
             left: 30px;
@@ -188,7 +184,6 @@
             100% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
         }
 
-        /* Curseur au-dessus de tout */
         .mouse-cursor { z-index: 2000 !important; }
         .mouse-zero-click { z-index: 900 !important;
             left: 600px;
@@ -223,9 +218,9 @@
 
         <div class="demo-canvas-container">
             <div class="demo-canvas large">
-                <!-- Bulle -->
+                
                 <div class="dynamic-border"></div>
-                <!-- Étiquette -->
+                
                 <div class="label-border">
                     <div class="label-text">Bulle - Raccourcis</div>
                 </div>
@@ -234,17 +229,13 @@
                     <svg viewBox="0 0 24 24"><path d="M3 15h10v2H3v-2zm0-6h14v2H3V9zm0-6h18v2H3V3zm0 12h14v2H3v-2zm0 6h18v2H3v-2z"/></svg>
                 </button>
 
-                <!-- Curseur -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Souris avec états -->
                 <div class="mouse-zero-click"></div>
                 <div class="mouse-left-click"></div>
 
-                <!-- Poignée (non utilisée ici, conservée pour cohérence visuelle) -->
                 <div class="resize-handle"></div>
 
-                <!-- Zone des raccourcis -->
                 <div class="shortcuts-area" id="shortcutsArea">
                     <div class="shortcut" data-name="rapport_2024.pdf" data-display="Rapport 2024">
                         <div class="shortcut-icon"></div>
@@ -283,7 +274,7 @@
                         <button class="pause-button" id="sortButton">Trier</button>
                     </div>
                 </div>
-                <!-- Panneau d'options simulé (affichage du menu déroulant) -->
+                
                 <div class="sort-options-panel" id="sortOptionsPanel">
                     <div class="sort-option-item" data-value="date">Date d'ajout</div>
                     <div class="sort-option-item" data-value="alpha">Alphabétique</div>
@@ -294,22 +285,19 @@
     </div>
 
     <script>
-        // Animation state
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
         let baseInterval = 80;
 
-        // Standard cursor speed
         const CURSOR_SPEED_PX_PER_FRAME = 9;
 
-        // Progress
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         let totalAnimationFrames = 0;
 
-        // DOM
         const canvas = document.querySelector('.demo-canvas');
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
@@ -321,7 +309,6 @@
         const sortOptionItems = Array.from(document.querySelectorAll('.sort-option-item'));
         const shortcuts = Array.from(document.querySelectorAll('.shortcut'));
 
-        // Geometry helpers
         let canvasCenterX = 0;
         let canvasCenterY = 0;
         let panelCenterX = 0;
@@ -331,10 +318,10 @@
         let toPanelReturnFrames = 10;
         let toButtonFrames = 20;
         let toResetFrames = 30;
-        // Pauses visibles pour le menu déroulant
-        let dropdownPauseFrames = 10; // temps d'affichage du menu avant clic
-        let optionClickFrames = 6;    // animation clic (appui/relâche)
-        let postSelectPauseFrames = 10; // temps d'affichage après sélection
+        
+        let dropdownPauseFrames = 10; 
+        let optionClickFrames = 6;    
+        let postSelectPauseFrames = 10; 
 
         function getCenter(el) {
             const crect = canvas.getBoundingClientRect();
@@ -348,10 +335,10 @@
         function positionDropdownToSelect() {
             const crect = canvas.getBoundingClientRect();
             const selRect = sortMode.getBoundingClientRect();
-            // Place panel directly under the select, aligned on the left
+            
             sortOptionsPanel.style.left = Math.round(selRect.left - crect.left) + 'px';
             sortOptionsPanel.style.top = Math.round(selRect.bottom - crect.top) + 'px';
-            // Match the select width
+            
             sortOptionsPanel.style.width = Math.round(selRect.width) + 'px';
         }
 
@@ -397,7 +384,7 @@
                 el.classList.remove('highlight-match');
                 area.appendChild(el);
             });
-            // Clignotement bref uniquement quand demandé
+            
             if (doBlink) {
                 const children = Array.from(area.children);
                 children.forEach(el => el.classList.add('highlight-match'));
@@ -435,17 +422,16 @@
 
             animationPhase++;
 
-            // Découpage des phases pour lisibilité
-            const phaseAEnd = toTriggerFrames; // déplacer vers trigger
-            const phaseBEnd = phaseAEnd + 6; // clic pour ouvrir panneau
-            const phaseCEnd = phaseBEnd + toPanelFrames; // déplacement vers première option
-            const phaseDPauseEnd = phaseCEnd + dropdownPauseFrames; // pause avant clic
-            const phaseDClickEnd = phaseDPauseEnd + optionClickFrames; // clic option (appui/relâche)
-            const phaseDPostEnd = phaseDClickEnd + postSelectPauseFrames; // pause après sélection
-            const phaseEEnd = phaseDPostEnd + toButtonFrames; // déplacement vers bouton Trier
-            const phaseFEnd = phaseEEnd + 8; // clic bouton Trier
-            const phaseGEnd = phaseFEnd + toResetFrames; // retour centre
-            const phaseHEnd = phaseGEnd + 10; // micro pause
+            const phaseAEnd = toTriggerFrames; 
+            const phaseBEnd = phaseAEnd + 6; 
+            const phaseCEnd = phaseBEnd + toPanelFrames; 
+            const phaseDPauseEnd = phaseCEnd + dropdownPauseFrames; 
+            const phaseDClickEnd = phaseDPauseEnd + optionClickFrames; 
+            const phaseDPostEnd = phaseDClickEnd + postSelectPauseFrames; 
+            const phaseEEnd = phaseDPostEnd + toButtonFrames; 
+            const phaseFEnd = phaseEEnd + 8; 
+            const phaseGEnd = phaseFEnd + toResetFrames; 
+            const phaseHEnd = phaseGEnd + 10; 
 
             if (animationPhase <= phaseAEnd) {
                 const startX = canvasCenterX, startY = canvasCenterY;
@@ -492,13 +478,13 @@
                 if (local >= 4) {
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
-                    // Open dropdown on select click and position it to the select
+                    
                     positionDropdownToSelect();
                     sortOptionsPanel.classList.add('visible');
                 }
             }
             else if (animationPhase <= phaseDPostEnd) {
-                // Move from select to the second option and click it near the end
+                
                 const optionEls = document.querySelectorAll('.sort-option-item');
                 const secondOptionEl = optionEls.length > 1 ? optionEls[1] : optionEls[0];
                 const fromCenter = getCenter(sortMode);
@@ -508,7 +494,7 @@
                 mouseCursor.style.top = (fromCenter.y + (toCenter.y - fromCenter.y) * progress) + 'px';
                 positionDropdownToSelect();
                 sortOptionsPanel.classList.add('visible');
-                // Simulate click on the second option at the end of this phase
+                
                 if (animationPhase >= phaseDPostEnd - 2) {
                     mouseZeroClick.style.visibility = 'hidden';
                     mouseLeftClick.style.visibility = 'visible';
@@ -615,7 +601,6 @@
             mouseCursor.style.left = canvasCenterX + 'px';
             mouseCursor.style.top = canvasCenterY + 'px';
 
-            // UI wiring
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
             const pauseButton = document.getElementById('pauseButton');
@@ -631,7 +616,6 @@
                 pauseButton.addEventListener('click', togglePause);
             }
 
-            // Keep dropdown aligned on resize
             window.addEventListener('resize', positionDropdownToSelect);
 
             setTimeout(startAnimation, 800);
@@ -639,5 +623,4 @@
     </script>
 </body>
 </html>
-
 

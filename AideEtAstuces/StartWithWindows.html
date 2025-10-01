@@ -198,7 +198,6 @@
             gap: 5px;
         }
 
-
         .language-combo {
             width: 120px;
             margin-left: 5px;
@@ -223,7 +222,6 @@
             gap: 5px;
         }
 
-
         .settings-footer {
             position: absolute;
             bottom: 20px;
@@ -244,7 +242,6 @@
             background: #e0e0e0;
         }
 
-        /* Icônes SVG */
         .icon {
             width: 22px;
             height: 22px;
@@ -258,7 +255,6 @@
             height: 22px;
         }
 
-        /* Styles pour la démonstration */
         .demo-progress-window {
             width: 800px;
             margin: 20px auto;
@@ -445,7 +441,7 @@
     </style>
 </head>
 <body>
-    <!-- Fenêtre de progression de démonstration -->
+    
     <div class="demo-progress-window" id="demoProgressWindow">
         <div class="demo-progress-content">
             <div class="demo-progress-header">
@@ -481,9 +477,9 @@
             <div class="settings-header">Paramètres</div>
             
             <div class="settings-main">
-                <!-- Colonne de gauche -->
+                
                 <div class="settings-column">
-                    <!-- Couleur de fond d'écran -->
+                    
                     <div class="section-border">
                         <div class="section-title">Couleur de fond d'écran</div>
                         <div class="subsection-border">
@@ -496,7 +492,6 @@
                         </div>
                     </div>
 
-                    <!-- Fond d'écran personnalisé -->
                     <div class="section-border">
                         <div class="section-title">Fond d'écran personnalisé</div>
                         <div class="subsection-border">
@@ -531,7 +526,6 @@
                         </div>
                     </div>
 
-                    <!-- Thème de l'interface -->
                     <div class="section-border">
                         <div class="section-title">Thème de l'interface</div>
                         <div class="subsection-border">
@@ -547,7 +541,6 @@
                         </div>
                     </div>
 
-                    <!-- Personnaliser le titre des étiquettes -->
                     <div class="section-border">
                         <div class="section-title">Personnaliser le titre des étiquettes</div>
                         <div class="subsection-border">
@@ -577,7 +570,6 @@
                         </div>
                     </div>
 
-                    <!-- Magnétisme -->
                     <div class="section-border">
                         <div class="section-title">Magnétisme de déplacement et redimensionnement</div>
                         <div class="subsection-border">
@@ -590,9 +582,8 @@
                     </div>
                 </div>
 
-                <!-- Colonne de droite -->
                 <div class="settings-column">
-                    <!-- Langue de l'application -->
+                    
                     <div class="section-border">
                         <div class="section-title">Langue de l'application</div>
                         <div class="subsection-border">
@@ -618,7 +609,6 @@
                         </div>
                     </div>
 
-                    <!-- Démarrer avec Windows -->
                     <div class="section-border">
                         <div class="section-title">Démarrer avec Windows</div>
                         <div class="subsection-border">
@@ -629,7 +619,6 @@
                         </div>
                     </div>
 
-                    <!-- Son -->
                     <div class="section-border">
                         <div class="section-title">Son</div>
                         <div class="subsection-border">
@@ -643,7 +632,6 @@
                         </div>
                     </div>
 
-                    <!-- Options supplémentaires -->
                     <div class="section-border">
                         <div class="section-title">Options supplémentaires</div>
                         <div class="subsection-border">
@@ -694,16 +682,15 @@
         </div>
     </div>
 
-    <!-- Sélecteur de couleur simulé (plus utilisé pour cette démonstration) -->
     <div class="color-picker-demo" id="colorPicker" style="display: none;">
         <div style="font-weight: bold; margin-bottom: 10px; color: #0078d4;">Sélecteur de couleur</div>
         <div class="color-palette" id="colorPalette">
-            <!-- Plus utilisé pour cette démonstration -->
+            
         </div>
     </div>
 
     <script>
-        // Variables globales pour la démonstration
+        
         let demoRunning = false;
         let currentStep = 0;
         let demoSteps = [
@@ -711,27 +698,24 @@
             "Bravo ! Le lancement automatique est configuré"
         ];
 
-        // Variables pour la démonstration de startup
         let startupDemoActive = false;
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeDemo();
-            // generateColorPalette(); // Plus nécessaire pour cette démonstration
+            
             setupEventListeners();
         });
 
         function initializeDemo() {
-            // Afficher la fenêtre de progression
-            document.getElementById('demoProgressWindow').style.display = 'block';
             
-            // Mettre à jour l'instruction
+            document.getElementById('demoProgressWindow').style.display = 'block';
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment configurer le lancement automatique de MyCustomDesk au démarrage de Windows.";
         }
 
         function generateColorPalette() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function setupEventListeners() {
@@ -739,7 +723,7 @@
             document.getElementById('stopDemo').addEventListener('click', stopDemo);
             document.getElementById('resetDemo').addEventListener('click', resetDemo);
             document.getElementById('closeDemo').addEventListener('click', closeDemo);
-            // Plus besoin des boutons Appliquer/Annuler pour cette démonstration
+            
         }
 
         function startDemo() {
@@ -747,33 +731,26 @@
             
             demoRunning = true;
             currentStep = 0;
-            
-            // Réinitialiser la barre de progression à 0%
+
             updateProgress(0);
-            
-            // Désactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = true;
             document.getElementById('stopDemo').disabled = false;
-            
-            // Commencer la démonstration interactive
+
             startInteractiveDemo();
         }
 
         function stopDemo() {
             demoRunning = false;
-            
-            // Réactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = false;
             document.getElementById('stopDemo').disabled = true;
-            
-            // Supprimer les écouteurs d'événements
+
             removeInteractiveListeners();
-            
-            // Masquer les éléments de démonstration
+
             hideHighlight();
             hideColorPicker();
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Démonstration arrêtée. Cliquez sur 'Démarrer la démonstration' pour recommencer.";
             document.getElementById('demoStep').textContent = '';
@@ -782,24 +759,20 @@
 
         function resetDemo() {
             stopDemo();
-            
-            // Réinitialiser le fond d'écran
+
             document.body.style.background = '#f0f0f0';
             document.body.style.backgroundImage = 'none';
-            
-            // Réinitialiser la case à cocher
+
             document.getElementById('start-with-windows').checked = false;
-            
-            // Réinitialiser la démonstration de startup
+
             startupDemoActive = false;
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment configurer le lancement automatique de MyCustomDesk au démarrage de Windows.";
         }
 
         function closeDemo() {
-            // Fermer l'onglet
+            
             window.close();
         }
 
@@ -807,7 +780,7 @@
             if (!demoRunning) return;
             
             currentStep = 0;
-            // S'assurer que la barre est à 0% au début
+            
             updateProgress(0);
             showCurrentStep();
             setupInteractiveListeners();
@@ -816,8 +789,7 @@
         function showCurrentStep() {
             const step = demoSteps[currentStep];
             document.getElementById('demoStep').textContent = `Étape ${currentStep + 1}: ${step}`;
-            // Calculer le pourcentage basé sur l'étape actuelle
-            // Étape 0 = 0%, Étape 1 = 100%
+
             let percentage = 0;
             if (currentStep === 0) percentage = 0;
             else if (currentStep >= 1) percentage = 100;
@@ -837,11 +809,11 @@
         }
 
         function setupInteractiveListeners() {
-            // Supprimer les anciens écouteurs
+            
             removeInteractiveListeners();
             
             if (currentStep === 0) {
-                // Écouter le clic sur la checkbox startup
+                
                 const startupCheckbox = document.getElementById('start-with-windows');
                 startupCheckbox.addEventListener('change', onStartupCheckboxChange);
                 startupCheckbox.style.cursor = 'pointer';
@@ -864,7 +836,7 @@
         }
 
         function highlightStartupCheckbox() {
-            // Attendre que le texte des instructions soit mis à jour
+            
             setTimeout(() => {
                 const startupCheckbox = document.getElementById('start-with-windows');
                 const checkboxContainer = startupCheckbox.closest('.checkbox-container');
@@ -882,13 +854,12 @@
                 highlight.style.pointerEvents = 'none';
                 
                 document.body.appendChild(highlight);
-                
-                // Simuler un clic visuel
+
                 startupCheckbox.style.transform = 'scale(0.95)';
                 setTimeout(() => {
                     startupCheckbox.style.transform = 'scale(1)';
                 }, 150);
-            }, 100); // Délai pour permettre la mise à jour du texte
+            }, 100); 
         }
 
         function hideHighlight() {
@@ -899,27 +870,27 @@
         }
 
         function showColorPicker() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function hideColorPicker() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function selectColor(colorElement) {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function applySelectedColor() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function cancelColorSelection() {
-            // Plus nécessaire pour cette démonstration
+            
         }
 
         function showStartupDialog() {
-            // Créer le dialogue explicatif
+            
             const dialog = document.createElement('div');
             dialog.id = 'startupDialog';
             dialog.style.position = 'fixed';
@@ -952,21 +923,18 @@
             `;
             
             document.body.appendChild(dialog);
-            
-            // Ajouter l'écouteur pour le bouton OK
+
             document.getElementById('startupOkButton').addEventListener('click', () => {
                 dialog.remove();
                 currentStep = 1;
                 showCurrentStep();
                 activateStartupDemo();
-                
-                // Terminer la démonstration après 3 secondes
+
                 setTimeout(() => {
                     if (demoRunning) {
                         document.getElementById('demoInstruction').textContent = 
                             "Démonstration terminée ! Vous avez appris à configurer le lancement automatique.";
-                        
-                        // Réinitialiser la case à cocher
+
                         document.getElementById('start-with-windows').checked = false;
                         
                         demoRunning = false;
@@ -978,17 +946,15 @@
         }
 
         function activateStartupDemo() {
-            // Activer la démonstration de startup
-            startupDemoActive = true;
             
-            // Ajouter un effet visuel pour montrer que le startup est configuré
+            startupDemoActive = true;
+
             const startupSection = document.querySelector('.section-title:contains("Démarrer avec Windows")').closest('.section-border');
             if (startupSection) {
                 startupSection.style.animation = 'pulse 1s ease-in-out 3';
                 startupSection.style.borderColor = '#0078d4';
             }
-            
-            // Désactiver après 2 secondes
+
             setTimeout(() => {
                 startupDemoActive = false;
                 if (startupSection) {

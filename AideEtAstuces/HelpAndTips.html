@@ -6,7 +6,7 @@
     <title>Aide et astuces - MyCustomDesk</title>
     <link rel="stylesheet" href="HelpAndTips.css">
     <style>
-        /* Mise en valeur des sections "À savoir" */
+        
         .collapsible-section.a-savoir {
             background: rgba(255, 213, 79, 0.08);
             border-left: 4px solid #FFD54F;
@@ -15,19 +15,19 @@
         .collapsible-section.a-savoir .section-header {
             background: rgba(255, 213, 79, 0.12);
         }
-        .collapsible-section.a-savoir .section-header .section-icon { /* Masquer l'icône existante (ex: ?) */
+        .collapsible-section.a-savoir .section-header .section-icon { 
             display: none;
         }
         .collapsible-section.a-savoir .section-title::before {
             content: "💡";
             margin-right: 8px;
         }
-        /* Désactiver toute transition/animation sur les sections */
+        
         .collapsible-section, .collapsible-section * {
             transition: none !important;
             animation: none !important;
         }
-        /* Assurer que l'indicateur de navigation n'intercepte pas les clics */
+        
         .nav-indicator {
             pointer-events: none;
         }
@@ -55,7 +55,6 @@
             </div>
         </header>
 
-        <!-- Barre de recherche globale -->
         <div class="global-search-section">
             <div class="search-input-wrapper">
                 <input type="text" id="global-search" class="search-input" placeholder="Rechercher dans toutes les sections..." autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();performGlobalSearch();}">
@@ -116,7 +115,6 @@
             </div>
         </nav>
 
-        <!-- Section des résultats de recherche -->
         <div id="search-results-section" class="search-results-section" style="display: none;">
             <div class="search-results-header">
                 <h2>Résultats de recherche</h2>
@@ -127,11 +125,10 @@
                 </button>
             </div>
             <div id="search-results-content" class="search-results-content">
-                <!-- Les résultats seront injectés ici -->
+                
             </div>
         </div>
 
-        <!-- Onglet Widget -->
         <div id="widget" class="tab-content active">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -222,7 +219,6 @@
             </div>
         </div>
 
-        <!-- Onglet Bulles -->
         <div id="dynamic-borders" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -403,7 +399,6 @@
             </div>
         </div>
 
-        <!-- Onglet Fonds d'écran -->
         <div id="wallpapers" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -523,7 +518,6 @@
             </div>
         </div>
 
-        <!-- Onglet Bibliothèque d'images -->
         <div id="image-library" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -636,7 +630,6 @@
             </div>
         </div>
 
-        <!-- Onglet Étiquette -->
         <div id="label" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -727,7 +720,6 @@
             </div>
         </div>
 
-        <!-- Onglet Bulle Horloge -->
         <div id="clock-bubble" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -841,7 +833,6 @@
             </div>
         </div>
 
-        <!-- Onglet Bulle-Note -->
         <div id="note-bubble" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -958,7 +949,6 @@
             </div>
         </div>
 
-        <!-- Onglet Fonction de glisser/déposer -->
         <div id="drag-drop" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -1173,7 +1163,6 @@
             </div>
         </div>
 
-        <!-- Onglet Paramètres généraux -->
         <div id="general-settings" class="tab-content">
             <div class="collapsible-section">
                 <div class="section-header" onclick="toggleSection(this)">
@@ -1383,49 +1372,41 @@
     </div>
 
     <script>
-        // Variables globales
+        
         let currentTab = 'widget';
         let searchResults = [];
 
-        // Fonction pour afficher un onglet
         function showTab(tabName) {
-            // Fermer les résultats de recherche s'ils sont ouverts
-            closeSearchResults();
             
-            // Masquer tous les onglets
+            closeSearchResults();
+
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(content => {
                 content.classList.remove('active');
                 content.style.display = 'none';
             });
 
-            // Désactiver tous les boutons de navigation
             const navTabs = document.querySelectorAll('.nav-tab');
             navTabs.forEach(tab => {
                 tab.classList.remove('active');
             });
 
-            // Afficher l'onglet sélectionné
             const selectedTab = document.getElementById(tabName);
             if (selectedTab) {
                 selectedTab.classList.add('active');
                 selectedTab.style.display = 'block';
             }
 
-            // Activer le bouton correspondant
             const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
             if (activeTab) {
                 activeTab.classList.add('active');
                 updateNavIndicator(activeTab);
             }
 
-            // Mettre à jour l'onglet actuel
             currentTab = tabName;
 
-            // Désactivation des animations: ne rien faire ici
         }
 
-        // Fonction pour mettre à jour l'indicateur de navigation
         function updateNavIndicator(activeTab) {
             const indicator = document.querySelector('.nav-indicator');
             const tabRect = activeTab.getBoundingClientRect();
@@ -1439,7 +1420,6 @@
             indicator.style.width = width + 'px';
         }
 
-        // Fonction de recherche
         function searchContent(query) {
             if (!query || query.length < 2) {
                 clearSearch();
@@ -1450,7 +1430,6 @@
             const cards = document.querySelectorAll('.card');
             searchResults = [];
 
-            // Rechercher dans les sections
             sections.forEach(section => {
                 const title = section.querySelector('.section-title').textContent.toLowerCase();
                 const content = section.querySelector('.section-content').textContent.toLowerCase();
@@ -1465,7 +1444,6 @@
                 }
             });
 
-            // Rechercher dans les cartes
             cards.forEach(card => {
                 const title = card.querySelector('h3').textContent.toLowerCase();
                 const content = card.querySelector('p').textContent.toLowerCase();
@@ -1480,7 +1458,6 @@
                 }
             });
 
-            // Afficher les résultats
             if (searchResults.length > 0) {
                 showSearchResults(searchResults.length);
             } else {
@@ -1488,7 +1465,6 @@
             }
         }
 
-        // Fonction pour effacer la recherche
         function clearSearch() {
             const sections = document.querySelectorAll('.section');
             const cards = document.querySelectorAll('.card');
@@ -1506,7 +1482,6 @@
             hideSearchResults();
         }
 
-        // Fonction pour afficher les résultats de recherche
         function showSearchResults(count) {
             let resultsDiv = document.getElementById('search-results');
             if (!resultsDiv) {
@@ -1519,7 +1494,6 @@
             resultsDiv.style.display = 'block';
         }
 
-        // Fonction pour masquer les résultats de recherche
         function hideSearchResults() {
             const resultsDiv = document.getElementById('search-results');
             if (resultsDiv) {
@@ -1527,7 +1501,6 @@
             }
         }
 
-        // Fonction pour afficher "aucun résultat"
         function showNoResults() {
             let resultsDiv = document.getElementById('search-results');
             if (!resultsDiv) {
@@ -1540,7 +1513,6 @@
             resultsDiv.style.display = 'block';
         }
 
-        // Fonction pour réinitialiser les animations
         function resetAnimations() {
             const sections = document.querySelectorAll('.section');
             const cards = document.querySelectorAll('.card');
@@ -1568,9 +1540,8 @@
             });
         }
 
-        // Gestionnaire d'événements pour les raccourcis clavier
         document.addEventListener('keydown', function (event) {
-            // Ctrl + F pour la recherche
+            
             if (event.ctrlKey && event.key === 'f') {
                 event.preventDefault();
                 const searchInput = document.getElementById('global-search');
@@ -1579,7 +1550,6 @@
                 }
             }
 
-            // Flèches pour naviguer entre les onglets
             if (event.altKey) {
                 const tabs = ['widget', 'dynamic-borders', 'wallpapers', 'image-library', 'label', 'clock-bubble', 'note-bubble', 'drag-drop', 'general-settings'];
                 const currentIndex = tabs.indexOf(currentTab);
@@ -1594,77 +1564,64 @@
             }
         });
 
-        // Animation d'entrée pour les sections
-        // Suppression des animations d'entrée et de l'observer
-
-        // Fonction pour basculer l'état d'une section pliable
         function toggleSection(headerElement) {
             const section = headerElement.closest('.collapsible-section');
             const content = section.querySelector('.section-content');
             const icon = headerElement.querySelector('.collapse-icon');
             
             if (content.classList.contains('collapsed')) {
-                // Déplier la section
+                
                 content.classList.remove('collapsed');
                 content.classList.add('expanded');
                 section.classList.add('expanded');
             } else {
-                // Replier la section
+                
                 content.classList.remove('expanded');
                 content.classList.add('collapsed');
                 section.classList.remove('expanded');
             }
         }
 
-        // Fonction pour ouvrir une démonstration
         function openDemo(demoType) {
             const demoFiles = {
-                // Onglet Widget - Démonstrations disponibles
+                
                 'add-bubble-widget': 'demo-add-bubble.html',
                 'open-settings': 'demo-Widget-Settings.html',
                 'move-widget': 'demo-widget-move.html',
                 'position-persistence': null,
 
-                                 // Onglet Bulles - Démonstrations disponibles
                  'resize-bubble': 'demo-resize.html',
                  'move-bubble': 'demo-move.html',
                  'customize-bubble': 'demo-OpenBorderCustomization.html',
                  'show-options-menu': 'demo-context-menu.html',
 
-                // Autres démonstrations (à créer plus tard)
                 'add-bubble': 'demo-add-bubble.html',
                 'delete-bubble': 'demo-delete-bubble.html',
                 'duplicate-bubble': 'demo-duplicate-bubble.html',
 
-                // Onglet Fonds d'écran
                 'choose-color': 'demo-choose-color.html',
                 'import-image': 'ImportImageWallpaer.html',
                 'random-wallpaper': 'RandomImageWallpaper.html',
                 'set-interval': 'IntervalImageSet.html',
 
-                // Onglet Étiquette
                 'rename-label': 'demo-Edit-Title.html',
                 'adjust-label-position': 'demo-Label-Position-Dialog.html',
                 'hide-label': 'demo-Hide-Label.html',
 
-                // Onglet Bulle Horloge
                 'show-clock': 'demo-Show-Clock.html',
                 'move-clock': 'demo-move-clock.html',
                 'customize-clock': 'demo-customize-clock.html',
                 'lock-clock': 'demo-lock-clock.html',
 
-                // Onglet Bulle-Note
                 'enable-note-mode': 'demo-enable-note-mode.html',
                 'edit-note': 'demo-edit-note.html',
                 'customize-note': 'demo-customize-note.html',
 
-                // Onglet Bibliothèque d'images
                 'access-image-library': 'OpenBorderCustomizationToAccessLibrary.html',
                 'browse-categories': 'demo-AvailableCategories.html',
                 'use-as-bubble-background': 'demo-AvailableCategories.html',
                 'use-as-wallpaper': 'demo-AvailableCategories.html',
 
-                // Onglet Fonction de glisser/déposer
                 'enable-drag-drop': 'demo-enable-drag&drop-mode.html',
                 'drag-files': 'demo-drag-files.html',
                 'move-between-bubbles': 'demo-move-between-bubbles.html',
@@ -1673,7 +1630,6 @@
                 'sort-function': 'demo-sorting-fonction.html',
                 'hide-bubble': 'demo-Hides-Bubble-fonction.html',
 
-        // Onglet Paramètres généraux
         'grid-alignment': 'AlignmentGrid.html',
         'font-settings': 'TitleFont.html',
         'export-import': 'ExportImport.html',
@@ -1687,10 +1643,10 @@
             const demoFile = demoFiles[demoType];
 
             if (demoFile) {
-                // Ouvrir la page de démonstration dans un nouvel onglet
+                
                 window.open(demoFile, '_blank');
             } else {
-                // Afficher un message pour les démonstrations non encore disponibles
+                
                 const demoMessages = {
                     'add-bubble-widget': 'Démonstration : Ajouter une bulle via le widget (à venir)',
                     'open-settings': 'Démonstration : Ouvrir les paramètres',
@@ -1731,13 +1687,11 @@
             }
         }
 
-        // Fonction pour forcer la visibilité des textes avec couleurs Windows
         function forceTextVisibility() {
             const allParagraphs = document.querySelectorAll('p');
             const allSectionContent = document.querySelectorAll('.section-content');
             const allSectionTitles = document.querySelectorAll('.section-title');
 
-            // Utiliser les couleurs CSS variables au lieu de forcer le blanc
             const computedStyle = getComputedStyle(document.documentElement);
             const textColor = computedStyle.getPropertyValue('--text-color').trim();
 
@@ -1765,54 +1719,42 @@
             });
         }
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function () {
-            // Forcer la visibilité immédiatement
-            forceTextVisibility();
             
-            // Désactivation des animations: ne rien faire ici
+            forceTextVisibility();
 
-            // S'assurer que tout le contenu est visible
             setTimeout(() => {
                 forceTextVisibility();
             }, 100);
 
-            // Désactivation des répétitions de visibilité
-
-            // Initialiser la navigation moderne
             initializeModernNav();
 
-            // Marquer visuellement toutes les sections "À savoir"
             markASavoirSections();
 
-            // Replier toutes les sections par défaut au chargement
             collapseAllSections();
         });
 
-        // Initialisation de la navigation moderne
         function initializeModernNav() {
-            // Attendre que les éléments soient disponibles
+            
             setTimeout(() => {
-                // Ajouter les événements de clic aux onglets
+                
                 const navTabs = document.querySelectorAll('.nav-tab');
-                console.log('Found nav tabs:', navTabs.length); // Debug
+                console.log('Found nav tabs:', navTabs.length); 
                 
                 navTabs.forEach(tab => {
                     tab.addEventListener('click', function(e) {
                         e.preventDefault();
                         const tabName = this.getAttribute('data-tab');
-                        console.log('Tab clicked:', tabName); // Debug
+                        console.log('Tab clicked:', tabName); 
                         showTab(tabName);
                     });
                 });
 
-                // Initialiser l'indicateur pour l'onglet actif
                 const activeTab = document.querySelector('.nav-tab.active');
                 if (activeTab) {
                     updateNavIndicator(activeTab);
                 }
 
-                // Mettre à jour l'indicateur lors du redimensionnement
                 window.addEventListener('resize', () => {
                     const activeTab = document.querySelector('.nav-tab.active');
                     if (activeTab) {
@@ -1820,15 +1762,12 @@
                     }
                 });
 
-                // Initialiser la recherche globale
                 initializeGlobalSearch();
 
-                // Marquer visuellement toutes les sections "À savoir" au cas où du contenu se charge tardivement
                 markASavoirSections();
             }, 100);
         }
 
-        // Marquer toutes les sections "À savoir" pour un style distinct
         function markASavoirSections() {
             document.querySelectorAll('.collapsible-section').forEach(section => {
                 const title = section.querySelector('.section-title');
@@ -1837,7 +1776,6 @@
                 if (text === 'à savoir' || text === 'a savoir') {
                     section.classList.add('a-savoir');
 
-                    // Forcer l'état collapsed par défaut
                     const content = section.querySelector('.section-content');
                     if (content) {
                         content.classList.remove('expanded');
@@ -1848,7 +1786,6 @@
             });
         }
 
-        // Replier toutes les sections (utilisé lors des résultats de recherche)
         function collapseAllSections() {
             document.querySelectorAll('.collapsible-section .section-content').forEach(content => {
                 content.classList.remove('expanded');
@@ -1859,11 +1796,10 @@
             });
         }
 
-        // Initialisation de la recherche globale
         function initializeGlobalSearch() {
             const searchInput = document.getElementById('global-search');
             if (searchInput) {
-                // Recherche avec Entrée uniquement
+                
                 searchInput.addEventListener('keydown', function(e) {
                     if (e.key === 'Enter') {
                         e.preventDefault();
@@ -1873,7 +1809,6 @@
             }
         }
 
-        // Effectuer une recherche globale
         function performGlobalSearch() {
             const searchInput = document.getElementById('global-search');
             const query = searchInput.value.trim().toLowerCase();
@@ -1887,7 +1822,6 @@
             displaySearchResults(results, query);
         }
 
-        // Rechercher dans tous les onglets
         function searchInAllTabs(query) {
             const results = {};
             const tabIcons = {
@@ -1914,7 +1848,6 @@
                 'general-settings': 'Paramètres généraux'
             };
 
-            // Parcourir tous les onglets
             Object.keys(tabIcons).forEach(tabId => {
                 const tabContent = document.getElementById(tabId);
                 if (tabContent) {
@@ -1928,8 +1861,7 @@
                         if (title && content) {
                             const titleText = title.textContent.toLowerCase();
                             const contentText = content.textContent.toLowerCase();
-                            
-                            // Vérifier si la requête correspond au titre ou au contenu
+
                             if (titleText.includes(query) || contentText.includes(query)) {
                                 tabResults.push({
                                     title: title.textContent,
@@ -1953,22 +1885,19 @@
             return results;
         }
 
-        // Afficher les résultats de recherche
         function displaySearchResults(results, query) {
             const resultsSection = document.getElementById('search-results-section');
             const resultsContent = document.getElementById('search-results-content');
-            
-            // Masquer toutes les sections de contenu des onglets
+
             const tabContents = document.querySelectorAll('.tab-content');
             tabContents.forEach(tab => {
                 tab.style.display = 'none';
             });
 
-            // Replier toutes les sections (y compris "À savoir") pendant l'affichage des résultats
             collapseAllSections();
 
             if (Object.keys(results).length === 0) {
-                // Aucun résultat
+                
                 resultsContent.innerHTML = `
                     <div class="no-results">
                         <div class="no-results-icon">🔍</div>
@@ -1977,7 +1906,7 @@
                     </div>
                 `;
             } else {
-                // Construire le HTML des résultats
+                
                 let html = '';
                 Object.keys(results).forEach(tabId => {
                     const tabData = results[tabId];
@@ -2016,26 +1945,22 @@
             resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Mettre en surbrillance le texte de recherche
         function highlightText(text, query) {
             if (!query) return text;
             const regex = new RegExp(`(${query})`, 'gi');
             return text.replace(regex, '<span class="search-highlight">$1</span>');
         }
 
-        // Ouvrir un résultat de recherche
         function openSearchResult(tabId, element) {
-            // Basculer vers l'onglet correspondant
+            
             showTab(tabId);
-            
-            // Fermer les résultats de recherche
+
             closeSearchResults();
-            
-            // Trouver et ouvrir la section correspondante
+
             setTimeout(() => {
                 const section = element.closest('.search-result-item');
                 if (section) {
-                    // Simuler un clic sur l'en-tête de la section pour l'ouvrir
+                    
                     const tabContent = document.getElementById(tabId);
                     const sections = tabContent.querySelectorAll('.collapsible-section');
                     
@@ -2053,13 +1978,11 @@
             }, 100);
         }
 
-        // Fermer les résultats de recherche
         function closeSearchResults() {
             const resultsSection = document.getElementById('search-results-section');
             
             resultsSection.style.display = 'none';
-            
-            // Restaurer l'affichage de l'onglet actif
+
             const activeTab = document.querySelector('.nav-tab.active');
             if (activeTab) {
                 const tabId = activeTab.getAttribute('data-tab');
@@ -2070,7 +1993,6 @@
             }
         }
 
-        // Vider le champ de recherche globale (éviter la collision de nom)
         function clearGlobalSearch() {
             const searchInput = document.getElementById('global-search');
             if (searchInput) {

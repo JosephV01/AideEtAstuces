@@ -37,7 +37,7 @@
             height: 350px;
             width: 950px;
         }
-        /* Bulle dimension */
+        
         .demo-canvas .dynamic-border {
             width: 350px;
             height: 160px;
@@ -46,12 +46,10 @@
             border-radius: 12px;
         }
         .demo-canvas .label-border {
-            left: 200px; /* centre de la bulle (20 + 260/2) */
+            left: 200px; 
             top: 75px;
         }
 
-
-        /* Bouton masquer intégré dans l'étiquette */
         .hide-trigger {
             position: absolute;
             right: -25px;
@@ -73,7 +71,7 @@
         .hide-trigger:hover { background: #005EA2; }
         .hide-trigger:active { background: #003C74; }
         .hide-trigger svg { width: 16px; height: 16px; fill: currentColor; }
-        /* État masqué */
+        
         .bubble-hidden .dynamic-border,
         .bubble-hidden .shortcuts-area,
         .bubble-hidden .resize-handle {
@@ -81,7 +79,6 @@
             transition: opacity 0.3s ease;
         }
 
-        /* Icônes simulées (raccourcis) dans la bulle */
         .shortcuts-area {
             position: absolute;
             left: 30px;
@@ -129,7 +126,6 @@
             100% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
         }
 
-        /* Curseur au-dessus de tout */
         .mouse-cursor { z-index: 2000 !important; }
         .mouse-zero-click { z-index: 900 !important;
             left: 600px;
@@ -165,10 +161,9 @@
 
         <div class="demo-canvas-container">
             <div class="demo-canvas large">
-                <!-- Bulle -->
-                <div class="dynamic-border"></div>
                 
-                <!-- Étiquette avec bouton intégré -->
+                <div class="dynamic-border"></div>
+
                 <div class="label-border">
                     <div class="label-text">Bulle - Raccourcis</div>
                     <button id="hideTrigger" class="hide-trigger" title="Masquer">
@@ -176,17 +171,13 @@
                     </button>
                 </div>
 
-                <!-- Curseur -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Souris avec états -->
                 <div class="mouse-zero-click"></div>
                 <div class="mouse-left-click"></div>
 
-                <!-- Poignée (non utilisée ici, conservée pour cohérence visuelle) -->
                 <div class="resize-handle"></div>
 
-                <!-- Zone des raccourcis -->
                 <div class="shortcuts-area" id="shortcutsArea">
                     <div class="shortcut" data-name="rapport_2024.pdf" data-display="Rapport 2024">
                         <div class="shortcut-icon"></div>
@@ -214,28 +205,24 @@
                     </div>
                 </div>
 
-                <!-- aucun panneau nécessaire pour cette démonstration -->
             </div>
         </div>
     </div>
 
     <script>
-        // Animation state
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
         let baseInterval = 80;
 
-        // Standard cursor speed
         const CURSOR_SPEED_PX_PER_FRAME = 9;
 
-        // Progress
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         let totalAnimationFrames = 0;
 
-        // DOM
         const canvas = document.querySelector('.demo-canvas');
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
@@ -243,17 +230,15 @@
         const hideTrigger = document.getElementById('hideTrigger');
         const shortcuts = Array.from(document.querySelectorAll('.shortcut'));
 
-        // Geometry helpers
         let canvasCenterX = 0;
         let canvasCenterY = 0;
         let toTriggerFrames = 25;
-        let toClickFrames = 8; // animation de clic
-        let toLabelFrames = 25; // déplacement vers étiquette
-        let dragFrames = Math.ceil(80 / CURSOR_SPEED_PX_PER_FRAME); // déplacement de la bulle synchronisé avec le curseur
-        let pauseFrames = 10; // pause entre déplacements
+        let toClickFrames = 8; 
+        let toLabelFrames = 25; 
+        let dragFrames = Math.ceil(80 / CURSOR_SPEED_PX_PER_FRAME); 
+        let pauseFrames = 10; 
         let toResetFrames = 30;
 
-        // Positions initiales pour le déplacement
         let initialPositions = {
             label: { x: 0, y: 0 },
             bubble: { x: 0, y: 0 },
@@ -270,10 +255,6 @@
                 y: Math.round(r.top - crect.top + r.height / 2)
             };
         }
-
-        // pas de dropdown dans cette démonstration
-
-        // pas de tri dans cette démonstration
 
         function updateProgress(phase, totalFrames) {
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
@@ -314,18 +295,17 @@
 
             animationPhase++;
 
-            // Phases complètes: bouton -> clic -> masquage -> étiquette -> drag -> pause -> retour -> démasquage -> centre
-            const phaseAEnd = toTriggerFrames; // déplacement vers bouton
-            const phaseBEnd = phaseAEnd + toClickFrames; // animation de clic
-            const phaseCEnd = phaseBEnd + 6; // pause après clic
-            const phaseDEnd = phaseCEnd + toLabelFrames; // déplacement vers étiquette
-            const phaseEEnd = phaseDEnd + dragFrames; // premier déplacement
-            const phaseFEnd = phaseEEnd + pauseFrames; // pause
-            const phaseGEnd = phaseFEnd + dragFrames; // retour position
-            const phaseHEnd = phaseGEnd + toClickFrames; // clic pour démasquer
-            const phaseIEnd = phaseHEnd + 6; // pause après démasquage
-            const phaseJEnd = phaseIEnd + toResetFrames; // retour centre
-            const phaseKEnd = phaseJEnd + 10; // micro pause
+            const phaseAEnd = toTriggerFrames; 
+            const phaseBEnd = phaseAEnd + toClickFrames; 
+            const phaseCEnd = phaseBEnd + 6; 
+            const phaseDEnd = phaseCEnd + toLabelFrames; 
+            const phaseEEnd = phaseDEnd + dragFrames; 
+            const phaseFEnd = phaseEEnd + pauseFrames; 
+            const phaseGEnd = phaseFEnd + dragFrames; 
+            const phaseHEnd = phaseGEnd + toClickFrames; 
+            const phaseIEnd = phaseHEnd + 6; 
+            const phaseJEnd = phaseIEnd + toResetFrames; 
+            const phaseKEnd = phaseJEnd + 10; 
 
             if (animationPhase <= phaseAEnd) {
                 const startX = canvasCenterX, startY = canvasCenterY;
@@ -342,19 +322,19 @@
                 if (clickPhase >= 4) {
                     mouseZeroClick.style.visibility = 'visible';
                     mouseLeftClick.style.visibility = 'hidden';
-                    // appliquer le masquage
+                    
                     const dc = document.querySelector('.demo-canvas');
                     dc.classList.add('bubble-hidden');
                 }
             }
             else if (animationPhase <= phaseCEnd) {
-                // Rester positionné sur le bouton pendant une courte pause après le clic
+                
                 const btnCenter = getCenter(hideTrigger);
                 mouseCursor.style.left = btnCenter.x + 'px';
                 mouseCursor.style.top = btnCenter.y + 'px';
             }
             else if (animationPhase <= phaseDEnd) {
-                // Déplacement vers l'étiquette
+                
                 const progress = (animationPhase - phaseCEnd) / toLabelFrames;
                 const from = getCenter(hideTrigger);
                 const to = getCenter(document.querySelector('.label-border'));
@@ -362,54 +342,48 @@
                 mouseCursor.style.top = (from.y + (to.y - from.y) * progress) + 'px';
             }
             else if (animationPhase <= phaseEEnd) {
-                // Premier déplacement de la bulle (vers la droite)
+                
                 const dragPhase = animationPhase - phaseDEnd;
                 const p = dragPhase / dragFrames;
-                const dragDistance = 80; // pixels vers la droite
+                const dragDistance = 80; 
                 const offsetX = dragDistance * p;
                 
                 mouseZeroClick.style.visibility = 'hidden';
                 mouseLeftClick.style.visibility = 'visible';
-                
-                // Le curseur se déplace à la même vitesse que la bulle
-                // Utiliser les positions initiales pour éviter le décalage
+
                 const startX = initialPositions.label.x;
                 const endX = startX + dragDistance;
                 mouseCursor.style.left = (startX + (endX - startX) * p) + 'px';
                 mouseCursor.style.top = initialPositions.label.y + 'px';
-                
-                // Déplacer tous les éléments ensemble
+
                 moveBubbleElements(offsetX);
             }
             else if (animationPhase <= phaseFEnd) {
-                // Pause avec clic maintenu
-                mouseCursor.style.left = (initialPositions.label.x + 80) + 'px'; // position finale du premier drag
+                
+                mouseCursor.style.left = (initialPositions.label.x + 80) + 'px'; 
                 mouseCursor.style.top = initialPositions.label.y + 'px';
                 mouseZeroClick.style.visibility = 'hidden';
                 mouseLeftClick.style.visibility = 'visible';
             }
             else if (animationPhase <= phaseGEnd) {
-                // Retour de la bulle à sa position d'origine
+                
                 const dragPhase = animationPhase - phaseFEnd;
                 const p = dragPhase / dragFrames;
-                const dragDistance = 80; // pixels vers la droite
-                const offsetX = dragDistance * (1 - p); // inverse du premier déplacement
+                const dragDistance = 80; 
+                const offsetX = dragDistance * (1 - p); 
                 
                 mouseZeroClick.style.visibility = 'hidden';
                 mouseLeftClick.style.visibility = 'visible';
-                
-                // Le curseur se déplace à la même vitesse que la bulle
-                // Utiliser les positions initiales pour éviter le décalage
-                const startX = initialPositions.label.x + dragDistance; // position de départ (après le premier drag)
-                const endX = initialPositions.label.x; // position d'arrivée (position originale)
+
+                const startX = initialPositions.label.x + dragDistance; 
+                const endX = initialPositions.label.x; 
                 mouseCursor.style.left = (startX + (endX - startX) * p) + 'px';
                 mouseCursor.style.top = initialPositions.label.y + 'px';
-                
-                // Déplacer tous les éléments ensemble
+
                 moveBubbleElements(offsetX);
             }
             else if (animationPhase <= phaseHEnd) {
-                // Relâche le clic et retour vers le bouton pour démasquer
+                
                 mouseZeroClick.style.visibility = 'visible';
                 mouseLeftClick.style.visibility = 'hidden';
                 
@@ -420,7 +394,7 @@
                 mouseCursor.style.top = (from.y + (to.y - from.y) * progress) + 'px';
             }
             else if (animationPhase <= phaseIEnd) {
-                // Clic pour démasquer
+                
                 const clickPhase = animationPhase - phaseHEnd;
                 if (clickPhase >= 2) {
                     mouseZeroClick.style.visibility = 'hidden';
@@ -434,7 +408,7 @@
                 }
             }
             else if (animationPhase <= phaseJEnd) {
-                // Retour au centre
+                
                 const movePhase = animationPhase - phaseIEnd;
                 const p = movePhase / toResetFrames;
                 const btnCenter = getCenter(hideTrigger);
@@ -482,7 +456,6 @@
             const triggerCenter = getCenter(hideTrigger);
             toResetFrames = Math.ceil(Math.hypot(canvasCenterX - triggerCenter.x, canvasCenterY - triggerCenter.y) / CURSOR_SPEED_PX_PER_FRAME);
 
-            // Initialiser les positions
             initBubblePositions();
 
             totalAnimationFrames = toTriggerFrames + toClickFrames + 6 + toLabelFrames + dragFrames + pauseFrames + dragFrames + toClickFrames + 6 + toResetFrames + 20;
@@ -490,7 +463,6 @@
             mouseCursor.style.left = canvasCenterX + 'px';
             mouseCursor.style.top = canvasCenterY + 'px';
 
-            // UI wiring
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
             const pauseButton = document.getElementById('pauseButton');
@@ -509,19 +481,17 @@
             setTimeout(startAnimation, 800);
         });
 
-        // Fonctions pour gérer le déplacement de la bulle
         function initBubblePositions() {
             const label = document.querySelector('.label-border');
             const bubble = document.querySelector('.dynamic-border');
             const shortcuts = document.getElementById('shortcutsArea');
             const handle = document.querySelector('.resize-handle');
-            
-            // Stocker les positions CSS fixes (en pixels)
+
             initialPositions.label = { x: 200, y: 75 };
             initialPositions.bubble = { x: 20, y: 100 };
             initialPositions.shortcuts = { x: 30, y: 130 };
             initialPositions.handle = { x: 363, y: 253 };
-            // Le bouton fait maintenant partie de l'étiquette, pas besoin de le traiter séparément
+            
         }
 
         function moveBubbleElements(offsetX) {
@@ -529,16 +499,14 @@
             const bubble = document.querySelector('.dynamic-border');
             const shortcuts = document.getElementById('shortcutsArea');
             const handle = document.querySelector('.resize-handle');
-            
-            // Déplacer tous les éléments en maintenant leurs positions relatives
+
             label.style.left = (initialPositions.label.x + offsetX) + 'px';
             bubble.style.left = (initialPositions.bubble.x + offsetX) + 'px';
             shortcuts.style.left = (initialPositions.shortcuts.x + offsetX) + 'px';
             handle.style.left = (initialPositions.handle.x + offsetX) + 'px';
-            // Le bouton se déplace automatiquement avec l'étiquette puisqu'il en fait partie
+            
         }
     </script>
 </body>
 </html>
-
 

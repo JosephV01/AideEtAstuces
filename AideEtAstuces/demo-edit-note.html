@@ -17,7 +17,7 @@
         }
         
         .note-title { position: absolute; top: 58px; left: 150px; transform: translateX(-50%); background: #2D2D30; border: 1px solid white; border-radius: 3px; height: 20px; padding: 3px 6px; color: white; font-size: 10px; font-weight: 600; white-space: nowrap; opacity: 0; transition: opacity .25s ease; }
-        /* Menu contextuel complet du projet */
+        
         .context-menu {
             background: #26292C;
             border: 2px solid #444;
@@ -48,8 +48,7 @@
         .section-arrow { width: 12px; height: 12px; fill: #F0F0F0; margin-left: auto; transition: transform .2s; }
         .submenu { position: absolute; left: 100%; top: 0; background: #26292C; border: 2px solid #444; border-radius: 14px; box-shadow: 0 3px 16px rgba(0,0,0,.45); padding: 8px; min-width: 220px; font-size: 15px; font-family: 'Segoe UI Variable','Segoe UI',sans-serif; z-index: 1001; visibility: hidden; opacity: 0; transform: scale(.8); transition: all .2s ease; margin-left: 5px; }
         .menu-section.open .submenu { visibility: visible; opacity: 1; transform: scale(1); }
-        
-        /* Boutons d'aide */
+
         .help-button {
             width: 28px;
             height: 28px;
@@ -73,7 +72,6 @@
             background: #003C74;
         }
 
-        /* Styles pour les éléments avec aide */
         .menu-item-with-help {
             justify-content: space-between;
         }
@@ -84,7 +82,6 @@
             flex: 1;
         }
 
-        /* Séparateurs */
         .menu-separator {
             height: 1px;
             background: #444;
@@ -108,7 +105,6 @@
     transition: all 0.3s ease;
 }
 
-        /* back-button and speed-control styles removed to use global styles in demo-elements.css */
     </style>
     </head>
 <body>
@@ -135,38 +131,29 @@
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
-                <!-- Bordure dynamique -->
+                
                 <div class="dynamic-border"></div>
 
-                <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
                     <div class="label-text">Activation du mode Note</div>
                 </div>
 
-                <!-- Curseur de souris -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
 
-                <!-- Souris avec bouton droit coloré (pour les clics) -->
                 <div class="mouse-right-click"></div>
 
-                <!-- Souris avec bouton gauche coloré (pour les clics) -->
                 <div class="mouse-left-click"></div>
 
-                <!-- Surface de note (apparaît après activation) -->
                 <div class="note-surface">
                     <span class="note-text">Cliquez ici pour éditer votre note...</span>
                 </div>
 
-                <!-- Titre de la note (apparaît après activation) -->
                 <div class="note-title">Note</div>
 
-                <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
                     <button class="menu-item menu-item-with-help">
                         <div class="menu-item-content">
@@ -432,7 +419,7 @@
                                 noteSurface.textContent = '';
                             }
                             hasClearedPlaceholder = true;
-                            // Masquer le curseur au début de la saisie
+                            
                             mouseCursor.style.visibility = 'hidden';
                         }
                         const typed = Math.min(typingText.length, Math.floor((t - (moveToNoteFrames + 8 + selectionFrames)) / typingIntervalFrames));
@@ -447,7 +434,7 @@
                         animationPhase = 0;
                         mouseCursor.style.left = startX + 'px';
                         mouseCursor.style.top = initialStartY + 'px';
-                        // Restaurer la visibilité du curseur à la fin
+                        
                         mouseCursor.style.visibility = 'visible';
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';

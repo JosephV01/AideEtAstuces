@@ -36,15 +36,14 @@
             display: inline-block;
         }
 
-
         .floating-clock {
             position: absolute;
             background: rgba(45, 45, 48, 0.95);
             border: 2px solid white;
             border-radius: 8px;
             padding: 8px 12px;
-            left: 200px; /* centre de 400px */
-            top: 140px;  /* centre de 280px */
+            left: 200px; 
+            top: 140px;  
             z-index: 1000;
             visibility: visible;
             opacity: 1;
@@ -55,7 +54,6 @@
         .clock-time { color: white; font-size: 14px; font-weight: bold; font-family: 'Segoe UI', monospace; text-align: center; margin-bottom: 2px; }
         .clock-date { color: #cccccc; font-size: 10px; font-family: 'Segoe UI', sans-serif; text-align: center; }
 
-        /* Masque visuel au-dessus de l'horloge (par défaut au-dessus) */
         .mask-over-clock {
             position: absolute;
             left: 200px;
@@ -78,10 +76,8 @@
             );
         }
 
-        /* Curseur toujours au-dessus */
         .mouse-cursor { z-index: 3000 !important; }
-        
-         /* Fenêtre de personnalisation (référence) - affichée strictement comme dans Reference-ClockCustomization.html */
+
          .clock-customize-overlay {
              position: absolute;
              left: 0; top: 0; right: 0; bottom: 0;
@@ -119,7 +115,6 @@
         .ref-action-button { min-width: 120px; height: 28px; background: #4A4A4A; border: 1px solid #666666; border-radius: 4px; font-size: 12px; color: #F0F0F0; cursor: pointer; font-family: 'Segoe UI Variable'; transition: all 0.2s ease; }
         .ref-action-button:hover { background: #5A5A5A; border-color: #777777; }
 
-         /* Menu contextuel: strictement celui du projet C# (MenuContextMenuStyles.xaml) */
          .context-menu {
              background: #26292C;
              border: 2px solid #444;
@@ -197,8 +192,7 @@
                 • Faites un <strong>clic droit</strong> sur l'horloge, puis ouvrez <strong>Personnaliser l'horloge</strong> pour accéder à <strong>Verrouiller/Déverrouiller l'affichage</strong>.
             </p>
         </div>
-        
-        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+
         <div class="speed-control">
             <label for="speedSlider">Vitesse de l'animation :</label>
             <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
@@ -223,7 +217,6 @@
                     </div>
                 </div>
 
-                <!-- Masque visuel au-dessus de l'horloge -->
                 <div class="mask-over-clock" id="clock-visual-mask"></div>
 
                 <div class="mouse-cursor"></div>
@@ -231,9 +224,8 @@
                 <div class="mouse-right-click large"></div>
                 <div class="mouse-left-click large"></div>
 
-                 <!-- Menu contextuel strictement copié de Reference-ClockContextMenu.html -->
                  <div class="context-menu" id="context-menu" style="left: 200px; top: 140px;">
-                     <!-- Afficher/Masquer l'horloge -->
+                     
                      <button class="menu-item" id="toggleClockItem">
                          <svg class="menu-icon" viewBox="0 -960 960 960">
                              <path d="M582,-298 L440,-440 v-200 h80 v167 l118,118 -56,57 Z M440,-720 v-80 h80 v80 h-80 Z M720,-440 v-80 h80 v80 h-80 Z M440,-160 v-80 h80 v80 h-80 Z M160,-440 v-80 h80 v80 h-80 Z M480,-80 q-83,0 -156,-31.5 T197,-197 q-54,-54 -85.5,-127 T80,-480 q0,-83 31.5,-156 T197,-763 q54,-54 127,-85.5 T480,-880 q83,0 156,31.5 T763,-763 q54,54 85.5,127 T880,-480 q0,83 -31.5,156 T763,-197 q-54,54 -127,85.5 T480,-80 Z M480,-160 q134,0 227,-93 t93,-227 q0,-134 -93,-227 t-227,-93 q-134,0 -227,93 t-93,227 q0,134 93,227 t227,93 Z"/>
@@ -241,7 +233,6 @@
                          <span class="menu-text" id="toggleClockText">Masquer l'horloge</span>
                      </button>
 
-                    <!-- Taille de l'horloge -->
                     <button class="menu-item" id="clockSizeItem">
                         <svg class="menu-icon" viewBox="0 -960 960 960">
                             <path d="M120,-120 L120,-360 L200,-360 L200,-256 L324,-380 L380,-324 L256,-200 L360,-200 L360,-120 L120,-120 Z M600,-120 L600,-200 L704,-200 L580,-324 L636,-380 L760,-256 L760,-360 L840,-360 L840,-120 L600,-120 Z M324,-580 L200,-704 L200,-600 L120,-600 L120,-840 L360,-840 L360,-760 L256,-760 L380,-636 L324,-580 Z M636,-580 L580,-636 L704,-760 L600,-760 L600,-840 L840,-840 L840,-600 L760,-600 L760,-704 L636,-580 Z"/>
@@ -249,7 +240,6 @@
                         <span class="menu-text">Taille de l'horloge</span>
                     </button>
 
-                    <!-- Personnaliser l'horloge -->
                     <button class="menu-item" id="customizeClockItem">
                         <svg class="menu-icon" viewBox="0 -960 960 960">
                             <path d="M480,-80 Q398,-80,325,-111.5 T197,-197 Q143,-251,111.5,-324 T80,-480 Q80,-563,112.5,-636 T200,-763 Q256,-817,330,-848.5 T488,-880 Q568,-880,639,-852.5 T763,-776 Q816,-727,847.5,-660 T880,-518 Q880,-403,810,-341.5 T640,-280 H566 Q557,-280,553.5,-275 T550,-264 Q550,-252,565,-229.5 T580,-178 Q580,-128,552.5,-104 T480,-80 ZM260,-440 Q286,-440,303,-457 T320,-500 Q320,-526,303,-543 T260,-560 Q234,-560,217,-543 T200,-500 Q200,-474,217,-457 T260,-440 ZM380,-600 Q406,-600,423,-617 T440,-660 Q440,-686,423,-703 T380,-720 Q354,-720,337,-703 T320,-660 Q320,-634,337,-617 T380,-600 ZM580,-600 Q606,-600,623,-617 T640,-660 Q640,-686,623,-703 T580,-720 Q554,-720,537,-703 T520,-660 Q520,-634,537,-617 T580,-600 ZM700,-440 Q726,-440,743,-457 T760,-500 Q760,-526,743,-543 T700,-560 Q674,-560,657,-543 T640,-500 Q640,-474,657,-457 T700,-440 ZM480,-160 Q489,-160,494.5,-165 T500,-178 Q500,-192,485,-211 T470,-268 Q470,-310,499,-335 T570,-360 H640 Q706,-360,753,-398.5 T800,-518 Q800,-639,707.5,-719.5 T488,-800 Q352,-800,256,-707 T160,-480 Q160,-347,253.5,-253.5 T480,-160 Z"/>
@@ -257,7 +247,6 @@
                         <span class="menu-text">Personnaliser l'horloge</span>
                     </button>
 
-                    <!-- Verrouiller/Déverrouiller l'horloge -->
                     <button class="menu-item" id="lockClockItem">
                         <svg class="menu-icon" viewBox="0 -960 960 960">
                             <path d="M240,-80 q-33,0 -56.5,-23.5 T160,-160 v-400 q0,-33 23.5,-56.5 T240,-640 h40 v-80 q0,-83 58.5,-141.5 T480,-920 q83,0 141.5,58.5 T680,-720 v80 h40 q33,0 56.5,23.5 T800,-560 v400 q0,33 -23.5,56.5 T720,-80 H240 Z m0,-80 h480 v-400 H240 v400 Z m240,-120 q33,0 56.5,-23.5 T560,-360 q0,-33 -23.5,-56.5 T480,-440 q-33,0 -56.5,23.5 T400,-360 q0,33 23.5,56.5 T480,-280 Z M360,-640 h240 v-80 q0,-50 -35,-85 t-85,-35 q-50,0 -85,35 t-35,85 v80 Z m-120,480 v-400 400 Z"/>
@@ -266,7 +255,6 @@
                     </button>
                  </div>
 
-                <!-- Fenêtre de personnalisation: strictement la fenêtre de référence -->
                 <div class="clock-customize-overlay" id="customize-overlay">
                     <div class="ref-main-container">
                         <div class="ref-main-border">
@@ -342,24 +330,21 @@
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
         let isClockLocked = false;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        
-        // Standardisation de la vitesse du curseur (selon demo-elements.css)
+
         const CURSOR_SPEED_PX_PER_FRAME = 9;
-        let baseInterval = 50; // Intervalle de base pour cette démo
-        let toggledThisClick = false; // Pour éviter plusieurs inversions lors du clic
-        let startAtClockNext = false; // Démarrer directement sur l'horloge au prochain cycle
-        
-        // Calculer le nombre total de frames de l'animation (2 phases: verrouiller puis déverrouiller)
+        let baseInterval = 50; 
+        let toggledThisClick = false; 
+        let startAtClockNext = false; 
+
         const moveToClockFrames = Math.ceil(Math.sqrt((200-285)**2 + (140-280)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const moveToMenuFrames = Math.ceil(Math.sqrt((285-200)**2 + (280-140)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const singlePhaseTotalFrames = moveToClockFrames + 28 + moveToMenuFrames + 35;
@@ -379,13 +364,12 @@
          const customizeOverlay = document.getElementById('customize-overlay');
 
         function resetVisualState() {
-            // Reset menu visuals
+            
             contextMenu.style.visibility = 'hidden';
             contextMenu.style.opacity = 0;
             contextMenu.style.transform = 'scale(0.8)';
             contextMenu.classList.remove('visible');
-            
-            // Reset menu items
+
             toggleClockItem.style.background = 'transparent';
             toggleClockItem.style.color = '#F0F0F0';
             toggleClockItem.style.transform = 'scale(1)';
@@ -405,17 +389,14 @@
             lockClockItem.style.color = '#F0F0F0';
             lockClockItem.style.transform = 'scale(1)';
             lockClockItem.style.boxShadow = 'none';
-            
-            // Reset mouse visuals
+
             mouseZeroClick.style.visibility = 'visible';
             mouseRightClick.style.visibility = 'hidden';
             mouseLeftClick.style.visibility = 'hidden';
 
-            // Reset lock badge
             if (lockBadge) { lockBadge.style.display = isClockLocked ? 'flex' : 'none'; }
         }
 
-        // Mettre à jour le texte de l'option de verrouillage comme dans demo-Show-Clock
         function updateLockOptionState() {
             if (lockClockItem) {
                 const textEl = lockClockItem.querySelector('.menu-text');
@@ -425,15 +406,14 @@
             }
         }
 
-        // Mettre à jour la priorité d'affichage horloge/masque
         function updateZOrder() {
             if (!visualMask) return;
             if (isClockLocked) {
-                // L'horloge passe au-dessus du masque
+                
                 document.getElementById('floating-clock').style.zIndex = 2000;
                 visualMask.style.zIndex = 1500;
             } else {
-                // Le masque reste au-dessus de l'horloge
+                
                 document.getElementById('floating-clock').style.zIndex = 1000;
                 visualMask.style.zIndex = 1500;
             }
@@ -441,28 +421,25 @@
 
         function startAnimation() {
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
-                const clockCenterX = 200; // centre de l'horloge
+                const clockCenterX = 200; 
                 const clockCenterY = 140;
 
-                // Déterminer la phase locale (1: verrouillage, 2: déverrouillage)
                 const phaseIndex = animationPhase <= singlePhaseTotalFrames ? 1 : 2;
                 const localPhase = phaseIndex === 1 ? animationPhase : (animationPhase - singlePhaseTotalFrames);
 
-                // Au début de la phase 2, démarrer depuis la position de l'élément "Verrouiller/Déverrouiller"
                 if (phaseIndex === 2 && localPhase === 1) {
                     mouseCursor.style.left = '285px';
                     mouseCursor.style.top = '280px';
                     mouseCursor.style.visibility = 'visible';
                 }
 
-                // Sous-phases communes
                 const rightClickStart = moveToClockFrames;
                 const moveToMenuStart = moveToClockFrames + 28;
                 const selectStart = moveToClockFrames + 28 + moveToMenuFrames;
@@ -495,7 +472,7 @@
                     if (movePhase >= 2) {
                         const progress = Math.min(1, (movePhase - 2) / (moveToMenuFrames - 2));
                         const startX = clockCenterX, startY = clockCenterY;
-                        const endX = 285, endY = 280;// position de l'élément "Verrouiller/Déverrouiller"
+                        const endX = 285, endY = 280;
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
@@ -527,7 +504,7 @@
                     if (clickPhase >= 2) { mouseZeroClick.style.visibility = 'hidden'; mouseLeftClick.style.visibility = 'visible'; }
                     if (clickPhase >= 6) { mouseZeroClick.style.visibility = 'visible'; mouseLeftClick.style.visibility = 'hidden'; }
                     if (clickPhase >= 4) {
-                        // Phase 1: on verrouille; Phase 2: on déverrouille
+                        
                         const shouldToggle = (phaseIndex === 1 && !toggledThisClick) || (phaseIndex === 2 && toggledThisClick);
                         if (shouldToggle) {
                             isClockLocked = !isClockLocked;
@@ -554,13 +531,13 @@
                         const progress = Math.min(1, movePhase / 16);
                         const currentX = parseFloat(mouseCursor.style.left);
                         const currentY = parseFloat(mouseCursor.style.top);
-                        const targetX = 200; // centre de l'horloge
+                        const targetX = 200; 
                         const targetY = 140;
                         mouseCursor.style.left = (currentX + (targetX - currentX) * progress) + 'px';
                         mouseCursor.style.top = (currentY + (targetY - currentY) * progress) + 'px';
                     }
                 } else {
-                    // rien, laisser courir jusqu'à totalAnimationFrames
+                    
                 }
 
                 if (animationPhase > totalAnimationFrames) {
@@ -574,19 +551,15 @@
                     updateZOrder();
                     toggledThisClick = false;
                 }
-                
-                // Mettre à jour la progression
+
                 updateProgress(animationPhase, totalAnimationFrames);
-                
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
@@ -597,7 +570,6 @@
             setTimeout(startAnimation, 800);
         });
 
-        // Fonction pour redémarrer l'animation avec la nouvelle vitesse
         function restartAnimationWithNewSpeed() {
             if (animationTimer) {
                 clearTimeout(animationTimer);
@@ -605,13 +577,11 @@
             startAnimation();
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression (2 phases)
+
         function updateProgress(phase, totalFrames) {
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
@@ -649,25 +619,22 @@
             }
         }
 
-        // Gestion du slider de vitesse
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
             const pauseButton = document.getElementById('pauseButton');
 
             if (speedSlider && speedValue) {
-                // Écouteur d'événement pour le slider
+                
                 speedSlider.addEventListener('input', function() {
                     const newSpeed = parseFloat(this.value);
                     speedValue.textContent = newSpeed + 'x';
                     
                     console.log('Nouvelle vitesse (customize-clock):', newSpeed);
-                    
-                    // Changement de vitesse réactif sans restart
+
                     changeAnimationSpeed(newSpeed);
                 });
 
-                // Initialiser l'affichage de la vitesse
                 speedValue.textContent = animationSpeed + 'x';
             } else {
                 console.warn('Éléments du slider non trouvés dans demo-customize-clock');

@@ -22,7 +22,6 @@
             padding: 20px;
         }
 
-        /* Styles pour la démonstration */
         .demo-progress-window {
             width: 800px;
             margin: 20px auto;
@@ -203,7 +202,6 @@
             overflow: hidden;
         }
 
-        /* Zone d'aperçu */
         .preview-section {
             background: #2D2D2D;
             border-radius: 8px;
@@ -267,8 +265,6 @@
             white-space: nowrap;
         }
 
-
-        /* Contenu principal */
         .main-content {
             margin: 5px;
             display: flex;
@@ -286,7 +282,6 @@
             margin-bottom: 8px;
         }
 
-        /* GroupBox styles */
         .groupbox {
             border: 1px solid #000000;
             border-radius: 4px;
@@ -306,7 +301,6 @@
             padding: 3px;
         }
 
-        /* Section Styles */
         .styles-section {
             margin-bottom: 8px;
         }
@@ -361,7 +355,6 @@
             width: 70px;
         }
 
-        /* Section Styles par défaut */
         .default-styles-section {
             margin-bottom: 8px;
         }
@@ -402,7 +395,6 @@
             opacity: 0.8;
         }
 
-        /* Panneaux de personnalisation */
         .customization-panels {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -521,7 +513,6 @@
             background: #e0e0e0;
         }
 
-        /* Barre d'action */
         .action-bar {
             display: flex;
             justify-content: flex-end;
@@ -551,7 +542,7 @@
     </style>
 </head>
 <body>
-    <!-- Fenêtre de progression de démonstration -->
+    
     <div class="demo-progress-window" id="demoProgressWindow">
         <div class="demo-progress-content">
             <div class="demo-progress-header">
@@ -585,7 +576,7 @@
     <div class="main-container">
         <div class="main-border">
             <div class="content-grid">
-                <!-- Zone d'aperçu -->
+                
                 <div class="preview-section">
                     <div class="preview-container">
                         <div class="preview-area">
@@ -598,11 +589,9 @@
                     </div>
                  </div>
 
-                <!-- Contenu principal -->
                 <div class="main-content">
                     <div class="customization-title">Personnalisation</div>
 
-                    <!-- Section Styles -->
                     <div class="groupbox styles-section">
                         <div class="groupbox-header">Gérer les styles</div>
                         <div class="groupbox-content">
@@ -622,7 +611,6 @@
                         </div>
                     </div>
 
-                    <!-- Section Styles par défaut -->
                     <div class="groupbox default-styles-section">
                         <div class="groupbox-header">Styles par défaut</div>
                         <div class="groupbox-content">
@@ -642,9 +630,8 @@
                         </div>
                     </div>
 
-                    <!-- Panneaux de personnalisation -->
                     <div class="customization-panels">
-                        <!-- Panneau Bulle -->
+                        
                         <div class="groupbox bubble-panel">
                             <div class="panel-header">Bulle</div>
                             <div class="panel-content">
@@ -700,7 +687,6 @@
                             </div>
                         </div>
 
-                        <!-- Panneau Label -->
                         <div class="groupbox label-panel">
                             <div class="panel-header">Label</div>
                             <div class="panel-content">
@@ -758,7 +744,6 @@
                     </div>
                 </div>
 
-                <!-- Barre d'action -->
                 <div class="action-bar">
                     <button class="action-button create-style-button" onclick="createStyle()">Créer un style</button>
                     <button class="action-button" onclick="cancel()">Annuler</button>
@@ -769,7 +754,7 @@
     </div>
 
     <script>
-        // Variables globales pour la démonstration
+        
         let demoRunning = false;
         let currentStep = 0;
         let demoSteps = [
@@ -777,7 +762,6 @@
             "Bravo ! Vous avez accédé à la bibliothèque d'images"
         ];
 
-        // Configuration de démonstration
         let config = {
             borderColor: 'white',
             rectBgColor: '#2D2D30',
@@ -794,7 +778,6 @@
 
         let selectedDefaultStyle = 0;
 
-        // Initialisation
         document.addEventListener('DOMContentLoaded', function() {
             initializeDemo();
             updatePreview();
@@ -802,10 +785,9 @@
         });
 
         function initializeDemo() {
-            // Afficher la fenêtre de progression
-            document.getElementById('demoProgressWindow').style.display = 'block';
             
-            // Mettre à jour l'instruction
+            document.getElementById('demoProgressWindow').style.display = 'block';
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment accéder à la bibliothèque d'images depuis la fenêtre de personnalisation.";
         }
@@ -822,32 +804,25 @@
             
             demoRunning = true;
             currentStep = 0;
-            
-            // Réinitialiser la barre de progression à 0%
+
             updateProgress(0);
-            
-            // Désactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = true;
             document.getElementById('stopDemo').disabled = false;
-            
-            // Commencer la démonstration interactive
+
             startInteractiveDemo();
         }
 
         function stopDemo() {
             demoRunning = false;
-            
-            // Réactiver le bouton démarrer
+
             document.getElementById('startDemo').disabled = false;
             document.getElementById('stopDemo').disabled = true;
-            
-            // Supprimer les écouteurs d'événements
+
             removeInteractiveListeners();
-            
-            // Masquer les éléments de démonstration
+
             hideHighlight();
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Démonstration arrêtée. Cliquez sur 'Démarrer la démonstration' pour recommencer.";
             document.getElementById('demoStep').textContent = '';
@@ -856,14 +831,13 @@
 
         function resetDemo() {
             stopDemo();
-            
-            // Réinitialiser l'instruction
+
             document.getElementById('demoInstruction').textContent = 
                 "Cette démonstration va vous montrer comment accéder à la bibliothèque d'images depuis la fenêtre de personnalisation.";
         }
 
         function closeDemo() {
-            // Fermer l'onglet
+            
             window.close();
         }
 
@@ -871,7 +845,7 @@
             if (!demoRunning) return;
             
             currentStep = 0;
-            // S'assurer que la barre est à 0% au début
+            
             updateProgress(0);
             showCurrentStep();
             setupInteractiveListeners();
@@ -880,8 +854,7 @@
         function showCurrentStep() {
             const step = demoSteps[currentStep];
             document.getElementById('demoStep').textContent = `Étape ${currentStep + 1}: ${step}`;
-            // Calculer le pourcentage basé sur l'étape actuelle
-            // Étape 0 = 0%, Étape 1 = 100%
+
             let percentage = 0;
             if (currentStep === 0) percentage = 0;
             else if (currentStep >= 1) percentage = 100;
@@ -902,11 +875,11 @@
         }
 
         function setupInteractiveListeners() {
-            // Supprimer les anciens écouteurs
+            
             removeInteractiveListeners();
             
             if (currentStep === 0) {
-                // Écouter le clic sur le bouton Bibliothèque
+                
                 const libraryButton = document.querySelector('button[onclick="openImageLibrary()"]');
                 if (libraryButton) {
                     libraryButton.addEventListener('click', onLibraryButtonClick);
@@ -916,7 +889,7 @@
         }
 
         function removeInteractiveListeners() {
-            // Supprimer les écouteurs du bouton Bibliothèque
+            
             const libraryButton = document.querySelector('button[onclick="openImageLibrary()"]');
             if (libraryButton) {
                 libraryButton.removeEventListener('click', onLibraryButtonClick);
@@ -933,7 +906,7 @@
         }
 
         function highlightLibraryButton() {
-            // Attendre que le texte des instructions soit mis à jour
+            
             setTimeout(() => {
                 const libraryButton = document.querySelector('button[onclick="openImageLibrary()"]');
                 if (libraryButton) {
@@ -951,14 +924,13 @@
                     highlight.style.pointerEvents = 'none';
                     
                     document.body.appendChild(highlight);
-                    
-                    // Simuler un clic visuel
+
                     libraryButton.style.transform = 'scale(0.95)';
                     setTimeout(() => {
                         libraryButton.style.transform = 'scale(1)';
                     }, 150);
                 }
-            }, 100); // Délai pour permettre la mise à jour du texte
+            }, 100); 
         }
 
         function hideHighlight() {
@@ -973,7 +945,7 @@
         }
 
         function showLibraryAccessDialog() {
-            // Afficher une explication claire de l'accès à la bibliothèque
+            
             const dialog = document.createElement('div');
             dialog.id = 'libraryAccessDialog';
             dialog.style.position = 'fixed';
@@ -1011,17 +983,15 @@
             `;
             
             document.body.appendChild(dialog);
-            
-            // Ajouter l'écouteur pour le bouton OK
+
             document.getElementById('libraryOkButton').addEventListener('click', () => {
                 dialog.style.opacity = '0';
                 setTimeout(() => {
                     dialog.remove();
-                    // Terminer la démonstration
+                    
                     if (demoRunning) {
                         activateLibraryDemo();
-                        
-                        // Terminer la démonstration après 3 secondes
+
                         setTimeout(() => {
                             if (demoRunning) {
                                 document.getElementById('demoInstruction').textContent = 
@@ -1036,7 +1006,6 @@
                 }, 300);
             });
 
-            // Ajouter l'écouteur pour le bouton Étape suivante
             document.getElementById('nextStepButton').addEventListener('click', () => {
                 dialog.style.opacity = '0';
                 setTimeout(() => {
@@ -1047,7 +1016,7 @@
         }
 
         function activateLibraryDemo() {
-            // Créer un effet visuel pour montrer que la bibliothèque est accessible
+            
             const demoIndicator = document.createElement('div');
             demoIndicator.style.position = 'fixed';
             demoIndicator.style.top = '50%';
@@ -1064,8 +1033,7 @@
             demoIndicator.style.transition = 'all 0.3s ease';
             
             document.body.appendChild(demoIndicator);
-            
-            // Désactiver après 2 secondes
+
             setTimeout(() => {
                 demoIndicator.style.opacity = '0';
                 setTimeout(() => {
@@ -1079,13 +1047,11 @@
             const previewLabel = document.getElementById('previewLabel');
             const previewLabelText = document.getElementById('previewLabelText');
 
-            // Mettre à jour la bulle
             previewBubble.style.borderColor = config.borderColor;
             previewBubble.style.borderWidth = config.borderThickness + 'px';
             previewBubble.style.borderRadius = config.borderCornerRadius + 'px';
             previewBubble.style.backgroundColor = config.rectBgColor;
 
-            // Mettre à jour le label
             previewLabel.style.backgroundColor = config.labelBgColor;
             previewLabel.style.borderColor = config.labelBorderColor;
             previewLabel.style.borderWidth = config.labelBorderThickness + 'px';
@@ -1093,7 +1059,6 @@
             previewLabelText.style.color = config.titleColor;
             previewLabelText.textContent = config.text;
 
-            // Ajuster la largeur du label selon le texte
             adjustLabelWidth();
         }
 
@@ -1102,13 +1067,13 @@
             const previewLabelText = document.getElementById('previewLabelText');
             
             const text = config.text || '';
-            // L'étiquette s'adapte automatiquement à la largeur du texte
+            
             previewLabel.style.width = 'auto';
             previewLabel.style.minWidth = 'fit-content';
         }
 
         function pickColor(type) {
-            // Simulation d'un sélecteur de couleur
+            
             const colors = ['#000000', '#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF', '#FFFFFF', '#808080', '#2D2D30'];
             const randomColor = colors[Math.floor(Math.random() * colors.length)];
             
@@ -1140,8 +1105,7 @@
 
         function selectDefaultStyle(styleIndex) {
             selectedDefaultStyle = styleIndex;
-            
-            // Appliquer le style par défaut
+
             const styleColors = {
                 1: '#E74C3C', 2: '#3498DB', 3: '#2ECC71', 4: '#F39C12', 5: '#9B59B6',
                 6: '#1ABC9C', 7: '#E67E22', 8: '#34495E', 9: '#95A5A6', 10: '#16A085'
@@ -1160,8 +1124,7 @@
             config.borderCornerRadius = 6;
             config.labelCornerRadius = 3;
             config.rectangleImagePath = null;
-            
-            // Mettre à jour les contrôles
+
             document.getElementById('borderColorButton').style.backgroundColor = styleColor;
             document.getElementById('labelBorderColorButton').style.backgroundColor = styleColor;
             document.getElementById('titleColorButton').style.backgroundColor = styleColor;
@@ -1223,7 +1186,7 @@
         }
 
         function openImageLibrary() {
-            // Cette fonction est maintenant gérée par la démonstration
+            
             if (!demoRunning) {
             alert('Ouverture de la bibliothèque d\'images');
             }

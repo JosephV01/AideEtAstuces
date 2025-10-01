@@ -37,7 +37,7 @@
             height: 550px;
             width: 950px;
         }
-        /* Bulle dimension */
+        
         .demo-canvas .dynamic-border {
             width: 350px;
             height: 160px;
@@ -46,11 +46,10 @@
             border-radius: 12px;
         }
         .demo-canvas .label-border {
-            left: 200px; /* centre de la bulle (20 + 260/2) */
+            left: 200px; 
             top: 75px;
         }
 
-        /* Bouton recherche positionné à droite de l'étiquette */
         .search-trigger {
             position: absolute;
             left: 252px;
@@ -72,7 +71,6 @@
         .search-trigger:active { background: #003C74; }
         .search-trigger svg { width: 16px; height: 16px; fill: currentColor; }
 
-        /* Fenêtre de recherche avancée (simulée) */
         .search-dialog {
             position: absolute;
             left: 50px;
@@ -156,12 +154,11 @@
             cursor: pointer;
         }
 
-        /* Panneau d'options simulé pour le menu déroulant */
         .sort-options-panel {
             position: absolute;
-            left: 0px; /* sera positionné dynamiquement */
-            top: 0px;  /* sera positionné dynamiquement */
-            width: 200px; /* sera redimensionné dynamiquement */
+            left: 0px; 
+            top: 0px;  
+            width: 200px; 
             background: #1f1f1f;
             border: 1px solid #555;
             border-radius: 6px;
@@ -182,7 +179,6 @@
         .sort-option-item:hover { background: #303030; }
         .sort-option-item.active { background: #2a4a6a; }
 
-        /* Icônes simulées (raccourcis) dans la bulle */
         .shortcuts-area {
             position: absolute;
             left: 30px;
@@ -235,7 +231,6 @@
             100% { box-shadow: 0 0 0 rgba(255,140,0,0.0); border-color: #FF8C00; }
         }
 
-        /* Curseur au-dessus de tout */
         .mouse-cursor { z-index: 2000 !important; }
         .mouse-zero-click { z-index: 900 !important;
             left: 600px;
@@ -270,9 +265,9 @@
 
         <div class="demo-canvas-container">
             <div class="demo-canvas large">
-                <!-- Bulle -->
+                
                 <div class="dynamic-border"></div>
-                <!-- Étiquette -->
+                
                 <div class="label-border">
                     <div class="label-text">Bulle - Raccourcis</div>
                 </div>
@@ -281,17 +276,13 @@
                     <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                 </button>
 
-                <!-- Curseur -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Souris avec états -->
                 <div class="mouse-zero-click"></div>
                 <div class="mouse-left-click"></div>
 
-                <!-- Poignée (non utilisée ici, conservée pour cohérence visuelle) -->
                 <div class="resize-handle"></div>
 
-                <!-- Zone des raccourcis -->
                 <div class="shortcuts-area" id="shortcutsArea">
                     <div class="shortcut" data-name="rapport_2024.pdf" data-display="Rapport 2024">
                         <div class="shortcut-icon"></div>
@@ -319,7 +310,6 @@
                     </div>
                 </div>
 
-                <!-- Fenêtre de recherche avancée simulée -->
                 <div class="search-dialog" id="searchDialog">
                     <h3>Recherche avancée</h3>
                     
@@ -362,22 +352,19 @@
     </div>
 
     <script>
-        // Animation state
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
         let baseInterval = 80;
 
-        // Standard cursor speed
         const CURSOR_SPEED_PX_PER_FRAME = 9;
 
-        // Progress
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
         let totalAnimationFrames = 0;
 
-        // DOM
         const canvas = document.querySelector('.demo-canvas');
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
@@ -387,7 +374,6 @@
         const searchButton = document.getElementById('searchButton');
         const shortcuts = Array.from(document.querySelectorAll('.shortcut'));
 
-        // Geometry helpers
         let canvasCenterX = 0;
         let canvasCenterY = 0;
         let toTriggerFrames = 25;
@@ -470,7 +456,7 @@
                 el.classList.remove('highlight-match');
                 area.appendChild(el);
             });
-            // Clignotement bref uniquement quand demandé
+            
             if (doBlink) {
                 const children = Array.from(area.children);
                 children.forEach(el => el.classList.add('highlight-match'));
@@ -508,16 +494,15 @@
 
             animationPhase++;
 
-            // Découpage des phases pour la recherche avancée
-            const phaseAEnd = toTriggerFrames; // déplacer vers icône recherche
-            const phaseBEnd = phaseAEnd + 6; // clic pour ouvrir dialog
-            const phaseCEnd = phaseBEnd + toDialogFrames; // déplacement vers input
-            const phaseDEnd = phaseCEnd + typingFrames; // saisie du terme
-            const phaseEEnd = phaseDEnd + searchFrames; // déplacement vers bouton
-            const phaseFEnd = phaseEEnd + 8; // clic bouton recherche
-            const phaseGEnd = phaseFEnd + searchPauseFrames; // pause pour voir résultats
-            const phaseHEnd = phaseGEnd + toResetFrames; // retour centre
-            const phaseIEnd = phaseHEnd + 10; // micro pause
+            const phaseAEnd = toTriggerFrames; 
+            const phaseBEnd = phaseAEnd + 6; 
+            const phaseCEnd = phaseBEnd + toDialogFrames; 
+            const phaseDEnd = phaseCEnd + typingFrames; 
+            const phaseEEnd = phaseDEnd + searchFrames; 
+            const phaseFEnd = phaseEEnd + 8; 
+            const phaseGEnd = phaseFEnd + searchPauseFrames; 
+            const phaseHEnd = phaseGEnd + toResetFrames; 
+            const phaseIEnd = phaseHEnd + 10; 
 
             if (animationPhase <= phaseAEnd) {
                 const startX = canvasCenterX, startY = canvasCenterY;
@@ -551,8 +536,7 @@
                 const oc = getCenter(searchInput);
                 mouseCursor.style.left = oc.x + 'px';
                 mouseCursor.style.top = oc.y + 'px';
-                
-                // Simulation de la saisie
+
                 if (typingPhase === 5) {
                     searchInput.value = 'R';
                 } else if (typingPhase === 10) {
@@ -589,7 +573,7 @@
                 }
             }
             else if (animationPhase <= phaseGEnd) {
-                // Pause pour voir les résultats filtrés
+                
                 const btnCenter = getCenter(searchButton);
                 mouseCursor.style.left = btnCenter.x + 'px';
                 mouseCursor.style.top = btnCenter.y + 'px';
@@ -664,7 +648,6 @@
             mouseCursor.style.left = canvasCenterX + 'px';
             mouseCursor.style.top = canvasCenterY + 'px';
 
-            // UI wiring
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
             const pauseButton = document.getElementById('pauseButton');
@@ -685,5 +668,4 @@
     </script>
 </body>
 </html>
-
 

@@ -36,14 +36,12 @@
             display: inline-block;
         }
 
-        /* Canvas adapté pour la fenêtre de personnalisation */
         .demo-canvas {
-            /* Hérite de demo-elements.css, adaptations spécifiques */
+            
             width: 600px;
             height: 400px;
         }
 
-        /* Menu contextuel complet du projet */
         .context-menu {
             background: #26292C;
             border: 2px solid #444;
@@ -114,7 +112,6 @@
             margin: 0 5px;
         }
 
-        /* Section headers avec flèche - comportement submenu */
         .menu-section {
             position: relative;
         }
@@ -147,8 +144,7 @@
             margin-left: auto;
             transition: transform 0.2s;
         }
-        
-        /* Sous-menu séparé */
+
         .submenu {
             position: absolute;
             left: 100%;
@@ -174,14 +170,12 @@
             transform: scale(1);
         }
 
-        /* Séparateurs */
         .menu-separator {
             height: 1px;
             background: #444;
             margin: 4px 8px;
         }
 
-        /* Boutons d'aide */
         .help-button {
             width: 28px;
             height: 28px;
@@ -205,7 +199,6 @@
             background: #003C74;
         }
 
-        /* Styles pour les éléments avec aide */
         .menu-item-with-help {
             justify-content: space-between;
         }
@@ -216,9 +209,8 @@
             flex: 1;
         }
 
-        /* Poignée de redimensionnement (adaptations pour cette démo) */
         .resize-handle {
-            /* Override de demo-elements.css pour cette démo */
+            
             width: 12px;
             height: 12px;
             left: 243px !important;
@@ -226,7 +218,6 @@
             z-index: 5;
         }
 
-        /* Fenêtre de dialogue de position */
         .position-dialog {
             position: absolute;
             left: 50%;
@@ -337,12 +328,10 @@
             font-weight: bold;
         }
 
-        /* Curseur de souris avec z-index élevé */
         .mouse-cursor {
             z-index: 1500 !important;
         }
 
-        /* Position de la souris ajustée pour le canvas agrandi */
         .mouse-zero-click,
         .mouse-left-click,
         .mouse-right-click {
@@ -350,7 +339,6 @@
             top: 15px !important;
         }
 
-        /* back-button styles removed to use global styles in demo-elements.css */
     </style>
 </head>
 <body>
@@ -361,8 +349,7 @@
                 Cette démonstration montre comment accéder aux options de l'étiquette et ajuster précisément sa position via la fenêtre de dialogue. Effectuez un clic droit sur la poignée pour ouvrir le menu, sélectionnez "Options de l'étiquette" puis "Ajuster la position de l'étiquette".
             </p>
         </div>
-        
-        <!-- Contrôle de vitesse standardisé (avec barre de progression intégrée) -->
+
         <div class="speed-control">
             <label for="speedSlider">Vitesse de l'animation :</label>
             <input type="range" id="speedSlider" min="0.25" max="3" step="0.25" value="1" class="speed-slider">
@@ -377,32 +364,23 @@
         
         <div class="demo-canvas-container">
             <div class="demo-canvas">
-                <!-- Bordure dynamique -->
+                
                 <div class="dynamic-border"></div>
 
-                <!-- Étiquette centrée automatiquement -->
                 <div class="label-border">
                     <div class="label-text">Ajuster la position de l'étiquette</div>
                 </div>
 
-                <!-- Curseur de souris -->
                 <div class="mouse-cursor"></div>
 
-                <!-- Poignée de redimensionnement -->
                 <div class="resize-handle"></div>
 
-                <!-- Cercle d'animation de clic -->
-
-                <!-- Souris avec boutons (état normal) -->
                 <div class="mouse-zero-click"></div>
 
-                <!-- Souris avec bouton droit coloré (pour les clics) -->
                 <div class="mouse-right-click"></div>
 
-                <!-- Souris avec bouton gauche coloré (pour les clics) -->
                 <div class="mouse-left-click"></div>
 
-                <!-- Menu contextuel complet de référence -->
                 <div class="context-menu">
                     <button class="menu-item menu-item-with-help">
                         <div class="menu-item-content">
@@ -641,7 +619,6 @@
                     </button>
                 </div>
 
-                <!-- Fenêtre de dialogue de position -->
                 <div class="position-dialog" id="positionDialog">
                     <div class="dialog-border">
                         <div class="dialog-content">
@@ -670,30 +647,25 @@
             </div>
         </div>
 
-        
     </div>
 
     <script>
-        // Variables pour l'animation avec standardisation
+        
         let animationPhase = 0;
         let animationTimer;
         let animationSpeed = 1;
         let isPaused = false;
-        
-        // Variables pour la progression
+
         const progressBar = document.getElementById('progressBar');
         const progressText = document.getElementById('progressText');
-        
-        // Standardisation de la vitesse du curseur (selon demo-elements.css)
+
         const CURSOR_SPEED_PX_PER_FRAME = 9;
-        let baseInterval = 50; // Intervalle de base pour cette démo
-        
-        // Calculer le nombre total de frames de l'animation
+        let baseInterval = 50; 
+
         const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
         const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (450-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
-        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 85; // Total jusqu'au redémarrage
+        const totalAnimationFrames = moveToHandleFrames + 33 + moveToMenuFrames + 85; 
 
-        // Éléments DOM
         const mouseCursor = document.querySelector('.mouse-cursor');
         const mouseZeroClick = document.querySelector('.mouse-zero-click');
         const mouseRightClick = document.querySelector('.mouse-right-click');
@@ -707,15 +679,14 @@
 
         function startAnimation() {
             function runAnimationFrame() {
-                // Vérifier si l'animation est en pause
+                
                 if (isPaused) {
-                    animationTimer = setTimeout(runAnimationFrame, 100); // Vérifier toutes les 100ms
+                    animationTimer = setTimeout(runAnimationFrame, 100); 
                     return;
                 }
                 
                 animationPhase++;
 
-                // Phase 1: Curseur se déplace vers la poignée (vitesse standardisée)
                 const moveToHandleFrames = Math.ceil(Math.sqrt((243-143)**2 + (133-92)**2) / CURSOR_SPEED_PX_PER_FRAME);
                 if (animationPhase <= moveToHandleFrames) {
                     const progress = animationPhase / moveToHandleFrames;
@@ -724,30 +695,26 @@
                     mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                     mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                 }
-                // Phase 2: Animation de clic droit et expansion de la poignée
+                
                 else if (animationPhase <= moveToHandleFrames + 23) {
                     const clickPhase = animationPhase - moveToHandleFrames;
-                    
-                    // Animation de clic très rapide
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
 
-                    // Changement de souris pour le clic droit (synchronisé)
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseRightClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseRightClick.style.visibility = 'hidden';
                     }
 
-                    // Animation d'expansion et rétraction de la poignée
                     if (clickPhase >= 3) {
                         const expandPhase = clickPhase - 3;
                         if (expandPhase <= 3) {
@@ -768,57 +735,53 @@
                         }
                     }
                 }
-                // Phase 3: Menu apparaît
+                
                 else if (animationPhase <= moveToHandleFrames + 27) {
                     const menuProgress = (animationPhase - (moveToHandleFrames + 23)) / 4;
                     contextMenu.style.visibility = 'visible';
                     contextMenu.style.opacity = menuProgress;
                     contextMenu.style.transform = `scale(${0.8 + menuProgress * 0.2})`;
                 }
-                // Phase 4: Menu visible
+                
                 else if (animationPhase <= moveToHandleFrames + 33) {
                     contextMenu.style.opacity = '1';
                     contextMenu.style.transform = 'scale(1)';
                 }
-                // Phase 5: Curseur se déplace vers "Options de l'étiquette" (vitesse standardisée)
+                
                 else {
                     const moveToMenuFrames = Math.ceil(Math.sqrt((429-243)**2 + (302-133)**2) / CURSOR_SPEED_PX_PER_FRAME);
                     if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames) {
                         const progress = (animationPhase - (moveToHandleFrames + 33)) / moveToMenuFrames;
                         const startX = 243, startY = 133;
-                        const endX = 429, endY = 320; // Centre exact de l'option "Options de l'étiquette" (4ème option)
+                        const endX = 429, endY = 320; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 6: Clic sur "Options de l'étiquette"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 8) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames);
-                    
-                    // Animation de clic
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
 
-                    // Changement de souris au clic gauche (synchronisé)
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
                     }
 
-                    // Effet hover sur l'option "Options de l'étiquette" (4ème option - section)
                     if (clickPhase >= 1) {
                         menuSections[1].querySelector('.menu-section-header').style.background = '#0078D4';
                     }
                     }
-                    // Phase 7: Sous-menu "Options de l'étiquette" s'ouvre
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 15) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 8)) / 7;
                         if (submenus[1]) {
@@ -827,7 +790,7 @@
                             submenus[1].style.transform = `scale(${0.8 + progress * 0.2})`;
                         }
                     }
-                    // Phase 8: Sous-menu visible
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 25) {
                         if (submenus[1]) {
                             submenus[1].style.visibility = 'visible';
@@ -835,38 +798,34 @@
                             submenus[1].style.transform = 'scale(1)';
                         }
                     }
-                    // Phase 9: Curseur se déplace vers "Ajuster la position de l'étiquette"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 35) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 25)) / 10;
                         const startX = 429, startY = 320;
-                        const endX = 750, endY = 320; // Centre du sous-menu "Ajuster la position de l'étiquette"
+                        const endX = 750, endY = 320; 
                         mouseCursor.style.left = (startX + (endX - startX) * progress) + 'px';
                         mouseCursor.style.top = (startY + (endY - startY) * progress) + 'px';
                     }
-                    // Phase 10: Clic sur "Ajuster la position de l'étiquette"
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 43) {
                         const clickPhase = animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 35);
-                    
-                    // Animation de clic
+
                     if (clickPhase <= 2) {
                     } else if (clickPhase <= 4) {
                         const shrinkPhase = clickPhase - 2;
                     } else {
                     }
 
-                    // Changement de souris au clic gauche (synchronisé)
                     if (clickPhase >= 2) {
                         mouseZeroClick.style.visibility = 'hidden';
                         mouseLeftClick.style.visibility = 'visible';
                     }
-                    
-                    // Retour immédiat à la souris normale après le clic
+
                     if (clickPhase >= 4) {
                         mouseZeroClick.style.visibility = 'visible';
                         mouseLeftClick.style.visibility = 'hidden';
                     }
 
-                    // Effet hover sur "Ajuster la position de l'étiquette"
                     if (clickPhase >= 1) {
                         const submenuItem = submenus[1].querySelector('.menu-item');
                         if (submenuItem) {
@@ -874,7 +833,7 @@
                         }
                     }
                     }
-                    // Phase 11: Menu et sous-menu disparaissent, fenêtre de dialogue apparaît
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 55) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 43)) / 12;
                         contextMenu.style.opacity = 1 - progress;
@@ -890,13 +849,13 @@
                             positionDialog.style.transform = `translate(-50%, -50%) scale(${0.8 + (progress - 0.5) * 0.4})`;
                         }
                     }
-                    // Phase 12: Fenêtre de dialogue visible
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 75) {
                         positionDialog.style.visibility = 'visible';
                         positionDialog.style.opacity = '1';
                         positionDialog.style.transform = 'translate(-50%, -50%) scale(1)';
                     }
-                    // Phase 13: Fenêtre de dialogue se ferme
+                    
                     else if (animationPhase <= moveToHandleFrames + 33 + moveToMenuFrames + 85) {
                         const progress = (animationPhase - (moveToHandleFrames + 33 + moveToMenuFrames + 75)) / 10;
                         positionDialog.style.opacity = 1 - progress;
@@ -905,7 +864,7 @@
                             positionDialog.style.visibility = 'hidden';
                         }
                     }
-                    // Reset immédiat après fermeture de la fenêtre
+                    
                     else {
                     animationPhase = 0;
                     mouseCursor.style.left = '143px';
@@ -924,15 +883,13 @@
                     positionDialog.style.visibility = 'hidden';
                     positionDialog.style.opacity = '0';
                     positionDialog.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                    
-                    // Reset des sous-menus
+
                     submenus.forEach(submenu => {
                         submenu.style.visibility = 'hidden';
                         submenu.style.opacity = '0';
                         submenu.style.transform = 'scale(0.8)';
                     });
-                    
-                    // Reset des éléments de sous-menu
+
                     submenus.forEach(submenu => {
                         const submenuItems = submenu.querySelectorAll('.menu-item');
                         submenuItems.forEach(item => {
@@ -941,18 +898,15 @@
                     });
                     }
                 }
-                // Mettre à jour la progression
-                updateProgress(animationPhase, totalAnimationFrames);
                 
-                // Calculer l'intervalle juste avant de programmer la prochaine frame
+                updateProgress(animationPhase, totalAnimationFrames);
+
                 const currentInterval = Math.round(baseInterval / animationSpeed);
                 animationTimer = setTimeout(runAnimationFrame, currentInterval);
             }
-            
-            // Initialiser la progression
+
             updateProgress(0, totalAnimationFrames);
-            
-            // Démarrer la première frame
+
             runAnimationFrame();
         }
 
@@ -963,34 +917,30 @@
             startAnimation();
         }
 
-        // Fonction pour changer la vitesse sans restart (réactivité maximale)
         function changeAnimationSpeed(newSpeed) {
             animationSpeed = newSpeed;
-            // Pas besoin de restart, la prochaine frame utilisera automatiquement la nouvelle vitesse
+            
         }
-        
-        // Fonction pour mettre à jour la progression
+
         function updateProgress(phase, totalFrames) {
-            // La progression doit atteindre 100% seulement au redémarrage de la boucle
+            
             const percentage = phase >= totalFrames ? 100 : (phase / totalFrames) * 100;
             progressBar.style.width = percentage + '%';
-            
-            // Calculer les seuils basés sur les phases réelles de l'animation
-            const phase1End = moveToHandleFrames; // Fin du déplacement vers poignée
-            const phase2End = moveToHandleFrames + 23; // Fin du clic droit
-            const phase3End = moveToHandleFrames + 27; // Fin de l'apparition du menu
-            const phase4End = moveToHandleFrames + 33; // Fin de la phase menu visible
-            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; // Fin du déplacement vers "Options de l'étiquette"
-            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; // Fin du clic sur "Options de l'étiquette"
-            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; // Fin de l'apparition du sous-menu
-            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 25; // Fin du déplacement vers "Ajuster la position"
-            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 35; // Fin du clic sur "Ajuster la position"
-            const phase10End = moveToHandleFrames + 33 + moveToMenuFrames + 43; // Fin de la disparition du menu
-            const phase11End = moveToHandleFrames + 33 + moveToMenuFrames + 55; // Fin de l'apparition de la fenêtre
-            const phase12End = moveToHandleFrames + 33 + moveToMenuFrames + 75; // Fin de l'affichage de la fenêtre
-            const phase13End = moveToHandleFrames + 33 + moveToMenuFrames + 85; // Fin de la disparition de la fenêtre
-            
-            // Mettre à jour le texte de progression
+
+            const phase1End = moveToHandleFrames; 
+            const phase2End = moveToHandleFrames + 23; 
+            const phase3End = moveToHandleFrames + 27; 
+            const phase4End = moveToHandleFrames + 33; 
+            const phase5End = moveToHandleFrames + 33 + moveToMenuFrames; 
+            const phase6End = moveToHandleFrames + 33 + moveToMenuFrames + 8; 
+            const phase7End = moveToHandleFrames + 33 + moveToMenuFrames + 15; 
+            const phase8End = moveToHandleFrames + 33 + moveToMenuFrames + 25; 
+            const phase9End = moveToHandleFrames + 33 + moveToMenuFrames + 35; 
+            const phase10End = moveToHandleFrames + 33 + moveToMenuFrames + 43; 
+            const phase11End = moveToHandleFrames + 33 + moveToMenuFrames + 55; 
+            const phase12End = moveToHandleFrames + 33 + moveToMenuFrames + 75; 
+            const phase13End = moveToHandleFrames + 33 + moveToMenuFrames + 85; 
+
             if (phase <= phase1End) {
                 progressText.textContent = 'Déplacement vers la poignée...';
             } else if (phase <= phase2End) {
@@ -1022,7 +972,6 @@
             }
         }
 
-        // Fonctions pour la fenêtre de dialogue de position
         function onDialogInputChange() {
             const xInput = document.getElementById('dialogXInput');
             const yInput = document.getElementById('dialogYInput');
@@ -1045,7 +994,6 @@
             }
         }
 
-        // Logique du menu contextuel (copiée du Reference-ContextMenu.html)
         document.querySelectorAll('.help-button').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -1100,7 +1048,6 @@
             }
         }
 
-        // Démarrer l'animation au chargement de la page
         document.addEventListener('DOMContentLoaded', function() {
             const speedSlider = document.getElementById('speedSlider');
             const speedValue = document.getElementById('speedValue');
@@ -1124,7 +1071,6 @@
                 console.warn('Bouton pause non trouvé dans demo-Label-Position-Dialog');
             }
 
-            // Configurer les événements de la fenêtre de dialogue
             const dialogXInput = document.getElementById('dialogXInput');
             const dialogYInput = document.getElementById('dialogYInput');
             const dialogOkButton = document.getElementById('dialogOkButton');
@@ -1138,8 +1084,7 @@
             if (dialogOkButton) {
                 dialogOkButton.addEventListener('click', onDialogOkClick);
             }
-            
-            // Démarrer l'animation
+
             setTimeout(() => {
                 setTimeout(startAnimation, 500);
             }, 100);
