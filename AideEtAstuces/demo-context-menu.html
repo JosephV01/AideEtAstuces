@@ -777,7 +777,8 @@
             labelMovementFrames = Math.ceil(labelDistance / CURSOR_SPEED_PX_PER_FRAME);
             
             // Calculer le nombre total de frames de l'animation
-            totalAnimationFrames = movementFrames + 35 + labelMovementFrames + 10; // Total jusqu'au redémarrage
+            // Doit couvrir toutes les phases jusqu'à la pause finale avant reset ("+ 48")
+            totalAnimationFrames = movementFrames + 35 + labelMovementFrames + 48;
             
             console.log(`Distance canvas→poignée: ${Math.round(distance)}px, Frames: ${movementFrames}`);
             console.log(`Distance poignée→étiquette: ${Math.round(labelDistance)}px, Frames: ${labelMovementFrames}`);
